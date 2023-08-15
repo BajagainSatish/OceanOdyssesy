@@ -1,0 +1,530 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &49334598
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 49334599}
+  - component: {fileID: 49334600}
+  m_Layer: 0
+  m_Name: MapProjection3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &49334599
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49334598}
+  m_LocalRotation: {x: 0.7070969, y: -0.003749712, z: 0.003749712, w: 0.7070969}
+  m_LocalPosition: {x: -66.3, y: 0, z: -51}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8534161453854594782}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 0.60800004}
+--- !u!119 &49334600
+Projector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49334598}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_NearClipPlane: 0.1
+  m_FarClipPlane: 350
+  m_FieldOfView: 10
+  m_AspectRatio: 1
+  m_Orthographic: 1
+  m_OrthographicSize: 44.85
+  m_Material: {fileID: 2100000, guid: 13eeb84787052d947b4cd26a9627a57c, type: 2}
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!1 &500127386
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 500127387}
+  - component: {fileID: 500127388}
+  m_Layer: 0
+  m_Name: MapProjection4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &500127387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500127386}
+  m_LocalRotation: {x: 0.35266122, y: -0.6128868, z: 0.61288667, w: 0.35266122}
+  m_LocalPosition: {x: 9.3, y: 0, z: 23.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8534161453854594782}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 120.16701}
+--- !u!119 &500127388
+Projector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500127386}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_NearClipPlane: 0.1
+  m_FarClipPlane: 350
+  m_FieldOfView: 10
+  m_AspectRatio: 1
+  m_Orthographic: 1
+  m_OrthographicSize: 44.85
+  m_Material: {fileID: 2100000, guid: c3058d1afb98fa14d9f47e5a87ea8204, type: 2}
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!1 &1577435622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1577435623}
+  - component: {fileID: 1577435624}
+  m_Layer: 0
+  m_Name: MapProjection2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1577435623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577435622}
+  m_LocalRotation: {x: 0.7068311, y: -0.019743606, z: 0.019743606, w: 0.7068311}
+  m_LocalPosition: {x: 50.5, y: 0, z: 21.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8534161453854594782}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 3.2}
+--- !u!119 &1577435624
+Projector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577435622}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_NearClipPlane: 0.1
+  m_FarClipPlane: 350
+  m_FieldOfView: 10
+  m_AspectRatio: 1
+  m_Orthographic: 1
+  m_OrthographicSize: 44.85
+  m_Material: {fileID: 2100000, guid: 13eeb84787052d947b4cd26a9627a57c, type: 2}
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!1 &8534161452745819102
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8534161452745819101}
+  - component: {fileID: 8534161452745819100}
+  m_Layer: 0
+  m_Name: MapProjection1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &8534161452745819101
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8534161452745819102}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 22.8, y: 0, z: -43.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8534161453854594782}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!119 &8534161452745819100
+Projector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8534161452745819102}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_NearClipPlane: 0.1
+  m_FarClipPlane: 350
+  m_FieldOfView: 10
+  m_AspectRatio: 1
+  m_Orthographic: 1
+  m_OrthographicSize: 44.85
+  m_Material: {fileID: 2100000, guid: f3b08540cfe5dee4d9de43ea2110a53e, type: 2}
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!1 &8534161453854594783
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8534161453854594782}
+  m_Layer: 0
+  m_Name: Helpers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8534161453854594782
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8534161453854594783}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 109.8, y: 92.3, z: 97.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 8534161452745819101}
+  - {fileID: 1577435623}
+  - {fileID: 49334599}
+  - {fileID: 500127387}
+  m_Father: {fileID: 8534161454220561260}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8534161454220561262
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8534161454220561260}
+  - component: {fileID: 8534161454220561261}
+  m_Layer: 0
+  m_Name: HelpMePlace_WithExamplesLoaded
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8534161454220561260
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8534161454220561262}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 8534161453854594782}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8534161454220561261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8534161454220561262}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d09e22705d0ba244f86ea0db4e3c8bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PrefabGroups:
+  - GroupName: Houses Brown
+    HotKeyBind: 0
+    Color: {r: 1, g: 0, b: 0.92892265, a: 1}
+    RandomFromRow: 1
+    RotationToNormalEnabled: 0
+    RotateAroundAxis: 1
+    ScaleRangeMin: 1
+    ScaleRangeMax: 1
+    DesiredParent: {fileID: 0}
+    PlaceablePrefabs:
+    - Prefab: {fileID: 88018000125481993, guid: 7485f0ff15ed0cf49b495dec1ef29b4b,
+        type: 3}
+      SinkAmount: 1.0599991
+      WidthOfObject: 3.1999998
+    - Prefab: {fileID: 1981000129264655727, guid: 545056a46bb2aa143964705941c0b410,
+        type: 3}
+      SinkAmount: 1.1099997
+      WidthOfObject: 3.3999996
+    - Prefab: {fileID: 4453960928291680229, guid: d3c49a5363d00344c8b8fc8e6445cde9,
+        type: 3}
+      SinkAmount: 0.9299998
+      WidthOfObject: 4.2999988
+    - Prefab: {fileID: 1698926164865056273, guid: 1cffbb2571a136841907fd6211601367,
+        type: 3}
+      SinkAmount: 0.9299998
+      WidthOfObject: 3
+  - GroupName: Trees
+    HotKeyBind: 0
+    Color: {r: 0, g: 1, b: 0.04619026, a: 1}
+    RandomFromRow: 1
+    RotationToNormalEnabled: 0
+    RotateAroundAxis: 1
+    ScaleRangeMin: 1
+    ScaleRangeMax: 1
+    DesiredParent: {fileID: 0}
+    PlaceablePrefabs:
+    - Prefab: {fileID: 4666510316456683483, guid: 5dc3b704a84041140a71286d8b666f65,
+        type: 3}
+      SinkAmount: 2.0800002
+      WidthOfObject: 3.2999997
+    - Prefab: {fileID: 4046697807660869446, guid: ed3c8ccdf97899b44aae2819116a029a,
+        type: 3}
+      SinkAmount: 1.6000001
+      WidthOfObject: 3
+  - GroupName: Houses Red
+    HotKeyBind: 0
+    Color: {r: 1, g: 0, b: 0, a: 1}
+    RandomFromRow: 1
+    RotationToNormalEnabled: 0
+    RotateAroundAxis: 1
+    ScaleRangeMin: 1
+    ScaleRangeMax: 1
+    DesiredParent: {fileID: 0}
+    PlaceablePrefabs:
+    - Prefab: {fileID: 88018000125481993, guid: abb48b99cc97a9941b81827889a62d68,
+        type: 3}
+      SinkAmount: 0.85999846
+      WidthOfObject: 3
+    - Prefab: {fileID: 1698926164865056273, guid: d37d8b4db48426042b083d705e54c78f,
+        type: 3}
+      SinkAmount: 1.0000001
+      WidthOfObject: 3
+    - Prefab: {fileID: 4453960928291680229, guid: ee1c75d42ce0d0d4c842773213af82dc,
+        type: 3}
+      SinkAmount: 1.3099998
+      WidthOfObject: 3
+    - Prefab: {fileID: 1981000129264655727, guid: 18d249c62c9acb54c82a90bf0a69f4e8,
+        type: 3}
+      SinkAmount: 0.86000013
+      WidthOfObject: 3
+  - GroupName: Rock
+    HotKeyBind: 0
+    Color: {r: 0.7735849, g: 0.5572901, b: 0.04743683, a: 1}
+    RandomFromRow: 1
+    RotationToNormalEnabled: 0
+    RotateAroundAxis: 1
+    ScaleRangeMin: 1
+    ScaleRangeMax: 1.5
+    DesiredParent: {fileID: 0}
+    PlaceablePrefabs:
+    - Prefab: {fileID: 2953499934497619825, guid: 53c8ac12bd2c9ab4895b83ed1e7dd464,
+        type: 3}
+      SinkAmount: 0.06999993
+      WidthOfObject: 3
+    - Prefab: {fileID: 5436053032336051571, guid: e2e09cd696933024589bd1b96822d34a,
+        type: 3}
+      SinkAmount: 0.26000035
+      WidthOfObject: 3
+  - GroupName: Props
+    HotKeyBind: 0
+    Color: {r: 0.94117653, g: 0.94117653, b: 0.94117653, a: 1}
+    RandomFromRow: 0
+    RotationToNormalEnabled: 1
+    RotateAroundAxis: 1
+    ScaleRangeMin: 1
+    ScaleRangeMax: 1
+    DesiredParent: {fileID: 0}
+    PlaceablePrefabs:
+    - Prefab: {fileID: 6254538864472842904, guid: 273de4b907854f04092d749e9a6e4e98,
+        type: 3}
+      SinkAmount: 0.07999993
+      WidthOfObject: 0.4000006
+    - Prefab: {fileID: 7968476505062588897, guid: aaa017fc2f405604e982be4083930891,
+        type: 3}
+      SinkAmount: 0.26000035
+      WidthOfObject: 1.1000007
+  - GroupName: Physics
+    HotKeyBind: 0
+    Color: {r: 0, g: 0.95781994, b: 1, a: 1}
+    RandomFromRow: 1
+    RotationToNormalEnabled: 0
+    RotateAroundAxis: 3
+    ScaleRangeMin: 1
+    ScaleRangeMax: 1
+    DesiredParent: {fileID: 0}
+    PlaceablePrefabs:
+    - Prefab: {fileID: 0}
+      SinkAmount: 16.429996
+      WidthOfObject: 3
+    - Prefab: {fileID: 0}
+      SinkAmount: 11.42
+      WidthOfObject: 3
+    - Prefab: {fileID: 0}
+      SinkAmount: 15.139999
+      WidthOfObject: 3
+    - Prefab: {fileID: 0}
+      SinkAmount: 11.42
+      WidthOfObject: 3
+    - Prefab: {fileID: 0}
+      SinkAmount: 13.639999
+      WidthOfObject: 3
+  - GroupName: Fences
+    HotKeyBind: 264
+    Color: {r: 0, g: 0.95781994, b: 1, a: 1}
+    RandomFromRow: 0
+    RotationToNormalEnabled: 0
+    RotateAroundAxis: 1
+    ScaleRangeMin: 1
+    ScaleRangeMax: 1
+    DesiredParent: {fileID: 0}
+    PlaceablePrefabs:
+    - Prefab: {fileID: 3201014348205767426, guid: c81e0f1de782b2e4d8397a38a5098145,
+        type: 3}
+      SinkAmount: 0
+      WidthOfObject: 1.4000002
+    - Prefab: {fileID: 3360328329056377781, guid: 9489d85a3b9f1a84e9fc2b1966c92339,
+        type: 3}
+      SinkAmount: 0
+      WidthOfObject: 1.2
+  Configuration:
+    GroundLayer:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    RotationMode: 1
+    RotationSnapAmount: 30
+    RotationFixed: {x: -0, y: 213.52795, z: 0}
+    RotationSmoothSensitivity: 0.25
+    LookAtPosition: {x: 146.2062, y: 1.2288723, z: 26.466772}
+    AllSpawnedObjectParent: {fileID: 0}
+    MakePrefabStatic: 0
+    PreviewImageSize: 71
+    ShowKeybinds: 1
+    ALTAdjustsSinkAmount: 1
+    ALTAdjustmentSinkAmountSensitivity: 0.1
+  HMPSystem:
+    OverlayMapGameObjects:
+    - {fileID: 8534161452745819102}
+    - {fileID: 1577435622}
+    - {fileID: 49334598}
+    - {fileID: 500127386}
+    InterfaceStartPosition: {x: 0, y: 0}
+    BluePrintMaterial: {fileID: 2100000, guid: 75d298471ba0f234385661f7965a7aa1, type: 2}
+    GizmoColor: {r: 0.16078432, g: 0.41568628, b: 0.77254903, a: 0.7176471}
+    ShowActivityNotifications: 1
+    AnimatePlacement: 0
+    InactiveSelectionTexture: {fileID: 2800000, guid: 1b3fea800ccddfd4e8c78f7fd286c0b1,
+      type: 3}
+    ActiveSelectionTexture: {fileID: 2800000, guid: 2ab9bae39e4d4d14ab4cf7cd7dde3ee6,
+      type: 3}
+    InstructionLeftTexture: {fileID: 2800000, guid: a518e2bc371d03d45b4ab2f49a06b18a,
+      type: 3}
+    InstructionRightTexture: {fileID: 2800000, guid: b00ed8c7ef03c7c4d962dc676a0396b8,
+      type: 3}
+    InstructionChangeColumnTexture: {fileID: 0}
+    XRotationAxisTexture: {fileID: 2800000, guid: 6f190effd0e6fe44181da404bac0b7bc,
+      type: 3}
+    YRotationAxisTexture: {fileID: 2800000, guid: 23de813a445e31744909a3c105711ea2,
+      type: 3}
+    ZRotationAxisTexture: {fileID: 2800000, guid: 54d6a646caebd41409cd8270199621b6,
+      type: 3}
+    AllRotationAxisTexture: {fileID: 2800000, guid: a7e345bc4e83bc0498d20118a2d72464,
+      type: 3}
+    FixedRotationModeTexture: {fileID: 2800000, guid: e9f51214a3f96014b88e26852d4dff60,
+      type: 3}
+    RandomRotationModeTexture: {fileID: 2800000, guid: 2d81be7411702c8479fdf1480de3beff,
+      type: 3}
+    SmoothRotationModeTexture: {fileID: 2800000, guid: e51552c9c5963f4459a5269392431b45,
+      type: 3}
+    SnapRotationModeTexture: {fileID: 2800000, guid: dfc999b63b671c14c903ece754992855,
+      type: 3}
+    RotationToNormalActiveTexture: {fileID: 2800000, guid: ea764b68df97ebf4899982e3abeddec5,
+      type: 3}
+    RotationToNormalInactiveTexture: {fileID: 2800000, guid: f1be27c9d9498864ea56789c9b8d7dbd,
+      type: 3}
+    InstructionRandomFromRowActiveTexture: {fileID: 2800000, guid: e10ecd8273662d6409f87faf82d0f1fc,
+      type: 3}
+    InstructionRandomFromRowInactiveTexture: {fileID: 2800000, guid: 4d2770e2af9120e458eb55fa370ec6fc,
+      type: 3}
+    InstructionShowHideOverlayMapActiveTexture: {fileID: 2800000, guid: d00e38be5ee0dfa4eba660329faab4ba,
+      type: 3}
+    InstructionShowHideOverlayMapInactiveTexture: {fileID: 2800000, guid: a4525d62879603142be87cc2213382a3,
+      type: 3}
+    InstructionPlacePrefabTexture: {fileID: 0}
+    InstructionPreviewMissing: {fileID: 2800000, guid: d17a63f570e1c2a4097b54792f16713c,
+      type: 3}
+    HMPLogo: {fileID: 2800000, guid: 320718940820aa043872c3acf3c79787, type: 3}
+    LookAwayFromModeTexture: {fileID: 2800000, guid: 1f9e8325ab3d06b47b5e33fa9c0315ac,
+      type: 3}
+    LookTowardsModeTexture: {fileID: 2800000, guid: a5b06bec20034fe45b6ec61f82051881,
+      type: 3}
+    InstructionLookAtSetPointRotationModeHelperTexture: {fileID: 2800000, guid: 91b5bb2618e6e1b4a906cacacdf478ce,
+      type: 3}
+  Visualizer:
+    VisualiserShapeSize: 2
+    VisualizerShape: 0
+    AutoRefreshEnabled: 0
+    VisualizerEnabled: 0
+  EventHooks:
+    HMPSystemActivatedUE:
+      m_PersistentCalls:
+        m_Calls: []
+    HMPSystemDeactivatedUE:
+      m_PersistentCalls:
+        m_Calls: []
+    PrefabPlaceStartedUE:
+      m_PersistentCalls:
+        m_Calls: []
+    PrefabPlaceFinishedUE:
+      m_PersistentCalls:
+        m_Calls: []
+    PrefabPlaceErrorUE:
+      m_PersistentCalls:
+        m_Calls: []
+    PrefabChangeUE:
+      m_PersistentCalls:
+        m_Calls: []
+    PrefabGroupChangeUE:
+      m_PersistentCalls:
+        m_Calls: []

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: b3202e1f279fb2d4297c3609e8292aaa
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - InactiveSelectionTexture: {fileID: 2800000, guid: 9c0b1fd70f8b31245aed3597ff557080,
+      type: 3}
+  - ActiveSelectionTexture: {fileID: 2800000, guid: 101f9d0068e59a64aa820ba32c374be7,
+      type: 3}
+  - InstructionLeft: {fileID: 2800000, guid: 5eff63ef5b86bf94192f09926bf4398f, type: 3}
+  - InstructionRight: {fileID: 2800000, guid: 60639e9867549f944b1293a230aedf2b, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
