@@ -12,6 +12,11 @@ public class CameraFollowShip : MonoBehaviour
     [SerializeField] private ButtonController buttonControllerScript;
     private Vector3 velocity = Vector3.zero;
 
+    private Vector3 startPos;
+
+    [SerializeField] private Vector3 ShipSelectionRotation = new Vector3(0, -135, 0);
+    [SerializeField] private Vector3 ShipPlayRotation = new Vector3(30,30, 0);
+
     [Serializable]
     public struct StatinoaryOffsetCameraX
     {
@@ -35,9 +40,12 @@ public class CameraFollowShip : MonoBehaviour
 
     private void Start()
     {
+        ShipSelectionRotation = transform.rotation.eulerAngles;
+        ShipPlayRotation = transform.rotation.eulerAngles;
+        startPos = transform.position;
         if (!buttonControllerScript.playIsClicked)
         {
-            transform.eulerAngles = new Vector3(0, -135, 0);
+            transform.eulerAngles = ShipSelectionRotation;
         }
     }
     private void FixedUpdate()
@@ -55,7 +63,7 @@ public class CameraFollowShip : MonoBehaviour
         if (buttonControllerScript.playIsClicked)
         {
             target = buttonControllerScript.selectedShipToPlay;
-            transform.eulerAngles = new Vector3(30, 30, 0);
+            transform.eulerAngles = ShipPlayRotation;
             Vector3 movePosition = target.position + offset;
             transform.position = Vector3.SmoothDamp(transform.position, movePosition, ref velocity, damping);
 
