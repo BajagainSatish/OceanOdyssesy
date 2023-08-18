@@ -12,8 +12,6 @@ public class CameraFollowShip : MonoBehaviour
     [SerializeField] private ButtonController buttonControllerScript;
     private Vector3 velocity = Vector3.zero;
 
-    private Vector3 startPos;
-
     [SerializeField] private Vector3 ShipSelectionRotation = new Vector3(0, -135, 0);
     [SerializeField] private Vector3 ShipPlayRotation = new Vector3(30,30, 0);
 
@@ -40,9 +38,6 @@ public class CameraFollowShip : MonoBehaviour
 
     private void Start()
     {
-        ShipSelectionRotation = transform.rotation.eulerAngles;
-        ShipPlayRotation = transform.rotation.eulerAngles;
-        startPos = transform.position;
         if (!buttonControllerScript.playIsClicked)
         {
             transform.eulerAngles = ShipSelectionRotation;

@@ -14,6 +14,7 @@ Material:
   m_ValidKeywords:
   - _CAUSTICS
   - _ENVIRONMENTREFLECTIONS_OFF
+  - _FOAM
   - _NORMALMAP
   - _RECEIVE_SHADOWS_OFF
   - _REFRACTION
@@ -149,11 +150,11 @@ Material:
     - _EnvironmentReflectionsOn: 0
     - _FlatShadingOn: 0
     - _FlowSpeed: 1
-    - _FoamOn: 0
+    - _FoamOn: 1
     - _FoamOpacity: 0.253
     - _FoamSize: 0.01
     - _FoamSpeed: 0.030000014
-    - _FoamTiling: 0.16999991
+    - _FoamTiling: 0.36999992
     - _FoamWaveMask: 0
     - _FoamWaveMaskExp: 1
     - _GlossMapScale: 0
@@ -179,8 +180,8 @@ Material:
     - _NormalMap: 1
     - _NormalMapOn: 1
     - _NormalSpeed: 0.2
-    - _NormalStrength: 0.267
-    - _NormalTiling: 1.0099993
+    - _NormalStrength: 0.253
+    - _NormalTiling: 0.85999954
     - _OcclusionStrength: 1
     - _PlanarReflectionsEnabled: 0
     - _PlanarReflectionsParams: 0
@@ -234,11 +235,11 @@ Material:
     - _Texture_IntersectionOn: 1
     - _Tiling: 0.5
     - _Translucency: 0
-    - _TranslucencyCurvatureMask: 0.431
-    - _TranslucencyExp: 11.3
+    - _TranslucencyCurvatureMask: 0.203
+    - _TranslucencyExp: 5.6
     - _TranslucencyOn: 0
     - _TranslucencyReflectionMask: 0
-    - _TranslucencyStrength: 2.9
+    - _TranslucencyStrength: 3
     - _UnderwaterRefractionOffset: 0.2
     - _UnderwaterSurfaceSmoothness: 0.8
     - _VertexColorDepth: 0
@@ -263,7 +264,7 @@ Material:
     - _Direction: {r: 1, g: 1, b: 0, a: 0}
     - _DistanceNormalsFadeDist: {r: 300, g: 0.25, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 1.1353014, g: 1.1353014, b: 1.1353014, a: 0.09803922}
+    - _FoamColor: {r: 1.0592737, g: 1.0592737, b: 1.0592737, a: 0.09803922}
     - _HorizonColor: {r: 0.2352941, g: 0.9051294, b: 1, a: 1}
     - _IntersectionColor: {r: 1.3555158, g: 1.3555158, b: 1.3555158, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}

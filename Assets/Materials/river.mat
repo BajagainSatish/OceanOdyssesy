@@ -126,20 +126,20 @@ Material:
     - _Blend: 0
     - _BumpScale: 1
     - _CROSSPAN_INTERSECTIONOn: 1
-    - _CausticsBrightness: 6.78
-    - _CausticsDistortion: 0.132
+    - _CausticsBrightness: 8.43
+    - _CausticsDistortion: 0.203
     - _CausticsOn: 1
     - _CausticsSpeed: 0.030000014
-    - _CausticsTiling: 0.18000004
+    - _CausticsTiling: 0.38000003
     - _CrossPan_IntersectionOn: 0
     - _Cull: 0
     - _Cutoff: 0.5
     - _Depth: 5.01
     - _DepthExp: 1
-    - _DepthHorizontal: 1.73
+    - _DepthHorizontal: 8
     - _DepthMode: 0
     - _DepthTexture: 1
-    - _DepthVertical: 3.2
+    - _DepthVertical: 2.2
     - _DisableDepthTexture: 0
     - _DistanceNormalsOn: 0
     - _DistanceNormalsTiling: 0.25
@@ -169,7 +169,7 @@ Material:
     - _IntersectionSource: 0
     - _IntersectionSpeed: 0.050000004
     - _IntersectionStyle: 1
-    - _IntersectionTiling: 0.5499998
+    - _IntersectionTiling: 0.33999974
     - _IntersectionWaveDist: 33.28
     - _LightingMode: 0
     - _LightingOn: 0
@@ -212,15 +212,15 @@ Material:
     - _SimpleLighting: 1
     - _SlopeFoam: 1
     - _SlopeSpeed: 1
-    - _SlopeStretching: 0.245
-    - _SlopeThreshold: 0.236
+    - _SlopeStretching: 1
+    - _SlopeThreshold: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SparkleIntensity: 0
     - _SparkleSize: 0.755
     - _SpecularHighlights: 1
     - _SpecularReflectionsOn: 0
-    - _Speed: 20
+    - _Speed: 10
     - _SrcBlend: 1
     - _SunReflectionDistortion: 0.57
     - _SunReflectionPerturbance: 0.548
@@ -257,17 +257,17 @@ Material:
     - _ZClip: 1
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 0, g: 0.16451614, b: 0.34, a: 1}
+    - _BaseColor: {r: 0.007843138, g: 0.19215687, b: 0.29411766, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _DepthMapBounds: {r: -402.3, g: -459.43, b: 0.0012693577, a: 0}
-    - _Direction: {r: 0, g: 1, b: 0, a: 0}
+    - _Direction: {r: -1, g: 0, b: 0, a: 0}
     - _DistanceNormalsFadeDist: {r: 300, g: 0.25, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1.1353014, g: 1.1353014, b: 1.1353014, a: 0.09803922}
     - _HorizonColor: {r: 0.2352941, g: 0.9051294, b: 1, a: 1}
     - _IntersectionColor: {r: 1.3555158, g: 1.3555158, b: 1.3555158, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShallowColor: {r: 0, g: 0.8446603, b: 1, a: 0.39215687}
+    - _ShallowColor: {r: 0, g: 1, b: 0.9137255, a: 0.5254902}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _WaterColor: {r: 0.21176466, g: 0.6745098, b: 1, a: 1}
     - _WaterShallowColor: {r: 0, g: 0.9394503, b: 1, a: 1}
