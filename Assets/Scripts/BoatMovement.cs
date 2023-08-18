@@ -6,7 +6,7 @@ public class BoatMovement : MonoBehaviour
     [SerializeField] private float maxSpeed = 50f;
     [SerializeField] private float drag = 10f;
     [SerializeField] private float rotationSpeed = 0.5f;
-    [SerializeField] private Joystick joystick;
+    public Joystick joystick;
 
     private Rigidbody _rigidbody;
     private bool movingForward;
@@ -14,7 +14,7 @@ public class BoatMovement : MonoBehaviour
     private float moveVertical;
     private Quaternion targetRotation;
 
-    [SerializeField] private ButtonController buttonControllerScript;
+    public GameController gameController;
 
     private void Awake()
     {
@@ -23,7 +23,7 @@ public class BoatMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (buttonControllerScript.playIsClicked)
+        if (gameController.playIsClicked)
         {
             moveHorizontal = joystick.Horizontal;
             moveVertical = joystick.Vertical;
