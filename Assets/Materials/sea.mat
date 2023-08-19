@@ -11,22 +11,22 @@ Material:
   m_Shader: {fileID: 482279110045391116, guid: d7b0192b9bf19c949900035fa781fdc4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - ADVANCED_LIGHTING
   - _CAUSTICS
+  - _CROSSPAN_INTERSECTION
+  - _DEPTHEXP_ON
+  - _DEPTH_TEX
   - _ENVIRONMENTREFLECTIONS_OFF
   - _FOAM
   - _NORMALMAP
   - _RECEIVE_SHADOWS_OFF
   - _REFRACTION
   - _SHARP_INERSECTION
+  - _SIMPLE_LIGHTING
   - _UNLIT
   - _WAVES
-  m_InvalidKeywords:
-  - ADVANCED_LIGHTING
-  - _CROSSPAN_INTERSECTION
-  - _DEPTHEXP_ON
-  - _DEPTH_TEX
-  - _SIMPLE_LIGHTING
   - _WORLDSPACEUV_ON
   - _ZCLIP_ON
   - _ZWRITE_ON
