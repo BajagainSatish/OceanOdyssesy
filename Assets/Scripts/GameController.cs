@@ -1,103 +1,141 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public static int totalBoatCount = 7;
-    public GameObject actualShipsPrefab;
-    public Transform selectedShipToPlay;
-    public Transform[] Ships = new Transform[totalBoatCount];//an array of 7 ships
+    [SerializeField] private GameObject ShipsPrefab;
+    private GameObject shipsPrefabInstance;
+    private int totalBoatCount;
+    private Ship[] ships;
+    private BoatMovement[] shipMovers;
+    private int selectedShipToPlay;
 
-    [SerializeField] private GameObject leftButton;
-    [SerializeField] private GameObject rightButton;
-    [SerializeField] private GameObject playButton;
-    [SerializeField] private GameObject resetButton;
-    [SerializeField] private GameObject joystick;
-    public bool playIsClicked;
-    private GameObject myShipPrefab;
+    
+    private CameraFollower cameraFollower;
+    private SmoothMover cameraMover;
+    [SerializeField] private Vector3 cameraStartPosition;
+    [SerializeField] private Vector3 cameraStartRotation;
 
-    private void Awake()
-    {
-        myShipPrefab = Instantiate(actualShipsPrefab);
-        for (int i = 0; i < totalBoatCount; i++)
-        {
-            Ships[i] = myShipPrefab.transform.GetChild(i);
-            Ships[i].GetComponent<BoatMovement>().gameController = this;
-            Ships[i].GetComponent<BoatMovement>().joystick = joystick.GetComponent<FixedJoystick>();
-        }
-    }
+
+    [SerializeField] private ObjectMarkerManager objectMarkerManager;
+    [SerializeField] FixedJoystick joystick;
+
+    [SerializeField] private Canvas selectionModeCanvas;
+    [SerializeField] private Canvas objectMarkerCanvas;
+    [SerializeField] private Canvas playModeCanvas;
+
+    bool IsInPlayMode;  //is the current setup for playmode
 
     private void Start()
     {
-        joystick.SetActive(false);
-        resetButton.SetActive(false);
-        playIsClicked = false;
-        Ships[0].gameObject.SetActive(true);
-        Ships[0].GetChild(3).gameObject.SetActive(false);
-        for (int i = 1; i < totalBoatCount; i++)
-        {
-            Ships[i].gameObject.SetActive(false);
-            Ships[i].GetChild(3).gameObject.SetActive(false);//disable particle effect for all ships
-        }
+        SetUpInitialScene();
     }
+
+    private void SetUpInitialScene()
+    {
+        IsInPlayMode = false;
+        SetUpShips();
+        SetUpUI();
+        SetUpCamera();
+        MoveCameraToSelectedShip();
+    }
+
+    private void SetUpShips()
+    {
+        shipsPrefabInstance = Instantiate(ShipsPrefab);
+        totalBoatCount = shipsPrefabInstance.transform.childCount;
+
+        Transform[] shipObjects = new Transform[totalBoatCount];
+        ships = new Ship[totalBoatCount];
+        shipMovers = new BoatMovement[totalBoatCount];
+
+        for (int i = 0; i < totalBoatCount; i++)
+        {
+            shipObjects[i] = shipsPrefabInstance.transform.GetChild(i);
+            ships[i] = shipObjects[i].GetComponent<Ship>() as Ship;
+            shipMovers[i] = shipObjects[i].GetComponent<BoatMovement>() as BoatMovement;
+            shipMovers[i].joystickInput = joystick;
+            shipMovers[i].canMove = false;  //dont move any ship
+        }
+        selectedShipToPlay = 0;  //first ship is by default selected
+    }
+
+    private void SetUpCamera()
+    {
+        Camera mainCam = Camera.main;
+        if (mainCam.GetComponent<CameraFollower>() == null)
+            mainCam.AddComponent<CameraFollower>();
+        if (mainCam.GetComponent<SmoothMover>() == null)
+            mainCam.AddComponent<SmoothMover>();
+        cameraFollower = mainCam.GetComponent<CameraFollower>();
+        cameraMover = mainCam.GetComponent<SmoothMover>();
+        mainCam.transform.position = cameraStartPosition;
+        mainCam.transform.eulerAngles = cameraStartRotation;
+        cameraFollower.enabled = false;  //dont follow any ship/target 
+    }
+
+    private void SetUpUI()
+    {
+        selectionModeCanvas.gameObject.SetActive(true);
+        objectMarkerCanvas.gameObject.SetActive(true);
+        playModeCanvas.gameObject.SetActive(false);
+        objectMarkerManager.objectMarkerCanvas = objectMarkerCanvas;
+    }
+
+    private void MoveCameraToSelectedShip()
+    {
+        
+        Ship selection = ships[selectedShipToPlay];
+        if (IsInPlayMode)
+        {
+            cameraFollower.target = selection.camTarget;
+            cameraFollower.offset = selection.currentCameraOffset;
+            cameraFollower.damping = selection.cameraDamping;
+            Camera.main.transform.eulerAngles = selection.currentCameraRotation;
+        }
+        else
+            cameraMover.MoveTo(selection.camTarget.position + selection.currentCameraOffset);
+    }
+
+    private void MoveSelectedShip()
+    {
+        foreach(BoatMovement mover in shipMovers)
+            mover.canMove = false;
+        shipMovers[selectedShipToPlay].canMove = true;
+    }
+
     public void OnClickLeft()
     {
-        for (int i = 1; i < totalBoatCount; i++)//omit the first boat
-        {
-            if (Ships[i].gameObject.activeInHierarchy == true)
-            {
-                Ships[i].gameObject.SetActive(false);
-                Ships[i - 1].gameObject.SetActive(true);
-                return;
-            }
-        }
+        selectedShipToPlay--;
+        if(selectedShipToPlay < 0)
+            selectedShipToPlay = totalBoatCount - 1;
+        MoveCameraToSelectedShip();
+        if(IsInPlayMode)
+            MoveSelectedShip();
     }
     public void OnClickRight()
     {
-        for (int i = 0; i < totalBoatCount - 1; i++)//omit the last boat
-        {
-            if (Ships[i].gameObject.activeInHierarchy == true)
-            {
-                Ships[i].gameObject.SetActive(false);
-                Ships[i + 1].gameObject.SetActive(true);
-                return;
-            }
-        }
+        selectedShipToPlay = (selectedShipToPlay + 1) % totalBoatCount;
+        MoveCameraToSelectedShip();
+        if (IsInPlayMode)
+            MoveSelectedShip();
     }
 
     public void OnClickPlay()
     {
-        leftButton.SetActive(false);
-        rightButton.SetActive(false);
-        playButton.SetActive(false);
-        joystick.SetActive(true);
-        resetButton.SetActive(true);
-        selectedShipToPlay = ActiveShip();
-        selectedShipToPlay.GetChild(3).gameObject.SetActive(true);
-        playIsClicked = true;
+        IsInPlayMode = true;
+        playModeCanvas.gameObject.SetActive(true);
+        selectionModeCanvas.gameObject.SetActive(false);
+        objectMarkerCanvas.gameObject.SetActive(false);
+
+        cameraFollower.enabled = true;
+        MoveCameraToSelectedShip();
+        MoveSelectedShip();
     }
 
     public void OnClickReset()
     {
-        Destroy(myShipPrefab);
-        Awake();
-        leftButton.SetActive(true);
-        rightButton.SetActive(true);
-        playButton.SetActive(true);
-        Start();
-    }
-
-    private Transform ActiveShip()
-    {
-        //Return the one ship that is currently active
-        for (int i = 0; i < totalBoatCount; i++)
-        {
-            if (Ships[i].gameObject.activeInHierarchy)
-            {
-                return Ships[i].transform;
-            }
-        }
-        return null;
+        Destroy(shipsPrefabInstance);
+        SetUpInitialScene();
     }
 }
