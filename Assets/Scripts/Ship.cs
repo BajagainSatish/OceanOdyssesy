@@ -1,6 +1,7 @@
 using UnityEngine;
 public class Ship : MonoBehaviour
 {
+    public int id;
     [SerializeField] private Vector3 defaultCameraOffset;
     [SerializeField] private Vector3 defaultCameraRotation;
 
@@ -20,5 +21,11 @@ public class Ship : MonoBehaviour
     {
         currentCameraOffset = defaultCameraOffset;
         currentCameraRotation = defaultCameraRotation;
+    }
+
+    public void SetFromCurrentCameraPosition()
+    {
+        currentCameraOffset = Camera.main.transform.position - camTarget.position;
+        currentCameraRotation = Camera.main.transform.eulerAngles;
     }
 }

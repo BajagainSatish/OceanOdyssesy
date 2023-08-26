@@ -14,8 +14,10 @@ public class ObjectMarkerManager : MonoBehaviour
     void Start()
     {
         markers = FindObjectsByType<ObjectMarker>(FindObjectsSortMode.None);
-        foreach(ObjectMarker marker in markers)
+        foreach (ObjectMarker marker in markers)
+        {
             marker.marker.transform.SetParent(objectMarkerCanvas.transform);
+        }
 
         StartCoroutine(OnUpdate());
     }

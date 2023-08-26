@@ -12,8 +12,11 @@ public class CameraZoom : MonoBehaviour
 
     private float previousBetweenFingerDistance;  //holds distance between two fingers used for zooming in previous frame
 
+    public bool isZooming;
+
     private void Update()
     {
+        isZooming = false;
         if (Input.touchCount == 2)
         {
             Touch touch1 = Input.GetTouch(0);
@@ -24,7 +27,10 @@ public class CameraZoom : MonoBehaviour
             }
 
             else
+            {
                 HandleCameraZoom(touch1, touch2);
+                isZooming = true;
+            }
         }
     }
     private void HandleCameraZoom(Touch touch1, Touch touch2)

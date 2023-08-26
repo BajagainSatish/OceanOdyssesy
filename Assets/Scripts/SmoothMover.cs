@@ -4,7 +4,7 @@ using UnityEngine;
 public class SmoothMover : MonoBehaviour
 {
     public float moveThreshold = 0.05f;
-    public float damping = 1.0f;
+    public float damping = 0.5f;
     private Vector3 velocity;
 
     public void MoveTo(Vector3 newpos)
