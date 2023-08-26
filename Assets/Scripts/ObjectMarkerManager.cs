@@ -51,7 +51,7 @@ public class ObjectMarkerManager : MonoBehaviour
             Vector3 camTargetVector = (marker.target.position - mainCamera.transform.position);
             float camDistance = camTargetVector.magnitude;
             float camTargetDir = Vector3.Dot(camTargetVector, mainCamera.transform.forward);
-            if (camDistance > marker.showDistanceMin && camDistance < marker.showDistanceMax)
+            if ((camDistance > marker.showDistanceMin && camDistance < marker.showDistanceMax) && camTargetDir > 0f)
                 marker.PlaceMarker();
             else
                 marker.DisableMarker();
