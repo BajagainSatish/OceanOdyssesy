@@ -140,6 +140,7 @@ public class GameController : MonoBehaviour
     }
     private void MoveSelectedShip()
     {
+        DisableMovementsForShips();
         shipMovers[selectedShipToPlay].canMove = true;
     }
 
