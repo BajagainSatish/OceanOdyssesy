@@ -38,6 +38,7 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         SetCameraComponents();
+        SetUpShips();
         SetUpInitialScene();
     }
 
@@ -66,7 +67,7 @@ public class GameController : MonoBehaviour
     private void SetUpInitialScene()
     {
         IsInPlayMode = false;
-        SetUpShips();
+        DisableMovementsForShips();
         SetUpUI();
         SetUpCamera();
         MoveCameraToSelectedShip();
@@ -95,8 +96,6 @@ public class GameController : MonoBehaviour
 
     private void SetUpCamera()
     {
-        mainCam.transform.position = cameraStartPosition;
-        mainCam.transform.eulerAngles = cameraStartRotation;
         cameraFollower.enabled = false;  //dont follow any ship/target 
         cameraRotateHandler.enabled = false;  //first disable rotation //camera panning and roation have same gesture control so only one can be enabled at a time
         cameraZoomHandler.enabled = true;
@@ -109,6 +108,7 @@ public class GameController : MonoBehaviour
         objectMarkerCanvas.gameObject.SetActive(true);
         playModeCanvas.gameObject.SetActive(false);
         objectMarkerManager.objectMarkerCanvas = objectMarkerCanvas;
+        objectMarkerManager.FindMarkersInScene();
         objectMarkerManager.disableUpdate = false;
         OnClickCameraPanning();
     }
@@ -133,10 +133,13 @@ public class GameController : MonoBehaviour
         shipIsInFocus = true;
     }
 
+    private void DisableMovementsForShips()
+    {
+        foreach (BoatMovement mover in shipMovers)
+            mover.canMove = false;
+    }
     private void MoveSelectedShip()
     {
-        foreach(BoatMovement mover in shipMovers)
-            mover.canMove = false;
         shipMovers[selectedShipToPlay].canMove = true;
     }
 
@@ -175,10 +178,9 @@ public class GameController : MonoBehaviour
 
     public void OnClickReset()
     {
-        ClearObjectMarkers();
-        Destroy(shipsPrefabInstance);
+        //ClearObjectMarkers();
+        //Destroy(shipsPrefabInstance);
         SetUpInitialScene();
-        objectMarkerManager.FindMarkersInScene();
     }
 
     private void ClearObjectMarkers()

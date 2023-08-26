@@ -12,7 +12,7 @@ public class CameraRotateAround : MonoBehaviour
     [Range(0f, 1f)][SerializeField] private float touchAreaMinY = 0.5f;
     [Range(0f, 1f)][SerializeField] private float touchAreaMaxY = 1f;
 
-    private float rotateFactor = 10f;
+    [SerializeField] private float rotationSpeed = 10f;
 
     private Touch prevTouch;
     private int prevTouchCount = 0;
@@ -78,7 +78,7 @@ public class CameraRotateAround : MonoBehaviour
 
         //use vertical delta movement to move camera around aixs parallel to midaxis of the screen
         //and passing through target point
-        float verticalMoveAngle = -deltaPos.y * Time.deltaTime * rotateFactor;
+        float verticalMoveAngle = -deltaPos.y * Time.deltaTime * rotationSpeed;
         if (CheckVerticalRotationLimits(verticalMoveAngle))
         {
             Vector3 verticalRotationAxisStart = Camera.main.ScreenToWorldPoint(midAxisStart);
@@ -89,7 +89,7 @@ public class CameraRotateAround : MonoBehaviour
 
         //use horizantal delta movement to move camera around world-up axis
         //and passing through target point
-        float horizantalMoveAngle = -deltaPos.x * Time.deltaTime * rotateFactor;
+        float horizantalMoveAngle = -deltaPos.x * Time.deltaTime * rotationSpeed;
         transform.RotateAround(target.position, Vector3.up, horizantalMoveAngle);
 
         transform.LookAt(target);

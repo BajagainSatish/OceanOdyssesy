@@ -12,9 +12,9 @@ public class ObjectMarkerManager : MonoBehaviour
 
     Camera mainCamera;
 
-    void Awake()
+    void Start()
     {
-        FindMarkersInScene();
+        mainCamera = Camera.main;
         StartCoroutine(OnUpdate());
     }
 
@@ -33,7 +33,6 @@ public class ObjectMarkerManager : MonoBehaviour
         {
             if (!disableUpdate)
             {
-                mainCamera = Camera.main;
                 UpdateMarkers();
             }
             yield return new WaitForSeconds(updateInterval);
@@ -42,9 +41,16 @@ public class ObjectMarkerManager : MonoBehaviour
 
     void UpdateMarkers()
     {
+        if (markers == null)
+            return;
         foreach (ObjectMarker marker in markers)
         {
-            float camDistance = (mainCamera.transform.position - marker.target.position).magnitude;
+            if (marker.target == null)
+                continue;
+
+            Vector3 camTargetVector = (marker.target.position - mainCamera.transform.position);
+            float camDistance = camTargetVector.magnitude;
+            float camTargetDir = Vector3.Dot(camTargetVector, mainCamera.transform.forward);
             if (camDistance > marker.showDistanceMin && camDistance < marker.showDistanceMax)
                 marker.PlaceMarker();
             else
