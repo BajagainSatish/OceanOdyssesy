@@ -6,7 +6,7 @@ public class Ship : MonoBehaviour
     [SerializeField] private Vector3 defaultCameraRotation;
 
     [HideInInspector] public Vector3 currentCameraOffset;
-    [HideInInspector] public Vector3 currentCameraRotation;
+    [HideInInspector] public Quaternion currentCameraRotation;
     public float cameraDamping;
     public Transform camTarget;
 
@@ -20,12 +20,12 @@ public class Ship : MonoBehaviour
     public void SetDefaultCameraTargetPosition()
     {
         currentCameraOffset = defaultCameraOffset;
-        currentCameraRotation = defaultCameraRotation;
+        currentCameraRotation = Quaternion.Euler(defaultCameraRotation);
     }
 
     public void SetFromCurrentCameraPosition()
     {
         currentCameraOffset = Camera.main.transform.position - camTarget.position;
-        currentCameraRotation = Camera.main.transform.eulerAngles;
+        currentCameraRotation = Camera.main.transform.rotation;
     }
 }

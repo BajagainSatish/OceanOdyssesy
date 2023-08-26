@@ -592,7 +592,7 @@ MonoBehaviour:
   defaultCameraOffset: {x: 7, y: 5, z: -7}
   defaultCameraRotation: {x: 24, y: -40, z: 0}
   currentCameraOffset: {x: 0, y: 0, z: 0}
-  currentCameraRotation: {x: 0, y: 0, z: 0}
+  currentCameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.3
   camTarget: {fileID: 1038345266245568809}
 --- !u!114 &6923152274272787674
@@ -6823,8 +6823,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2201829539989042698}
   m_LocalRotation: {x: -0, y: -0.9834136, z: -0, w: -0.18137726}
-  m_LocalPosition: {x: 0, y: 0, z: -624.6692}
-  m_LocalScale: {x: 359.99997, y: 359.99997, z: 359.99997}
+  m_LocalPosition: {x: 0, y: 0, z: -559.27454}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1038345266245568809}
@@ -6832,8 +6832,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -1124.5472, y: 9359.9}
-  m_SizeDelta: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1149.5189, y: 9359.9}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6792163995179700878
 CanvasRenderer:
@@ -6987,8 +6987,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2282177063912393682}
   m_LocalRotation: {x: -0, y: 0.38671103, z: -0, w: 0.922201}
-  m_LocalPosition: {x: 0, y: 0, z: -659.973}
-  m_LocalScale: {x: 359.99997, y: 359.99997, z: 359.99997}
+  m_LocalPosition: {x: 0, y: 0, z: -709.03687}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3508633314938963686}
@@ -6996,8 +6996,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 810.90906, y: 9360.29}
-  m_SizeDelta: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 760.9813, y: 9360.29}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4800566609857220159
 CanvasRenderer:
@@ -7120,8 +7120,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2308429265615919481}
   m_LocalRotation: {x: -0, y: -0.46174863, z: -0, w: 0.8870109}
-  m_LocalPosition: {x: 0, y: 0, z: 1092.5415}
-  m_LocalScale: {x: 449.99985, y: 449.99997, z: 449.99985}
+  m_LocalPosition: {x: 0, y: 0, z: 1042.3535}
+  m_LocalScale: {x: 1.2499998, y: 1.2499999, z: 1.2499998}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4847564301628739366}
@@ -7129,8 +7129,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 781.7911, y: 11694.75}
-  m_SizeDelta: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 853.46716, y: 11694.75}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9212215236427411105
 CanvasRenderer:
@@ -12680,7 +12680,7 @@ Transform:
   - {fileID: 1038345266245568809}
   - {fileID: 7704713508115543675}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3363170238513863588
 GameObject:
@@ -18153,7 +18153,7 @@ MonoBehaviour:
   defaultCameraOffset: {x: 7, y: 5, z: -7}
   defaultCameraRotation: {x: 24, y: -40, z: 0}
   currentCameraOffset: {x: 0, y: 0, z: 0}
-  currentCameraRotation: {x: 0, y: 0, z: 0}
+  currentCameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.5
   camTarget: {fileID: 0}
 --- !u!114 &5183298400268508506
@@ -18338,7 +18338,7 @@ MonoBehaviour:
   defaultCameraOffset: {x: 7, y: 5, z: -7}
   defaultCameraRotation: {x: 24, y: -40, z: 0}
   currentCameraOffset: {x: 0, y: 0, z: 0}
-  currentCameraRotation: {x: 0, y: 0, z: 0}
+  currentCameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.5
   camTarget: {fileID: 0}
 --- !u!114 &4138821484774615771
@@ -23711,7 +23711,7 @@ MonoBehaviour:
   defaultCameraOffset: {x: 5, y: 3, z: -5}
   defaultCameraRotation: {x: 24, y: -40, z: 0}
   currentCameraOffset: {x: 0, y: 0, z: 0}
-  currentCameraRotation: {x: 0, y: 0, z: 0}
+  currentCameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.5
   camTarget: {fileID: 7704713508115543675}
 --- !u!114 &5624289984913758631
@@ -24862,7 +24862,7 @@ MonoBehaviour:
   defaultCameraOffset: {x: 6, y: 5, z: -6}
   defaultCameraRotation: {x: 24, y: -40, z: 0}
   currentCameraOffset: {x: 0, y: 0, z: 0}
-  currentCameraRotation: {x: 0, y: 0, z: 0}
+  currentCameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.3
   camTarget: {fileID: 0}
 --- !u!114 &6421432244377791729
@@ -30556,8 +30556,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6380911964003481789}
   m_LocalRotation: {x: -0, y: -0.43601656, z: -0, w: 0.8999387}
-  m_LocalPosition: {x: 0, y: 0, z: 1018.5645}
-  m_LocalScale: {x: 359.99997, y: 360, z: 359.99997}
+  m_LocalPosition: {x: 0, y: 0, z: 975.18}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4464446189787509179}
@@ -30565,8 +30565,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 735.34955, y: 9349.3}
-  m_SizeDelta: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 790.2839, y: 9349.3}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4321083193262700502
 CanvasRenderer:
@@ -31255,7 +31255,7 @@ MonoBehaviour:
   defaultCameraOffset: {x: 7, y: 5, z: -7}
   defaultCameraRotation: {x: 24, y: -40, z: 0}
   currentCameraOffset: {x: 0, y: 0, z: 0}
-  currentCameraRotation: {x: 0, y: 0, z: 0}
+  currentCameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.5
   camTarget: {fileID: 0}
 --- !u!114 &8010163540025876738
@@ -36971,8 +36971,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7977721894166095439}
   m_LocalRotation: {x: -0, y: -0.86689675, z: -0, w: 0.49848783}
-  m_LocalPosition: {x: 0, y: 0, z: 781.96924}
-  m_LocalScale: {x: 359.99982, y: 359.99997, z: 359.99982}
+  m_LocalPosition: {x: 0, y: 0, z: 817.1813}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1388464118065523712}
@@ -36980,8 +36980,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -687.6937, y: 9355.8}
-  m_SizeDelta: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -627.19495, y: 9355.8}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8556217956125526115
 CanvasRenderer:
@@ -42051,8 +42051,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8200463286127871254}
   m_LocalRotation: {x: -0, y: -0.7460574, z: -0, w: 0.66588163}
-  m_LocalPosition: {x: 0, y: 0, z: 1014.88367}
-  m_LocalScale: {x: 360, y: 359.99997, z: 360}
+  m_LocalPosition: {x: 0, y: 0, z: 1022.8079}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7704713508115543675}
@@ -42060,8 +42060,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -50.88562, y: 9358.3}
-  m_SizeDelta: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 18.664795, y: 9358.3}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8309917379238812381
 CanvasRenderer:
@@ -57120,8 +57120,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8812540304341576471}
   m_LocalRotation: {x: -0, y: 0.10799937, z: -0, w: 0.994151}
-  m_LocalPosition: {x: 0, y: 0, z: -415.993}
-  m_LocalScale: {x: 359.99994, y: 359.99997, z: 359.99994}
+  m_LocalPosition: {x: 0, y: 0, z: -484.36026}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 180768072379651656}
@@ -57129,8 +57129,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1000.71576, y: 9355.4}
-  m_SizeDelta: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 985.6841, y: 9355.4}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4028957344453026210
 CanvasRenderer:
@@ -57480,7 +57480,7 @@ MonoBehaviour:
   defaultCameraOffset: {x: 5, y: 3, z: -5}
   defaultCameraRotation: {x: 24, y: -40, z: 0}
   currentCameraOffset: {x: 0, y: 0, z: 0}
-  currentCameraRotation: {x: 0, y: 0, z: 0}
+  currentCameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.1
   camTarget: {fileID: 1388464118065523712}
 --- !u!114 &3875211705487752780

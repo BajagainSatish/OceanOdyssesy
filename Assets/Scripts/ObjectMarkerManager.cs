@@ -6,28 +6,36 @@ public class ObjectMarkerManager : MonoBehaviour
 {
     public Canvas objectMarkerCanvas;
     ObjectMarker[] markers;
+    public bool disableUpdate = true;
 
     [SerializeField]float updateInterval = 0.02f;
 
     Camera mainCamera;
 
-    void Start()
+    void Awake()
+    {
+        FindMarkersInScene();
+        StartCoroutine(OnUpdate());
+    }
+
+    public void FindMarkersInScene()
     {
         markers = FindObjectsByType<ObjectMarker>(FindObjectsSortMode.None);
         foreach (ObjectMarker marker in markers)
         {
             marker.marker.transform.SetParent(objectMarkerCanvas.transform);
         }
-
-        StartCoroutine(OnUpdate());
     }
 
     IEnumerator OnUpdate()
     {
         while (true) 
         {
-            mainCamera = Camera.main;
-            UpdateMarkers();
+            if (!disableUpdate)
+            {
+                mainCamera = Camera.main;
+                UpdateMarkers();
+            }
             yield return new WaitForSeconds(updateInterval);
         }
     }

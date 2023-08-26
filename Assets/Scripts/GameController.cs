@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ public class GameController : MonoBehaviour
 {
     [SerializeField] private GameObject ShipsPrefab;
     private GameObject shipsPrefabInstance;
-    private int totalBoatCount;
+    [SerializeField] private int totalBoatCount;
     private Ship[] ships;
     private BoatMovement[] shipMovers;
     private int selectedShipToPlay;
@@ -14,7 +15,7 @@ public class GameController : MonoBehaviour
 
     Camera mainCam;
     private CameraFollower cameraFollower;
-    private SmoothMover cameraMover;
+    private SmoothObjectMover cameraMover;
     private CameraRotateAround cameraRotateHandler;
     private CameraZoom cameraZoomHandler;
     private CameraPanning cameraPanningHandler;
@@ -45,8 +46,8 @@ public class GameController : MonoBehaviour
         mainCam = Camera.main;
         if (mainCam.GetComponent<CameraFollower>() == null)
             mainCam.AddComponent<CameraFollower>();
-        if (mainCam.GetComponent<SmoothMover>() == null)
-            mainCam.AddComponent<SmoothMover>();
+        if (mainCam.GetComponent<SmoothObjectMover>() == null)
+            mainCam.AddComponent<SmoothObjectMover>();
         if (mainCam.GetComponent<CameraRotateAround>() == null)
             mainCam.AddComponent<CameraRotateAround>();
         if (mainCam.GetComponent<CameraZoom>() == null)
@@ -54,7 +55,7 @@ public class GameController : MonoBehaviour
         if (mainCam.GetComponent<CameraPanning>() == null)
             mainCam.AddComponent<CameraPanning>();
         cameraFollower = mainCam.GetComponent<CameraFollower>();
-        cameraMover = mainCam.GetComponent<SmoothMover>();
+        cameraMover = mainCam.GetComponent<SmoothObjectMover>();
         cameraRotateHandler = mainCam.GetComponent<CameraRotateAround>();
         cameraZoomHandler = mainCam.GetComponent<CameraZoom>();
         cameraPanningHandler = mainCam.GetComponent<CameraPanning>();
@@ -74,7 +75,7 @@ public class GameController : MonoBehaviour
     private void SetUpShips()
     {
         shipsPrefabInstance = Instantiate(ShipsPrefab);
-        totalBoatCount = shipsPrefabInstance.transform.childCount;
+        //totalBoatCount = shipsPrefabInstance.transform.childCount;
 
         Transform[] shipObjects = new Transform[totalBoatCount];
         ships = new Ship[totalBoatCount];
@@ -108,6 +109,7 @@ public class GameController : MonoBehaviour
         objectMarkerCanvas.gameObject.SetActive(true);
         playModeCanvas.gameObject.SetActive(false);
         objectMarkerManager.objectMarkerCanvas = objectMarkerCanvas;
+        objectMarkerManager.disableUpdate = false;
         OnClickCameraPanning();
     }
 
@@ -120,10 +122,13 @@ public class GameController : MonoBehaviour
             cameraFollower.target = selection.camTarget;
             cameraFollower.offset = selection.currentCameraOffset;
             cameraFollower.damping = selection.cameraDamping;
-            Camera.main.transform.eulerAngles = selection.currentCameraRotation;
+            mainCam.transform.rotation = selection.currentCameraRotation;
         }
         else
+        {
             cameraMover.MoveTo(selection.camTarget.position + selection.currentCameraOffset);
+            cameraMover.RotateTo(selection.currentCameraRotation);
+        }
         dummyCameraTarget.position = selection.camTarget.position;
         shipIsInFocus = true;
     }
@@ -158,6 +163,7 @@ public class GameController : MonoBehaviour
         playModeCanvas.gameObject.SetActive(true);
         selectionModeCanvas.gameObject.SetActive(false);
         objectMarkerCanvas.gameObject.SetActive(false);
+        objectMarkerManager.disableUpdate = true;
 
         cameraFollower.enabled = true;
         cameraRotateHandler.enabled = false;
@@ -169,8 +175,19 @@ public class GameController : MonoBehaviour
 
     public void OnClickReset()
     {
+        ClearObjectMarkers();
         Destroy(shipsPrefabInstance);
         SetUpInitialScene();
+        objectMarkerManager.FindMarkersInScene();
+    }
+
+    private void ClearObjectMarkers()
+    {
+        Transform[] markerObjects = new Transform[objectMarkerCanvas.transform.childCount];
+        for(int i=0; i < markerObjects.Length; i++)
+            markerObjects[i] = objectMarkerCanvas.transform.GetChild(i);
+        for (int i = 0; i < markerObjects.Length; i++)
+            Destroy(markerObjects[i].gameObject);
     }
 
     public void OnClickCameraPanning()
@@ -200,7 +217,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            cameraMover.MoveTo(focusableObject.GetFocusTargetPosition(Camera.main.transform.position));
+            cameraMover.MoveTo(focusableObject.GetFocusTargetPosition(mainCam.transform.position));
+            cameraMover.RotateTo(focusableObject.GetFocusTargetRotation(mainCam.transform));
             shipIsInFocus = false;
         }
     }
