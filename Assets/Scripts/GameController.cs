@@ -119,17 +119,15 @@ public class GameController : MonoBehaviour
         Ship selection = ships[selectedShipToPlay];
         if (IsInPlayMode)
         {
-            cameraFollower.target = selection.camTarget;
-            cameraFollower.offset = selection.currentCameraOffset;
-            cameraFollower.damping = selection.cameraDamping;
-            mainCam.transform.rotation = selection.currentCameraRotation;
+            cameraFollower.target = selection.cameraTarget;  //follow new target
+            mainCam.transform.rotation = selection.cameraTarget.cameraRotation;
         }
         else
         {
-            cameraMover.MoveTo(selection.camTarget.position + selection.currentCameraOffset);
-            cameraMover.RotateTo(selection.currentCameraRotation);
+            cameraMover.MoveTo(selection.cameraTarget.camTarget.position + selection.cameraTarget.cameraOffset);
+            cameraMover.RotateTo(selection.cameraTarget.cameraRotation);
         }
-        dummyCameraTarget.position = selection.camTarget.position;
+        dummyCameraTarget.position = selection.cameraTarget.camTarget.position;
         shipIsInFocus = true;
     }
 
@@ -235,7 +233,7 @@ public class GameController : MonoBehaviour
 
         if(shipIsInFocus)
         {
-            ships[selectedShipToPlay].SetFromCurrentCameraPosition();
+            ships[selectedShipToPlay].cameraTarget.SetFromCurrentCameraPosition();
         }
     }
 }
