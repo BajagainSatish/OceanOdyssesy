@@ -7,13 +7,13 @@ public class FocusableObject : MonoBehaviour
     public Transform target;
     public float onFocusDistance;
 
-    GameController controller;
+    GameController1 controller;
 
     void Start()
     {
         if (target == null)
             target = transform;
-        controller = FindFirstObjectByType<GameController>();
+        controller = FindFirstObjectByType<GameController1>();
     }
 
     public Vector3 GetFocusTargetPosition(Vector3 cameraPos)
