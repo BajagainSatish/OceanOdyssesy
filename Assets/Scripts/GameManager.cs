@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
 
         SetCameraComponents();
         SetUpInitialScene();
+
+        Random.InitState((int)(Time.realtimeSinceStartup * 100));  //initialize random number generator such that it gives different result every play
     }
 
     private void SetCameraComponents()
