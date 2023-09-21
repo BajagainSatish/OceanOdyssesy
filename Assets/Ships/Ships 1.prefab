@@ -15671,7 +15671,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   cameraTarget: {fileID: 5391308273184677951}
-  speed: 1
+  speed: 0.65
 --- !u!114 &5391308273184677951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21307,7 +21307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   cameraTarget: {fileID: 3661384664357369625}
-  speed: 1
+  speed: 0.85
 --- !u!114 &3661384664357369625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26778,7 +26778,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3
   cameraTarget: {fileID: 1389493508890834969}
-  speed: 1
+  speed: 1.75
 --- !u!114 &1389493508890834969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26869,7 +26869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   cameraTarget: {fileID: 1636903381050625961}
-  speed: 1
+  speed: 0.8
 --- !u!114 &1636903381050625961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32364,7 +32364,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   cameraTarget: {fileID: 5537679621234743231}
-  speed: 1
+  speed: 1.5
 --- !u!114 &5537679621234743231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32894,7 +32894,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 6
   cameraTarget: {fileID: 2194156486866467262}
-  speed: 1
+  speed: 0.5
 --- !u!114 &2194156486866467262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38641,7 +38641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 4
   cameraTarget: {fileID: 8871337426288799460}
-  speed: 1
+  speed: 2.25
 --- !u!114 &8871337426288799460
 MonoBehaviour:
   m_ObjectHideFlags: 0
