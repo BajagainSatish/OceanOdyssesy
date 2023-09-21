@@ -21,12 +21,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Random.InitState((int)(Time.realtimeSinceStartup * 100));  //initialize random number generator such that it gives different result every play
+
         moveShipsAlongPathsManager = GetComponent<MoveShipsAlongPathsManager>();
 
         SetCameraComponents();
         SetUpInitialScene();
-
-        Random.InitState((int)(Time.realtimeSinceStartup * 100));  //initialize random number generator such that it gives different result every play
     }
 
     private void SetCameraComponents()
