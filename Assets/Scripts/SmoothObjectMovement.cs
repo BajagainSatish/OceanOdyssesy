@@ -1,13 +1,33 @@
 using System.Collections;
 using UnityEngine;
 
-public class SmoothObjectMover : MonoBehaviour
+public class SmoothObjectMovement : MonoBehaviour
 {
     public float moveThreshold = 0.05f;
     public float rotateThreshold = 0.5f;
     public float damping = 0.5f;
     public float rotationSpeed = 10f;
     private Vector3 velocity;
+
+    private static void AddThisComponentTo(GameObject gameObject)
+    {
+        SmoothObjectMovement mover = gameObject.GetComponent<SmoothObjectMovement>();
+        if (mover == null)
+            gameObject.AddComponent<SmoothObjectMovement>();
+    }
+
+    public static void MoveObjectTo(GameObject gameObject, Vector3 newpos)
+    {
+        AddThisComponentTo(gameObject);
+        SmoothObjectMovement mover = gameObject.GetComponent<SmoothObjectMovement>();
+        mover.MoveTo(newpos);
+    }
+    public static void RotateObjectTo(GameObject gameObject, Quaternion newRot)
+    {
+        AddThisComponentTo(gameObject);
+        SmoothObjectMovement mover = gameObject.GetComponent<SmoothObjectMovement>();
+        mover.RotateTo(newRot);
+    }
 
     public void MoveTo(Vector3 newpos)
     {
