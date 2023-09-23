@@ -15,7 +15,7 @@ public class GameController1 : MonoBehaviour
 
     Camera mainCam;
     private CameraFollower cameraFollower;
-    private SmoothObjectMover cameraMover;
+    private SmoothObjectMovement cameraMover;
     private CameraRotateAround cameraRotateHandler;
     private CameraZoom cameraZoomHandler;
     private CameraPanning cameraPanningHandler;
@@ -47,8 +47,8 @@ public class GameController1 : MonoBehaviour
         mainCam = Camera.main;
         if (mainCam.GetComponent<CameraFollower>() == null)
             mainCam.AddComponent<CameraFollower>();
-        if (mainCam.GetComponent<SmoothObjectMover>() == null)
-            mainCam.AddComponent<SmoothObjectMover>();
+        if (mainCam.GetComponent<SmoothObjectMovement>() == null)
+            mainCam.AddComponent<SmoothObjectMovement>();
         if (mainCam.GetComponent<CameraRotateAround>() == null)
             mainCam.AddComponent<CameraRotateAround>();
         if (mainCam.GetComponent<CameraZoom>() == null)
@@ -56,7 +56,7 @@ public class GameController1 : MonoBehaviour
         if (mainCam.GetComponent<CameraPanning>() == null)
             mainCam.AddComponent<CameraPanning>();
         cameraFollower = mainCam.GetComponent<CameraFollower>();
-        cameraMover = mainCam.GetComponent<SmoothObjectMover>();
+        cameraMover = mainCam.GetComponent<SmoothObjectMovement>();
         cameraRotateHandler = mainCam.GetComponent<CameraRotateAround>();
         cameraZoomHandler = mainCam.GetComponent<CameraZoom>();
         cameraPanningHandler = mainCam.GetComponent<CameraPanning>();

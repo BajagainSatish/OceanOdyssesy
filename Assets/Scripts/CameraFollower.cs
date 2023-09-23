@@ -9,15 +9,15 @@ public class CameraFollower : MonoBehaviour
     public CameraFollowerTarget target;
     public bool lookAtTarget;
 
-
     private void Update()
     {
         if (target == null)
             return;
+
         Vector3 movePosition = target.camTarget.position + target.cameraOffset;
         transform.position = Vector3.SmoothDamp(transform.position, movePosition, ref velocity, target.cameraDamping);
 
-        if (lookAtTarget )
+        if (lookAtTarget)
             transform.LookAt(target.camTarget);
     }
 }
