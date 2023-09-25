@@ -6,7 +6,7 @@ public class SmoothObjectMovement : MonoBehaviour
     public float moveThreshold = 0.05f;
     public float rotateThreshold = 0.5f;
     public float damping = 0.5f;
-    public float rotationSpeed = 10f;
+    public float rotationSpeed = 1f;
     private Vector3 velocity;
 
     private static void AddThisComponentTo(GameObject gameObject)
