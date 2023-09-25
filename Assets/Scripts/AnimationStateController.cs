@@ -1,10 +1,6 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using TreeEditor;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
-using static UnityEngine.GraphicsBuffer;
 
 public class AnimationStateController : MonoBehaviour
 {
