@@ -15739,8 +15739,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcd96fa0cdc0054d8bfa1b571187d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCameraOffset: {x: 7, y: 5, z: -7}
-  defaultCameraRotation: {x: 24, y: -40, z: 0}
+  defaultCameraOffset: {x: 2.43, y: 16.4, z: -7.9}
+  defaultCameraRotation: {x: 60.8, y: -13.8, z: 0}
   cameraOffset: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.5
@@ -21429,8 +21429,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcd96fa0cdc0054d8bfa1b571187d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCameraOffset: {x: 7, y: 5, z: -7}
-  defaultCameraRotation: {x: 24, y: -40, z: 0}
+  defaultCameraOffset: {x: 7.89, y: 12.73, z: -3.84}
+  defaultCameraRotation: {x: 51, y: -67.8, z: 0}
   cameraOffset: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.5
@@ -27018,8 +27018,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcd96fa0cdc0054d8bfa1b571187d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCameraOffset: {x: 7, y: 5, z: -7}
-  defaultCameraRotation: {x: 24, y: -40, z: 0}
+  defaultCameraOffset: {x: 8.22, y: 15.05, z: -3.84}
+  defaultCameraRotation: {x: 58, y: -68, z: 0}
   cameraOffset: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.3
@@ -27131,8 +27131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcd96fa0cdc0054d8bfa1b571187d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCameraOffset: {x: 7, y: 5, z: -7}
-  defaultCameraRotation: {x: 24, y: -40, z: 0}
+  defaultCameraOffset: {x: -3.2, y: 11.1, z: -6.2}
+  defaultCameraRotation: {x: 61.8, y: 21.8, z: 0}
   cameraOffset: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.5
@@ -32648,8 +32648,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcd96fa0cdc0054d8bfa1b571187d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCameraOffset: {x: 7, y: 5, z: -7}
-  defaultCameraRotation: {x: 24, y: -40, z: 0}
+  defaultCameraOffset: {x: 11.16, y: 14.38, z: 2.79}
+  defaultCameraRotation: {x: 40, y: -110, z: 0}
   cameraOffset: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.3
@@ -32711,7 +32711,7 @@ Transform:
   - {fileID: 7865379269921182966}
   - {fileID: 1884957067454204590}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5062850306729686144
 GameObject:
@@ -33200,8 +33200,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcd96fa0cdc0054d8bfa1b571187d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCameraOffset: {x: 7, y: 5, z: -7}
-  defaultCameraRotation: {x: 24, y: -40, z: 0}
+  defaultCameraOffset: {x: 2.03, y: 8.6, z: 2.77}
+  defaultCameraRotation: {x: 68.34, y: -143.74, z: 0}
   cameraOffset: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.5
@@ -38969,8 +38969,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcd96fa0cdc0054d8bfa1b571187d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCameraOffset: {x: 7, y: 5, z: -7}
-  defaultCameraRotation: {x: 24, y: -40, z: 0}
+  defaultCameraOffset: {x: 3.16, y: 7.35, z: -4.7}
+  defaultCameraRotation: {x: 54, y: -40, z: 0}
   cameraOffset: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   cameraDamping: 0.1
