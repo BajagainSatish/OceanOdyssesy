@@ -16,15 +16,15 @@ public class AnimationStateController : MonoBehaviour
     [SerializeField] private GameObject actualCanonLid;
     [SerializeField] private GameObject actualWoodPiece;
 
-    [SerializeField] private float moveTowardsCannonBoxDuration = 1f;
-    [SerializeField] private float moveTowardsCannonDuration = 1f;
+    [SerializeField] private float moveTowardsCannonBoxVelocity = 1f;
+    [SerializeField] private float moveTowardsCannonVelocity = 1f;
     [SerializeField] private float cannonRotationDuration1 = 0.5f;
     [SerializeField] private float cannonRotationDuration2 = 0.5f;
     [SerializeField] private float cannonRotationDuration3 = 0.5f;
     [SerializeField] private float cannonRotationDuration4 = 0.5f;
     [SerializeField] private GameObject cannonBoxTarget;
     [SerializeField] private float thresholdInitialRot = 0.99f;//lower this value if player is at long distance from cannon or just freezes, for our initial pos 1 works best, lower value has low accuracy
-    
+
     private Animator animator;
     private int isRunningHash;//used only to improve performance
     private int isPickingHash;//used only to improve performance
@@ -56,7 +56,8 @@ public class AnimationStateController : MonoBehaviour
     private Vector3 startPos;
     private Quaternion startRotQuaternion;
     private float elapsedTime;
-    private enum ProcessingCannonBallStates {
+    private enum ProcessingCannonBallStates
+    {
         readyToAttack, rotateTowardsCannonBox, moveCharacterTowardsCannonBox, rotateAtCannonBox, playPickAnimation,
         rotateTowardsLoadPosition, moveTowardsLoadPosition, rotateAtLoadPosition, loadCannonBall, lightTheRope
     };
@@ -73,23 +74,23 @@ public class AnimationStateController : MonoBehaviour
 
         for (int i = 0; i < this.transform.childCount; i++)
         {
-                if (this.transform.GetChild(i).name == "CanonLid")
-                {
-                    animatedCanonLid = this.transform.GetChild(i).gameObject;
-                }
-                else if (this.transform.GetChild(i).name == "CanonBall_Picked")
-                {
-                    pickedCanonBall = this.transform.GetChild(i).gameObject;
-                }
-                else if (this.transform.GetChild(i).name == "Rig")
-                {
-                    rig = this.transform.GetChild(i).gameObject;
+            if (this.transform.GetChild(i).name == "CanonLid")
+            {
+                animatedCanonLid = this.transform.GetChild(i).gameObject;
+            }
+            else if (this.transform.GetChild(i).name == "CanonBall_Picked")
+            {
+                pickedCanonBall = this.transform.GetChild(i).gameObject;
+            }
+            else if (this.transform.GetChild(i).name == "Rig")
+            {
+                rig = this.transform.GetChild(i).gameObject;
 
-                    headAim = rig.transform.GetChild(0).gameObject;
-                    chestAim = rig.transform.GetChild(1).gameObject;
-                    headAim.GetComponent<MultiAimConstraint>().weight = 0;
-                    chestAim.GetComponent<MultiAimConstraint>().weight = 0;
-                }
+                headAim = rig.transform.GetChild(0).gameObject;
+                chestAim = rig.transform.GetChild(1).gameObject;
+                headAim.GetComponent<MultiAimConstraint>().weight = 0;
+                chestAim.GetComponent<MultiAimConstraint>().weight = 0;
+            }
         }
 
         animatedCanonLid.SetActive(false);
@@ -100,12 +101,12 @@ public class AnimationStateController : MonoBehaviour
         startCharacterPos = initialPlayerLocation.transform.position;
         pickPos = pickPositionLocation.transform.position;
         loadCannonPosition = playerLoadCannonPosition.transform.position;//2.3f difference fixed
-        
+
         transform.position = startCharacterPos;
         transform.eulerAngles = startCharacterRot;
 
         currentState = ProcessingCannonBallStates.readyToAttack;
-        animator.SetLayerWeight(1,0);//set layer weight for pick run to 0 initially
+        animator.SetLayerWeight(1, 0);//set layer weight for pick run to 0 initially
         //Debug.Log("Start: " + "Simple pick length: " + AnimationLength("SimplePick")); = 0.66667
         //Debug.Log("Start: " + "LoadCannon time length: " + AnimationLength("LoadCanon")); = 1.33333
         //Debug.Log("Start" + "Light animation time length: " + AnimationLength("LightTheRope")); = 2.16
@@ -127,7 +128,7 @@ public class AnimationStateController : MonoBehaviour
         }
         if (currentState == ProcessingCannonBallStates.moveCharacterTowardsCannonBox)
         {
-            MoveToPosition(startPos, pickPos, moveTowardsCannonBoxDuration, isRunningHash, ProcessingCannonBallStates.rotateAtCannonBox);//MoveToPickPosition
+            MoveToPosition(startPos, pickPos, moveTowardsCannonBoxVelocity, isRunningHash, ProcessingCannonBallStates.rotateAtCannonBox);//MoveToPickPosition
         }
         if (currentState == ProcessingCannonBallStates.rotateAtCannonBox)
         {
@@ -136,7 +137,7 @@ public class AnimationStateController : MonoBehaviour
         }
         if (currentState == ProcessingCannonBallStates.playPickAnimation)
         {
-            animator.SetBool(isPickingHash,true);
+            animator.SetBool(isPickingHash, true);
             StartCoroutine(WaitForPick());
         }
         if (currentState == ProcessingCannonBallStates.rotateTowardsLoadPosition)
@@ -147,7 +148,7 @@ public class AnimationStateController : MonoBehaviour
         if (currentState == ProcessingCannonBallStates.moveTowardsLoadPosition)
         {
             animator.SetLayerWeight(1, 1);//set layer weight for upper body pick hold animation to play
-            MoveToPosition(pickPos, loadCannonPosition, moveTowardsCannonDuration, isRunningHash, ProcessingCannonBallStates.rotateAtLoadPosition);//MoveToLoadPosition
+            MoveToPosition(pickPos, loadCannonPosition, moveTowardsCannonVelocity, isRunningHash, ProcessingCannonBallStates.rotateAtLoadPosition);//MoveToLoadPosition
         }
         if (currentState == ProcessingCannonBallStates.rotateAtLoadPosition)
         {
@@ -163,7 +164,7 @@ public class AnimationStateController : MonoBehaviour
             actualCanonLid.SetActive(false);
             animatedCanonLid.SetActive(true);
             pickedCanonBall.SetActive(true);
-            animator.SetBool(isLoadingCannonBallHash,true);
+            animator.SetBool(isLoadingCannonBallHash, true);
             StartCoroutine(WaitForCannonLoad());
         }
         if (currentState == ProcessingCannonBallStates.lightTheRope)
@@ -176,15 +177,18 @@ public class AnimationStateController : MonoBehaviour
         pickedCanonBall.SetActive(true);
         yield return new WaitForSeconds(pickUpTime);
         animator.SetBool(isPickingHash, false);
-        animator.SetBool(isHoldingPickedCannonBall,true);
+        animator.SetBool(isHoldingPickedCannonBall, true);
         currentState = ProcessingCannonBallStates.rotateTowardsLoadPosition;
     }
     private bool myApproximation(float a, float b)//Mathf.Approximately() didn't work for some cases
     {
         return (Mathf.Abs(a - b) < 0.01f);//tolerance = 0.01f
     }
-    private void MoveToPosition(Vector3 startPosition, Vector3 targetPosition, float duration, int parameterHash, ProcessingCannonBallStates newState)
+    private void MoveToPosition(Vector3 startPosition, Vector3 targetPosition, float velocity, int parameterHash, ProcessingCannonBallStates newState)
     {
+        float distance = Vector3.Distance(targetPosition, startPosition);
+        float duration = distance / velocity;
+
         elapsedTime += Time.deltaTime;
         float percentageComplete = elapsedTime / duration;
         transform.position = Vector3.Lerp(startPosition, targetPosition, percentageComplete);
@@ -193,7 +197,7 @@ public class AnimationStateController : MonoBehaviour
         {
             elapsedTime = 0;
             currentState = newState;
-            animator.SetBool(parameterHash,false);
+            animator.SetBool(parameterHash, false);
             return;
         }
     }
@@ -238,7 +242,7 @@ public class AnimationStateController : MonoBehaviour
         animator.SetBool(isLoadingCannonBallHash, false);
         actualCanonLid.SetActive(true);
         animatedCanonLid.SetActive(false);
-        
+
         headAim.GetComponent<MultiAimConstraint>().weight = 0;
         chestAim.GetComponent<MultiAimConstraint>().weight = 0;
         //currentState = ProcessingCannonBallStates.rotateTowardsInitialPosition;
@@ -251,7 +255,7 @@ public class AnimationStateController : MonoBehaviour
     private IEnumerator WaitForLightTheRope()
     {
         actualWoodPiece.SetActive(false);
-        animator.SetBool(isLightingTheRopeHash,true);
+        animator.SetBool(isLightingTheRopeHash, true);
 
         yield return new WaitForSeconds(0.7f);//time between lighting and actual fire start to play
         ropeBurnScript.PlayBurnRopeAnimation();
@@ -261,7 +265,7 @@ public class AnimationStateController : MonoBehaviour
 
         yield return new WaitForSeconds(0.7f);//time for animation to end
         actualWoodPiece.SetActive(true);
-        animator.SetBool(isLightingTheRopeHash,false);
+        animator.SetBool(isLightingTheRopeHash, false);
 
         currentState = ProcessingCannonBallStates.readyToAttack;
 
