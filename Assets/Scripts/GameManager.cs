@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     private CameraFollower cameraFollower;
     private CameraRotateAround cameraRotateHandler;
     private CameraZoom cameraZoomHandler;
+    private Vector3 startCameraPos;
+    private Quaternion startCameraRot;
 
     MoveShipsAlongPathsManager moveShipsAlongPathsManager;
     [SerializeField] int noOfShipsToSelect;
@@ -35,6 +37,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] canonShooterActiveMarkers;  //the gameobject that indicates which objects is currently selected
     private int activeCanonShooter; //which cannon shooter will fire on button press
     public AnimationStateController[] canonShooters;  //the player objects that will shoot canon
+
+    private bool movedCameraToStartPos;
 
 
     private void Start()
@@ -61,6 +65,9 @@ public class GameManager : MonoBehaviour
         cameraFollower = mainCam.GetComponent<CameraFollower>();
         cameraRotateHandler = mainCam.GetComponent<CameraRotateAround>();
         cameraZoomHandler = mainCam.GetComponent<CameraZoom>();
+
+        startCameraPos = mainCam.transform.position;    
+        startCameraRot = mainCam.transform.rotation;
     }
 
     private void SetUpInitialScene()
