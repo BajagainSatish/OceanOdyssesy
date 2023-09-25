@@ -11,6 +11,9 @@ public class SmoothObjectMovement : MonoBehaviour
 
     public delegate void OnFinishCallback();
 
+    Coroutine moveCoroutine;
+    Coroutine rotateCoroutine;
+
     private static void AddThisComponentTo(GameObject gameObject)
     {
         SmoothObjectMovement mover = gameObject.GetComponent<SmoothObjectMovement>();
@@ -33,8 +36,8 @@ public class SmoothObjectMovement : MonoBehaviour
 
     public void MoveTo(Vector3 newpos, OnFinishCallback callbackFunction = null)
     {
-        StopCoroutine("moveTo");
-        StartCoroutine(moveTo(newpos, callbackFunction));
+        StopMovement();
+        moveCoroutine = StartCoroutine(moveTo(newpos, callbackFunction));
     }
     IEnumerator moveTo(Vector3 newpos, OnFinishCallback callbackFunction = null)
     {
@@ -49,17 +52,35 @@ public class SmoothObjectMovement : MonoBehaviour
 
     public void RotateTo(Quaternion newRot, OnFinishCallback callbackFunction = null)
     {
-        StopCoroutine("rotateTo");
-        StartCoroutine(rotateTo(newRot, callbackFunction));
+        StopRotation();
+        rotateCoroutine = StartCoroutine(rotateTo(newRot, callbackFunction));
     }
     IEnumerator rotateTo(Quaternion newRot, OnFinishCallback callbackFunction = null)
     {
         while (Quaternion.Angle(transform.rotation, newRot) > rotateThreshold)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, newRot, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, newRot, rotationSpeed * Time.deltaTime);
+            Debug.Log("inside: " + Quaternion.Angle(transform.rotation, newRot));
             yield return null;
         }
         if (callbackFunction != null)
             callbackFunction();
+        Debug.Log("outside");
+    }
+
+    public void StopMovement()
+    {
+        if (moveCoroutine != null)
+            StopCoroutine(moveCoroutine);
+    }
+    public void StopRotation()
+    {
+        if (rotateCoroutine != null)
+            StopCoroutine(rotateCoroutine);
+    }
+
+    public void StopAll()
+    {
+        StopAllCoroutines();
     }
 }
