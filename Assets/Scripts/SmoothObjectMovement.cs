@@ -60,12 +60,10 @@ public class SmoothObjectMovement : MonoBehaviour
         while (Quaternion.Angle(transform.rotation, newRot) > rotateThreshold)
         {
             transform.rotation = Quaternion.Lerp(transform.rotation, newRot, rotationSpeed * Time.deltaTime);
-            Debug.Log("inside: " + Quaternion.Angle(transform.rotation, newRot));
             yield return null;
         }
         if (callbackFunction != null)
             callbackFunction();
-        Debug.Log("outside");
     }
 
     public void StopMovement()
