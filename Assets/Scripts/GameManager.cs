@@ -137,7 +137,8 @@ public class GameManager : MonoBehaviour
             cameraFollower.enabled = true;
 
             cameraFollower.target = selectedShips[selectedMovementShip].cameraTarget;
-            mainCam.transform.rotation = cameraFollower.target.cameraRotation;
+            Quaternion newCamRot = cameraFollower.target.cameraRotation;
+            SmoothObjectMovement.RotateObjectTo(mainCam.gameObject, newCamRot);
             cameraFollower.enabled = true;
         }
     }
