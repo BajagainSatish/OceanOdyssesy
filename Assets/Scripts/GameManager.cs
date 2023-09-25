@@ -13,10 +13,9 @@ public class GameManager : MonoBehaviour
 
     Camera mainCam;
     private CameraFollower cameraFollower;
+    private SmoothObjectMovement cameraMover;
     private CameraRotateAround cameraRotateHandler;
     private CameraZoom cameraZoomHandler;
-    private Vector3 startCameraPos;
-    private Quaternion startCameraRot;
 
     MoveShipsAlongPathsManager moveShipsAlongPathsManager;
     [SerializeField] int noOfShipsToSelect;
@@ -38,7 +37,9 @@ public class GameManager : MonoBehaviour
     private int activeCanonShooter; //which cannon shooter will fire on button press
     public AnimationStateController[] canonShooters;  //the player objects that will shoot canon
 
-    private bool movedCameraToStartPos;
+    private bool canUpdateCameraOffset;  //can update the camera offset and rotation values from current scene condition?
+    private bool cameraMoverMovementComplete;  //any movement caused by cameraMover has completed
+    private bool cameraMoverRotationComplete;  //any movement caused by cameraMover has completed
 
 
     private void Start()
@@ -50,6 +51,10 @@ public class GameManager : MonoBehaviour
 
         SetCameraComponents();
         SetUpInitialScene();
+
+        cameraMoverMovementComplete = true;
+        cameraMoverRotationComplete = true;
+        canUpdateCameraOffset = true;
     }
 
     private void SetCameraComponents()
@@ -61,13 +66,13 @@ public class GameManager : MonoBehaviour
             mainCam.gameObject.AddComponent<CameraRotateAround>();
         if (mainCam.GetComponent<CameraZoom>() == null)
             mainCam.gameObject.AddComponent<CameraZoom>();
+        if (mainCam.GetComponent<SmoothObjectMovement>() == null)
+            mainCam.gameObject.AddComponent<SmoothObjectMovement>();
 
         cameraFollower = mainCam.GetComponent<CameraFollower>();
         cameraRotateHandler = mainCam.GetComponent<CameraRotateAround>();
         cameraZoomHandler = mainCam.GetComponent<CameraZoom>();
-
-        startCameraPos = mainCam.transform.position;    
-        startCameraRot = mainCam.transform.rotation;
+        cameraMover = mainCam.GetComponent<SmoothObjectMovement>();
     }
 
     private void SetUpInitialScene()
@@ -132,10 +137,9 @@ public class GameManager : MonoBehaviour
             cameraFollower.enabled = false;
 
             Vector3 newCampos = canonShipCameraTarget.camTarget.position + canonShipCameraTarget.cameraOffset;
-            SmoothObjectMovement.MoveObjectTo(mainCam.gameObject, newCampos);
+            MoveCameraToNewPos(newCampos);
             Quaternion newCamRot = canonShipCameraTarget.cameraRotation;
-            SmoothObjectMovement.RotateObjectTo(mainCam.gameObject, newCamRot);
-            //mainCam.transform.rotation = newCamRot;
+            RotateCameraToNewRot(newCamRot);
         }
         else
         {
@@ -143,11 +147,24 @@ public class GameManager : MonoBehaviour
             cameraZoomHandler.enabled = false;
             cameraFollower.enabled = true;
 
+            cameraMover.StopMovement();   //stop any coroutine causing it to move to canon ship position
             cameraFollower.target = selectedShips[selectedMovementShip].cameraTarget;
             Quaternion newCamRot = cameraFollower.target.cameraRotation;
-            SmoothObjectMovement.RotateObjectTo(mainCam.gameObject, newCamRot);
+            RotateCameraToNewRot(newCamRot);
             cameraFollower.enabled = true;
         }
+    }
+    private void MoveCameraToNewPos(Vector3 newpos)
+    {
+        cameraMover.MoveTo(newpos, CameraMoverMovenentComplete);
+        cameraMoverMovementComplete = false;
+        canUpdateCameraOffset = false;
+    }
+    private void RotateCameraToNewRot(Quaternion newRot)
+    {
+        cameraMover.RotateTo(newRot, CameraMoverRotationComplete);
+        cameraMoverRotationComplete = false;
+        canUpdateCameraOffset = false;
     }
     private void SetUI()
     {
@@ -180,6 +197,21 @@ public class GameManager : MonoBehaviour
         foreach(GameObject indicatorObject in canonShooterActiveMarkers)
             indicatorObject.SetActive(false);
         canonShooterActiveMarkers[activeCanonShooter].SetActive(true);
+    }
+    private void CameraMoverMovenentComplete()
+    {
+        cameraMoverMovementComplete = true;
+        CanSetCameraOffset();
+    }
+    private void CameraMoverRotationComplete()
+    {
+        cameraMoverRotationComplete = true;
+        CanSetCameraOffset();
+    }
+    private void CanSetCameraOffset()
+    {
+        if(cameraMoverMovementComplete && cameraMoverRotationComplete)
+            canUpdateCameraOffset = true;
     }
 
     
@@ -255,7 +287,7 @@ public class GameManager : MonoBehaviour
 
     private void LateUpdate()
     { 
-        if (gameMode == GameMode.CANON_FIRE)
+        if (gameMode == GameMode.CANON_FIRE && canUpdateCameraOffset)
         {//update the camera offset and rotation
             canonShipCameraTarget.SetFromCurrentCameraPosition();
         }
