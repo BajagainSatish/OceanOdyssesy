@@ -32,8 +32,9 @@ public class GameManager : MonoBehaviour
 
     public CameraFollowerTarget canonShipCameraTarget;   //use this to hold values for camera rotation and position for canon ship
 
-    public GameObject[] canonShooters;  //the player objects that will shoot canon
+    public GameObject[] canonShooterActiveMarkers;  //the gameobject that indicates which objects is currently selected
     private int activeCanonShooter; //which cannon shooter will fire on button press
+    public AnimationStateController[] canonShooters;  //the player objects that will shoot canon
 
 
     private void Start()
@@ -110,6 +111,7 @@ public class GameManager : MonoBehaviour
         if(gameMode == GameMode.CANON_FIRE)
         {
             //set player indicator for active shooter
+            SetActiveCanonShooterIndicator();
         }
     }
     private void SetCamera()
@@ -126,6 +128,7 @@ public class GameManager : MonoBehaviour
             SmoothObjectMovement.MoveObjectTo(mainCam.gameObject, newCampos);
             Quaternion newCamRot = canonShipCameraTarget.cameraRotation;
             SmoothObjectMovement.RotateObjectTo(mainCam.gameObject, newCamRot);
+            //mainCam.transform.rotation = newCamRot;
         }
         else
         {
@@ -162,6 +165,14 @@ public class GameManager : MonoBehaviour
             fireButton.gameObject.SetActive(false);
         }
     }
+    private void SetActiveCanonShooterIndicator()
+    {
+        if (canonShooterActiveMarkers == null || canonShooterActiveMarkers.Length != canonShooters.Length)
+            return;
+        foreach(GameObject indicatorObject in canonShooterActiveMarkers)
+            indicatorObject.SetActive(false);
+        canonShooterActiveMarkers[activeCanonShooter].SetActive(true);
+    }
 
     
     public void OnClickPlay()
@@ -193,6 +204,7 @@ public class GameManager : MonoBehaviour
             activeCanonShooter--;
             if(activeCanonShooter < 0)
                 activeCanonShooter = canonShooters.Length - 1;
+            SetActiveCanonShooterIndicator();
         }
         
     }
@@ -207,6 +219,7 @@ public class GameManager : MonoBehaviour
         else
         {
             activeCanonShooter = (activeCanonShooter + 1) % canonShooters.Length;
+            SetActiveCanonShooterIndicator();
         }
     }
 
@@ -222,12 +235,21 @@ public class GameManager : MonoBehaviour
     public void OnClickShoot()
     {
         //fire respective canon
-        canonShooters[activeCanonShooter].name = activeCanonShooter.ToString();
+        canonShooters[activeCanonShooter].selectedUnitToShoot = true;
     }
 
     public void OnClickReset()
     {
         Destroy(ShipsCollectionParent);
         SetUpInitialScene();
+    }
+
+
+    private void LateUpdate()
+    { 
+        if (gameMode == GameMode.CANON_FIRE)
+        {//update the camera offset and rotation
+            canonShipCameraTarget.SetFromCurrentCameraPosition();
+        }
     }
 }

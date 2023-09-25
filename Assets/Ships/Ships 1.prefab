@@ -10495,6 +10495,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2190678538557170228}
   - component: {fileID: 5593741831159178011}
+  - component: {fileID: 2778553279539533493}
   m_Layer: 0
   m_Name: ship_body
   m_TagString: Untagged
@@ -10539,6 +10540,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &2778553279539533493
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410482995988897209}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 12.78, y: 12.56, z: 42.87}
+  m_Center: {x: 1.11, y: 3.6, z: 2}
 --- !u!1 &1523613308367600713
 GameObject:
   m_ObjectHideFlags: 0
@@ -15662,7 +15684,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1310610795703320256}
-  - component: {fileID: 1815466288815955842}
   - component: {fileID: 4984262248971111813}
   - component: {fileID: 5391308273184677951}
   - component: {fileID: 1865268067984342899}
@@ -15691,27 +15712,6 @@ Transform:
   m_Father: {fileID: 8681373888350235099}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 51.7, z: 0}
---- !u!65 &1815466288815955842
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035473400187686183}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 11.412497, y: 15.03404, z: 43.182472}
-  m_Center: {x: 0.86931705, y: -3.077283, z: 1.929863}
 --- !u!114 &4984262248971111813
 MonoBehaviour:
   m_ObjectHideFlags: 0
