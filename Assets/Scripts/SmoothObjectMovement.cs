@@ -4,7 +4,7 @@ using UnityEngine;
 public class SmoothObjectMovement : MonoBehaviour
 {
     public float moveThreshold = 0.05f;
-    public float rotateThreshold = 0.5f;
+    public float rotateThreshold = 1f;
     public float damping = 0.5f;
     public float rotationSpeed = 1f;
     private Vector3 velocity;
@@ -54,7 +54,7 @@ public class SmoothObjectMovement : MonoBehaviour
     }
     IEnumerator rotateTo(Quaternion newRot, OnFinishCallback callbackFunction = null)
     {
-        while (Quaternion.Angle(transform.rotation, newRot) > 0.5f)
+        while (Quaternion.Angle(transform.rotation, newRot) > rotateThreshold)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, newRot, rotationSpeed * Time.deltaTime);
             yield return null;
