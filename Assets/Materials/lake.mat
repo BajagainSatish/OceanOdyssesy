@@ -177,9 +177,9 @@ Material:
     - _NORMALMAPOn: 1
     - _NormalMap: 1
     - _NormalMapOn: 1
-    - _NormalSpeed: 0.2
+    - _NormalSpeed: 0.069999985
     - _NormalStrength: 0.267
-    - _NormalTiling: 1.0099993
+    - _NormalTiling: 3.8099978
     - _OcclusionStrength: 1
     - _PlanarReflectionsEnabled: 0
     - _PlanarReflectionsParams: 0
@@ -221,9 +221,9 @@ Material:
     - _SpecularReflectionsOn: 1
     - _Speed: 2
     - _SrcBlend: 1
-    - _SunReflectionDistortion: 0.57
+    - _SunReflectionDistortion: 0.7
     - _SunReflectionPerturbance: 0.548
-    - _SunReflectionSize: 0.893
+    - _SunReflectionSize: 0.9
     - _SunReflectionStrength: 3
     - _Surface: 0
     - _TEXTURE_INTERSECTIONOn: 0
