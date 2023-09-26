@@ -16,6 +16,13 @@ public class MoveObjectAlongSpline : MonoBehaviour
         spline = GetComponent<SplineContainer>();
         if(movingObject != null)
             SetObjectToMove(movingObject);
+        SplineInstantiate pathObjectSpawner = GetComponent<SplineInstantiate>();
+        if(pathObjectSpawner != null)
+        {
+            pathObjectSpawner.Clear();
+            pathObjectSpawner.SetDirty();
+            pathObjectSpawner.UpdateInstances();
+        }
     }
 
     //private void Update()
