@@ -23,6 +23,7 @@ public class MoveShipsAlongPathsManager : MonoBehaviour
 
     public void Initialize()
     {
+        Random.InitState((int)(Time.realtimeSinceStartup * 100));  //initialize random number generator such that it gives different result every intialization
         ResetPathObjects();
         RandomizeShips();
         RandomizePaths();

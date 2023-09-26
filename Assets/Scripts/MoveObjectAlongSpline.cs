@@ -29,10 +29,9 @@ public class MoveObjectAlongSpline : MonoBehaviour
     public void RemoveExistingMovingObject()
     {   //remove previous object's set components that allowed it to move along spline
         //and remove it from this component's reference
-        if (movingObject == null)
-            return;
         splineAnimator = null;
-        Destroy(movingObject.GetComponent<SplineAnimate>());  //remove spline animate component that was added
+        if (movingObject != null)
+            Destroy(movingObject.GetComponent<SplineAnimate>());  //remove spline animate component that was added
     }
 
     public void SetSpeed(float speed)
