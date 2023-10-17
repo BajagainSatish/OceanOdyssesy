@@ -72,7 +72,7 @@ public class MortarShoot : MonoBehaviour
         {
             if ((Mathf.Approximately(mortarBomb.transform.position.x, endPosition.x)) && (Mathf.Approximately(mortarBomb.transform.position.y, endPosition.y)) && (Mathf.Approximately(mortarBomb.transform.position.z, endPosition.z)))
             {
-                print("Arrow movement complete");
+                print("Mortarbomb movement complete");
                 shootOnce = false;
             }
         }
@@ -99,10 +99,10 @@ public class MortarShoot : MonoBehaviour
             yield return new WaitForFixedUpdate();//used instead of just yield return null
         }
 
-        // Ensure the arrow reaches the exact end position.
+        // Ensure the mortar bomb reaches the exact end position.
         mortarBomb.transform.position = endPos;
     }
-    private Vector3 Evaluate(float t)//Bezier Curve functionality
+    private Vector3 Evaluate(float t)//Quadratic Curve functionality
     {
         Vector3 ac = Vector3.Lerp(A.position, control.position, t);//Interpolate from point A to ControlPoint
         Vector3 cb = Vector3.Lerp(control.position, B.position, t);//Interpolate from ControlPoint to Point B

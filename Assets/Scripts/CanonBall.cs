@@ -11,24 +11,27 @@ public class CanonBall : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
         playCannonBallSound = true;
+        this.gameObject.SetActive(false);
     }
 
     private void Update()
     {
-        if (this.gameObject.activeInHierarchy)
+        if (Input.GetKeyDown(KeyCode.S))
         {
+            this.gameObject.SetActive(true);
+            this.transform.GetChild(0).gameObject.SetActive(true);
+
             if (playCannonBallSound)
             {
                 audioSource.Play();
                 playCannonBallSound = false;
             }
-            StartCoroutine(Wait5Seconds());
+            StartCoroutine(Wait8Seconds());
         }
     }
-    private IEnumerator Wait5Seconds()
+    private IEnumerator Wait8Seconds()
     {
         yield return new WaitForSeconds(8);//8 since sound of cannon shot is of similar length
-        gameObject.SetActive(false);
         playCannonBallSound = true;
     }
 }
