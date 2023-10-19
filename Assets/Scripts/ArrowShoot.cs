@@ -16,7 +16,7 @@ public class ArrowShoot : MonoBehaviour
     [SerializeField] private float archerShootAngleRange = 80;
 
     public static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
-    private static int totalArcherCount = 4;
+    public static int totalArcherCount = 1;
 
     private GameObject arrow;
     private Vector3 shipPosition;
@@ -24,7 +24,7 @@ public class ArrowShoot : MonoBehaviour
     private GameObject shipCenter;
     private GameObject pirates;
     private GameObject[] archers = new GameObject[totalArcherCount];
-    private ArcherController[] archerControllerScript = new ArcherController[totalArcherCount];
+    public ArcherController[] archerControllerScript = new ArcherController[totalArcherCount];
 
     private void Awake()
     {
@@ -68,8 +68,10 @@ public class ArrowShoot : MonoBehaviour
         shipPosition = shipCenter.transform.position;
         for (int i = 0; i < totalArcherCount; i++)
         {
-            Transform A = archerControllerScript[i].A;
             Transform B = archerControllerScript[i].B;
+            if (B != null)
+            {
+            Transform A = archerControllerScript[i].A;
             Transform control = archerControllerScript[i].control;
 
             bool withinArcherRotateRange = archerControllerScript[i].withinArcherRotateRange;
@@ -107,7 +109,6 @@ public class ArrowShoot : MonoBehaviour
             {
                 withinArcherRotateRange = false;
             }
-
             if (distance <= archerMaxRange && withinArcherRotateRange)
             {
                 //Draw Line or Curve from archer to enemy
@@ -168,6 +169,7 @@ public class ArrowShoot : MonoBehaviour
             else
             {
                 lineRenderer.enabled = false;
+            }
             }
         }
     }
