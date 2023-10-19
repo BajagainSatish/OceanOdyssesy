@@ -16,15 +16,15 @@ public class ArrowShoot : MonoBehaviour
     [SerializeField] private float archerShootAngleRange = 80;
 
     public static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
-    public static int totalArcherCount = 1;
+    public static int totalArcherCount = 8;
 
     private GameObject arrow;
     private Vector3 shipPosition;
     private GameObject scaleFactorGameObject;
     private GameObject shipCenter;
-    private GameObject pirates;
+    private GameObject archerParentObject;
     private GameObject[] archers = new GameObject[totalArcherCount];
-    public ArcherController[] archerControllerScript = new ArcherController[totalArcherCount];
+    private ArcherController[] archerControllerScript = new ArcherController[totalArcherCount];
 
     private void Awake()
     {
@@ -43,14 +43,17 @@ public class ArrowShoot : MonoBehaviour
         for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
         {
             GameObject gameObject = scaleFactorGameObject.transform.GetChild(i).gameObject;
-            if (gameObject.name == "Pirates")
+            if (gameObject.name == "Archers")
             {
-                pirates = gameObject;
+                archerParentObject = gameObject;
             }
         }
         for (int i = 0; i < totalArcherCount; i++)
         {
-            archers[i] = pirates.transform.GetChild(i).gameObject;
+            archers[i] = archerParentObject.transform.GetChild(i).gameObject;
+        }
+        for (int i = 0; i < totalArcherCount; i++)
+        {
             archerControllerScript[i] = archers[i].GetComponent<ArcherController>();
         }
     }
@@ -71,100 +74,86 @@ public class ArrowShoot : MonoBehaviour
             Transform B = archerControllerScript[i].B;
             if (B != null)
             {
-            Transform A = archerControllerScript[i].A;
-            Transform control = archerControllerScript[i].control;
+                Transform A = archerControllerScript[i].A;
+                Transform control = archerControllerScript[i].control;
 
-            bool withinArcherRotateRange = archerControllerScript[i].withinArcherRotateRange;
-            LineRenderer lineRenderer = archerControllerScript[i].lineRenderer;
-            float adjustDistanceFactor = archerControllerScript[i].adjustDistanceFactor;
-            bool shootOnce = archerControllerScript[i].shootOnce;
-            //GameObject arrow = archerControllerScript[i].arrow;
-            Vector3 endPosition = archerControllerScript[i].endPosition;
-            Vector3[] routePoints = archerControllerScript[i].routePoints;
+                bool withinArcherRotateRange = archerControllerScript[i].withinArcherRotateRange;
+                LineRenderer lineRenderer = archerControllerScript[i].lineRenderer;
+                float adjustDistanceFactor = archerControllerScript[i].adjustDistanceFactor;
+                bool shootOnce = archerControllerScript[i].shootOnce;
+                //GameObject arrow = archerControllerScript[i].arrow;
+                Vector3 endPosition = archerControllerScript[i].endPosition;
+                Vector3[] routePoints = archerControllerScript[i].routePoints;
 
-            float distance = Mathf.Sqrt((B.position.x - shipPosition.x) * (B.position.x - shipPosition.x) + (B.position.y - shipPosition.y) * (B.position.y - shipPosition.y) + (B.position.z - shipPosition.z) * (B.position.z - shipPosition.z));
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                print("Distance: " + distance);
-            }
+                float distance = Mathf.Sqrt((B.position.x - shipPosition.x) * (B.position.x - shipPosition.x) + (B.position.y - shipPosition.y) * (B.position.y - shipPosition.y) + (B.position.z - shipPosition.z) * (B.position.z - shipPosition.z));
+                Vector3 difference = B.position - A.position;
+                Vector3 targetDirection = (B.position - A.position).normalized;
+                Vector3 archersForwardDirection = archerControllerScript[i].transform.forward;
 
-            Vector3 difference = B.position - A.position;
-            if (Input.GetKey(KeyCode.Space))
-            {
-                print("Resultant: " + difference);
-            }
+                // Calculate the angle between the forward direction and the target direction
+                float angle = Vector3.Angle(targetDirection, archersForwardDirection);
 
-            Vector3 targetDirection = (B.position - A.position).normalized;
-            Vector3 archersForwardDirection = archerControllerScript[i].transform.forward;
-
-            // Calculate the angle between the forward direction and the target direction
-            float angle = Vector3.Angle(targetDirection, archersForwardDirection);
-
-            // Check if the angle is within the desired range
-            if (angle <= archerShootAngleRange && difference.y >= lowerYLimit && difference.y <= upperYLimit)
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-            if (distance <= archerMaxRange && withinArcherRotateRange)
-            {
-                //Draw Line or Curve from archer to enemy
-                lineRenderer.enabled = true;
-                for (int j = 0; j < curvePointsTotalCount + 1; j++)
+                // Check if the angle is within the desired range
+                if (angle <= archerShootAngleRange && difference.y >= lowerYLimit && difference.y <= upperYLimit)
                 {
-                    lineRenderer.SetPosition(j, Evaluate(j / (float)curvePointsTotalCount, A, B, control));
-                }
-
-                //Evaluation of straight or curved path
-                if (distance < leastDistanceForStraightHit)
-                {
-                    adjustDistanceFactor = -distance;//experimentally found out, if adjustcurveangle = -distance, straight path
+                    withinArcherRotateRange = true;
                 }
                 else
                 {
-                    adjustDistanceFactor = -(adjustCurveAngle * distance);//curve path for enemy far away
+                    withinArcherRotateRange = false;
                 }
-
-                //Evaluate position for control point on basis of start point and end point
-                float p = (A.position.x + B.position.x) / 2f;
-                float r = (A.position.z + B.position.z) / 2f;
-                float q = (distance + (A.position.y + B.position.y) / 2f) + adjustDistanceFactor;
-                control.transform.position = new Vector3(p, q, r);
-
-                //Check if shoot is pressed
-                if (Input.GetKeyDown(KeyCode.S))
+                if (distance <= archerMaxRange && withinArcherRotateRange)
                 {
-                    if (!shootOnce)
+                    //Draw Line or Curve from archer to enemy
+                    lineRenderer.enabled = true;
+                    for (int j = 0; j < curvePointsTotalCount + 1; j++)
                     {
-                        arrow = objectPoolArrowScript.ReturnArrow();
-                        print("Arrow " + arrow);
-                        print("Arrow " + arrow.name);
+                        lineRenderer.SetPosition(j, Evaluate(j / (float)curvePointsTotalCount, A, B, control));
+                    }
 
-                        if (arrow != null)
+                    //Evaluation of straight or curved path
+                    if (distance < leastDistanceForStraightHit)
+                    {
+                        adjustDistanceFactor = -distance;//experimentally found out, if adjustcurveangle = -distance, straight path
+                    }
+                    else
+                    {
+                        adjustDistanceFactor = -(adjustCurveAngle * distance);//curve path for enemy far away
+                    }
+
+                    //Evaluate position for control point on basis of start point and end point
+                    float p = (A.position.x + B.position.x) / 2f;
+                    float r = (A.position.z + B.position.z) / 2f;
+                    float q = (distance + (A.position.y + B.position.y) / 2f) + adjustDistanceFactor;
+                    control.transform.position = new Vector3(p, q, r);
+
+                    //Check if shoot is pressed
+                    if (Input.GetKeyDown(KeyCode.S))
+                    {
+                        if (!shootOnce)
                         {
-                            print("Arrow::::");
-                            arrow.transform.position = A.position;
-                            endPosition = B.transform.position;
-                            for (int j = 0; j < curvePointsTotalCount + 1; j++)
+                            arrow = objectPoolArrowScript.ReturnArrow();
+
+                            if (arrow != null)
                             {
-                                routePoints[j] = Evaluate(j / (float)curvePointsTotalCount, A, B, control);
+                                arrow.transform.position = A.position;
+                                endPosition = B.transform.position;
+                                for (int j = 0; j < curvePointsTotalCount + 1; j++)
+                                {
+                                    routePoints[j] = Evaluate(j / (float)curvePointsTotalCount, A, B, control);
+                                }
+                                shootOnce = true;
+                                StartCoroutine(MoveThroughRoute(arrow, routePoints));
                             }
-                            shootOnce = true;
-                            StartCoroutine(MoveThroughRoute(arrow, routePoints));
                         }
                     }
-                }
-                if (shootOnce)
-                {
-                    if ((Mathf.Approximately(arrow.transform.position.x, endPosition.x)) && (Mathf.Approximately(arrow.transform.position.y, endPosition.y)) && (Mathf.Approximately(arrow.transform.position.z, endPosition.z)))
+                    if (shootOnce)
                     {
-                        print("Arrow movement complete");
-                        shootOnce = false;
+                        if ((Mathf.Approximately(arrow.transform.position.x, endPosition.x)) && (Mathf.Approximately(arrow.transform.position.y, endPosition.y)) && (Mathf.Approximately(arrow.transform.position.z, endPosition.z)))
+                        {
+                            shootOnce = false;
+                        }
                     }
-                }
             }
             else
             {

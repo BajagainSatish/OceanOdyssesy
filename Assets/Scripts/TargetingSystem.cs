@@ -33,7 +33,7 @@ public class TargetingSystem : MonoBehaviour
         for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
         {
             GameObject gameObject = scaleFactorGameObject.transform.GetChild(i).gameObject;
-            if (gameObject.name == "Pirates")
+            if (gameObject.name == "Archers")
             {
                 pirates = gameObject;
             }
@@ -153,7 +153,14 @@ public class TargetingSystem : MonoBehaviour
             }
         }
 
-        if (shipsInRangeCount == 1)
+        if (shipsInRangeCount == 0)
+        {
+            for (int i = 0; i < ArrowShoot.totalArcherCount; i++)
+            {
+                archerControllerScript[i].B = null;
+            }
+        }
+        else if (shipsInRangeCount == 1)
         {
             foreach (ShipClassifier enemyShip in shipsInRange)
             {

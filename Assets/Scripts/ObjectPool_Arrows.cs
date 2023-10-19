@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectPool_Arrows : MonoBehaviour
 {
-    [SerializeField] private int totalArrowCount = 20;
+    [SerializeField] private int totalArrowCount = 50;
     [SerializeField] private GameObject arrowPrefab;
 
     private void Awake()

@@ -39,8 +39,12 @@ public class ArcherController : MonoBehaviour
             {
                 control = gameObject.transform;
             }
-        }
-            
+        }         
+    }
+
+    private void Update()
+    {
+        transform.LookAt(B);//archer faces the ship
     }
 
     private void OnDrawGizmos()//Draw Quadratic Curve
@@ -67,98 +71,4 @@ public class ArcherController : MonoBehaviour
 
         return Vector3.Lerp(ac, cb, t);
     }
-    /*
-             Vector3 difference = B.position - A.position;
-        float x = difference.x;
-        float z = difference.z;
-
-        if (this.transform.eulerAngles.y == 0)
-        {
-            if (z >= 0)
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-        }
-        else if (this.transform.eulerAngles.y == 180)
-        {
-            if (z <= 0)
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-        }
-        else if (this.transform.eulerAngles.y == 90)
-        {
-            if (x >= 0)
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-        }
-        else if (this.transform.eulerAngles.y == 270)
-        {
-            if (x <= 0)
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-        }
-        else if (Mathf.Approximately(this.transform.eulerAngles.y, 45.0f))
-        {
-            if ((x > 0 && z > 0) || (x < 0 && z > 0 && z > Mathf.Abs(x)) || (x > 0 && z < 0 && x > Mathf.Abs(z)))
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-        }
-        else if (Mathf.Approximately(this.transform.eulerAngles.y, 225.0f))
-        {
-            if ((x < 0 && z < 0) || (x < 0 && z > 0 && z < Mathf.Abs(x)) || (x > 0 && z < 0 && x < Mathf.Abs(z)))
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-        }
-        else if (Mathf.Approximately(this.transform.eulerAngles.y, 315.0f))
-        {
-            if ((x < 0 && z > 0) || (x < 0 && z < 0 && Mathf.Abs(x) > Mathf.Abs(z)) || (x > 0 && z > 0 && x < z))
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-        }
-        else if (Mathf.Approximately(this.transform.eulerAngles.y, 135.0f))
-        {
-            if ((x > 0 && z < 0) || (x < 0 && z < 0 && Mathf.Abs(z) > Mathf.Abs(x)) || (x > 0 && z > 0 && x > z))
-            {
-                withinArcherRotateRange = true;
-            }
-            else
-            {
-                withinArcherRotateRange = false;
-            }
-        }
-    */
 }
