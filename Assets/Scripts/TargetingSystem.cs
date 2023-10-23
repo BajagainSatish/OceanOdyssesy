@@ -5,20 +5,30 @@ using UnityEngine;
 
 public class TargetingSystem : MonoBehaviour
 {
-    [SerializeField] private float maxRange;
     private ShipClassifier[] shipsInRange = new ShipClassifier[ShipClassifier.shipCount];
     private ShipClassifier[] circularlyArrangedShips = new ShipClassifier[ShipClassifier.shipCount];
     private ShipClassifier selectedShip;
 
     private GameObject[] archers = new GameObject[ArrowShoot.totalArcherCount];
+    private GameObject[] gunmen = new GameObject[GunShoot.totalGunmanCount];
     private ArcherController[] archerControllerScript = new ArcherController[ArrowShoot.totalArcherCount];
+    private GunmanController[] gunmanControllerScript = new GunmanController[GunShoot.totalGunmanCount];
+    private ArrowShoot arrowShootScript;
+    private GunShoot gunShootScript;
 
-    private int selectedIndex = 0;
     private bool isNavyShip;
+    private float maxRange;
+    private int selectedIndex = 0;
     private int shipsInRangeCount = 0;
+    private string shooter;
 
     private GameObject scaleFactorGameObject;
-    private GameObject pirates;
+    private GameObject parentShooterObject;
+    private GameObject myShipCenter;
+    private Vector3 myShipPosition;
+
+    //[SerializeField] private bool displayMyContents = false;
+    private bool selectedShipNotInRange = true;
 
     private void Awake()
     {
@@ -33,25 +43,47 @@ public class TargetingSystem : MonoBehaviour
         for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
         {
             GameObject gameObject = scaleFactorGameObject.transform.GetChild(i).gameObject;
-            if (gameObject.name == "Archers")
+            if (gameObject.name == "Archers" || gameObject.name == "Gunmen")
             {
-                pirates = gameObject;
+                parentShooterObject = gameObject;
+                shooter = parentShooterObject.name;
             }
         }
-        for (int i = 0; i < pirates.transform.childCount; i++)
+        for (int i = 0; i < parentShooterObject.transform.childCount; i++)
         {
-            archers[i] = pirates.transform.GetChild(i).gameObject;
-            archerControllerScript[i] = archers[i].GetComponent<ArcherController>();
+            if (shooter == "Archers")
+            {
+                archers[i] = parentShooterObject.transform.GetChild(i).gameObject;
+                archerControllerScript[i] = archers[i].GetComponent<ArcherController>();
+            }
+            else if (shooter == "Gunmen")
+            {
+                gunmen[i] = parentShooterObject.transform.GetChild(i).gameObject;
+                gunmanControllerScript[i] = gunmen[i].GetComponent<GunmanController>();
+            }
         }
     }
 
     private void Start()
     {
+        if (shooter == "Archers")
+        {
+            arrowShootScript = this.GetComponent<ArrowShoot>();
+            maxRange = arrowShootScript.archerMaxRange;
+            gunShootScript = null;
+        }
+        else if (shooter == "Gunmen")
+        {
+            gunShootScript = this.GetComponent<GunShoot>();
+            maxRange = gunShootScript.gunmanMaxRange;
+            arrowShootScript = null;
+        }
         isNavyShip = this.GetComponent<ShipClassifier>().isNavyShip;
         for (int i = 0; i < ShipClassifier.shipCount; i++)
         {
             shipsInRange[i] = null;
         }
+        myShipCenter = transform.GetChild(0).gameObject;        
     }
 
     private void Update()
@@ -62,12 +94,37 @@ public class TargetingSystem : MonoBehaviour
 
             To switch left or right, just replace keycode.L and keycode.R by buttons
          */
+/*        if (displayMyContents)
+        {
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                print("shipcount: " + shipsInRangeCount);
+                if (selectedShip != null)
+                {
+                    print("Selected Ship: " + selectedShip.name);
+                }
+                else
+                {
+                    print("Selected Ship: " + " null");
+                }
+
+                print("All ships in range");
+                for (int i = 0; i < shipsInRangeCount; i++)
+                {
+                    print(shipsInRange[i].name);
+                }
+            }
+        }*/
+
+        myShipPosition = myShipCenter.transform.position;
         if (isNavyShip)
         {
             foreach (ShipClassifier pirateEnemyShip in ShipClassifier.GetPirateShipList())
             {
                 bool foundInInnerLoop = false;
-                if (Vector3.Distance(transform.position, pirateEnemyShip.transform.position) < maxRange)
+                GameObject pirateEnemyShipCenter = pirateEnemyShip.transform.GetChild(0).gameObject;
+
+                if (Vector3.Distance(myShipPosition, pirateEnemyShipCenter.transform.position) < maxRange)
                 {
                     for (int i = 0; i < ShipClassifier.shipCount; i++)
                     {
@@ -112,7 +169,8 @@ public class TargetingSystem : MonoBehaviour
             foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
             {
                 bool foundInInnerLoop = false;
-                if (Vector3.Distance(transform.position, navyEnemyShip.transform.position) < maxRange)
+                GameObject navyEnemyShipCenter = navyEnemyShip.transform.GetChild(0).gameObject;
+                if (Vector3.Distance(myShipPosition, navyEnemyShipCenter.transform.position) < maxRange)
                 {
                     for (int i = 0; i < ShipClassifier.shipCount; i++)
                     {
@@ -155,10 +213,21 @@ public class TargetingSystem : MonoBehaviour
 
         if (shipsInRangeCount == 0)
         {
-            for (int i = 0; i < ArrowShoot.totalArcherCount; i++)
+            if (shooter == "Archers")
             {
-                archerControllerScript[i].B = null;
+                for (int i = 0; i < ArrowShoot.totalArcherCount; i++)
+                {
+                    archerControllerScript[i].B = null;
+                }
             }
+            else if (shooter == "Gunmen")
+            {
+                for (int i = 0; i < GunShoot.totalGunmanCount; i++)
+                {
+                    gunmanControllerScript[i].B = null;
+                }
+            }
+            selectedShip = null;
         }
         else if (shipsInRangeCount == 1)
         {
@@ -167,78 +236,132 @@ public class TargetingSystem : MonoBehaviour
                 if (enemyShip != null)
                 {
                     selectedShip = enemyShip;
-                    //print("Selected ship: " + selectedShip);
-                    for (int i = 0; i < ArrowShoot.totalArcherCount; i++)
+
+                    if (shooter == "Archers")
                     {
-                        GameObject pirateShipCenter = enemyShip.transform.GetChild(0).gameObject;
-                        archerControllerScript[i].B = pirateShipCenter.transform;
+                        for (int i = 0; i < ArrowShoot.totalArcherCount; i++)
+                        {
+                            GameObject enemyShipCenter = enemyShip.transform.GetChild(0).gameObject;
+                            archerControllerScript[i].B = enemyShipCenter.transform;
+                        }
+                    }
+                    else if (shooter == "Gunmen")
+                    {
+                        for (int i = 0; i < GunShoot.totalGunmanCount; i++)
+                        {
+                            GameObject enemyShipCenter = enemyShip.transform.GetChild(0).gameObject;
+                            gunmanControllerScript[i].B = enemyShipCenter.transform;
+                        }
                     }
                 }
             }
         }      
         else if (shipsInRangeCount > 1)//Make sure that the new array stores the ships along a circular direction
-        {           
-            //1. Copy all elements from shipsInRange to circularlyArrangedShips
-            for (int i = 0; i < ShipClassifier.shipCount; i++)
+        {
+            //Check whether selectedShip is the ship in range(we encountered case when a ship not in range was selected ship)
+            if (selectedShip != null)
             {
-                circularlyArrangedShips[i] = shipsInRange[i];
-            }
-
-            //2. Make sure that null values lie at end of array, non-null elements are all at front of array
-            System.Array.Sort(circularlyArrangedShips, (x, y) =>
-            {
-                if (x == null && y == null)
-                    return 0;//randomly determine to replace or not
-                if (x == null)
-                    return 1;//replace 2nd element with 1st
-                if (y == null)
-                    return -1;//no need to replace 2nd element with 1st
-                // For non-null elements, you can use any comparison logic or leave it arbitrary
-                return -1;
-            });
-
-            //3. Sort those elements
-            ShipSort.SortShips(circularlyArrangedShips, this.gameObject);
-
-            //start from the element of array that was being targeted at when count was equal to 1, continue making B.position equal to this ship
-            //B.pos = selected ship inside new array, so search at which pos selected ship is and put selectedIndex equal to that value
-            for (int i = 0; i < shipsInRangeCount; i++)
-            {
-                if (circularlyArrangedShips[i] == selectedShip)
+                foreach (ShipClassifier enemyShip in shipsInRange)
                 {
-                    selectedIndex = i;
+                    if (selectedShip == enemyShip)
+                    {
+                        selectedShipNotInRange = false;
+                    }
+                }
+                if (selectedShipNotInRange)
+                {
+                    selectedShip = null;
+                }
+                selectedShipNotInRange = true;
+            }
+            else
+            {
+                foreach (ShipClassifier enemyShip in shipsInRange)
+                {
+                    if (enemyShip != null)
+                    {
+                        selectedShip = enemyShip;
+                        break;
+                    }
                 }
             }
-            for (int i = 0; i < ArrowShoot.totalArcherCount; i++)
-            {
-                GameObject pirateShipCenter = selectedShip.transform.GetChild(0).gameObject;
-                archerControllerScript[i].B = pirateShipCenter.transform;
-            }
 
-            //now when R is pressed, select the ship at next index from selectedIndex and so on
-            //when L is pressed, select ship at index left and so on
+            if (selectedShip != null)
+            {
+                //1. Copy all elements from shipsInRange to circularlyArrangedShips
+                for (int i = 0; i < ShipClassifier.shipCount; i++)
+                {
+                    circularlyArrangedShips[i] = shipsInRange[i];
+                }
 
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                SelectNextShipClockwise();
-            }
-            else if (Input.GetKeyDown(KeyCode.L))
-            {
-                SelectNextShipCounterclockwise();
-            }
+                //2. Make sure that null values lie at end of array, non-null elements are all at front of array
+                System.Array.Sort(circularlyArrangedShips, (x, y) =>
+                {
+                    if (x == null && y == null)
+                        return 0;//randomly determine to replace or not
+                    if (x == null)
+                        return 1;//replace 2nd element with 1st
+                    if (y == null)
+                        return -1;//no need to replace 2nd element with 1st
+                                  // For non-null elements, you can use any comparison logic or leave it arbitrary
+                    return -1;
+                });
+
+                //3. Sort those elements according to angle, so they are now circularly arranged in new array
+                ShipSort.SortShips(circularlyArrangedShips, this.gameObject);
+
+                //start from the element of array that was being targeted at when count was equal to 1, continue making B.position equal to this ship
+                //B.pos = selected ship inside new array, so search at which pos selected ship is and put selectedIndex equal to that value
+                for (int i = 0; i < shipsInRangeCount; i++)
+                {
+                    if (circularlyArrangedShips[i] == selectedShip)
+                    {
+                        selectedIndex = i;
+                    }
+                }
+
+                if (shooter == "Archers")
+                {
+                    for (int i = 0; i < ArrowShoot.totalArcherCount; i++)
+                    {
+                        GameObject selectedShipCenter = selectedShip.transform.GetChild(0).gameObject;
+                        archerControllerScript[i].B = selectedShipCenter.transform;
+                    }
+                }
+                else if (shooter == "Gunmen")
+                {
+                    for (int i = 0; i < GunShoot.totalGunmanCount; i++)
+                    {
+                        GameObject selectedShipCenter = selectedShip.transform.GetChild(0).gameObject;
+                        gunmanControllerScript[i].B = selectedShipCenter.transform;
+                    }
+                }
+
+                //now when R is pressed, select the ship at next index from selectedIndex and so on
+                //when L is pressed, select ship at index left and so on
+
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    SelectNextShipClockwise();
+                }
+                else if (Input.GetKeyDown(KeyCode.L))
+                {
+                    SelectNextShipCounterclockwise();
+                }
+            }            
         }      
     }
     private void SelectNextShipClockwise()
     {
         selectedIndex = (selectedIndex + 1) % shipsInRangeCount;
         selectedShip = circularlyArrangedShips[selectedIndex];
-        print("Selected Ship " + selectedShip);
+        //print("Selected Ship " + selectedShip);
     }
 
     private void SelectNextShipCounterclockwise()
     {
         selectedIndex = (selectedIndex - 1 + shipsInRangeCount) % shipsInRangeCount;
         selectedShip = circularlyArrangedShips[selectedIndex];
-        print("Selected Ship " + selectedShip);
+        //print("Selected Ship " + selectedShip);
     }
 }

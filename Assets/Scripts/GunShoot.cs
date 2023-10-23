@@ -4,54 +4,112 @@ using UnityEngine;
 
 public class GunShoot : MonoBehaviour
 {
-    [SerializeField] private Transform A;
-    [SerializeField] private Transform B;
-    [SerializeField] private GameObject bullet;
+    [SerializeField] private ObjectPool_Projectile objectPoolBulletScript;
     [SerializeField] private float lineWidth;
     [SerializeField] private float bulletVelocity;
+    public float gunmanMaxRange;
+    [SerializeField] private float coolDownTime;
 
-    private LineRenderer lineRenderer;
-    private bool shootOnce;
+    public static int totalGunmanCount = 8;
+
+    private GameObject bullet;
+    private Vector3 myShipPosition;
+    private GameObject scaleFactorGameObject;
+    private GameObject shipCenter;
+    private GameObject gunmanParentObject;
+    private GameObject[] gunmen = new GameObject[totalGunmanCount];
+    private GunmanController[] gunmanControllerScript = new GunmanController[totalGunmanCount];
+
     private Vector3 endPosition;
+
+    private void Awake()
+    {
+        for (int i = 0; i < this.transform.childCount; i++)
+        {
+            GameObject gameObject = this.transform.GetChild(i).gameObject;
+            if (gameObject.name == "ScaleFactorGameObject")
+            {
+                scaleFactorGameObject = gameObject;
+            }
+            else if (gameObject.name == "ShipCenter")
+            {
+                shipCenter = gameObject;
+            }
+        }
+
+        for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
+        {
+            GameObject gameObject = scaleFactorGameObject.transform.GetChild(i).gameObject;
+            if (gameObject.name == "Gunmen")
+            {
+                gunmanParentObject = gameObject;
+            }
+        }
+        for (int i = 0; i < totalGunmanCount; i++)
+        {
+            gunmen[i] = gunmanParentObject.transform.GetChild(i).gameObject;
+            gunmanControllerScript[i] = gunmen[i].GetComponent<GunmanController>();
+        }
+    }
 
     private void Start()
     {
-        lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.startWidth = lineWidth;
-        lineRenderer.positionCount = 2;
-        bullet.transform.position = A.position;
-        bullet.transform.LookAt(B.position);
-        shootOnce = false;
+        for (int i = 0; i < totalGunmanCount; i++)
+        {
+            gunmanControllerScript[i].lineRenderer.startWidth = lineWidth;
+            gunmanControllerScript[i].lineRenderer.positionCount = 2;
+        }
     }
 
     private void Update()
     {
-        lineRenderer.SetPosition(0, Evaluate(0));//set start point (vertex = 0, position = Evaluate(0))
-        lineRenderer.SetPosition(1, Evaluate(1));//set end point
+        myShipPosition = shipCenter.transform.position;
 
-        if (Input.GetKeyDown(KeyCode.S))
+        for (int i = 0; i < totalGunmanCount; i++)
         {
-            if (!shootOnce)
-            {
-                bullet.transform.position = A.position;
-                endPosition = B.transform.position;
+            Transform B = gunmanControllerScript[i].B;
 
-                shootOnce = true;
-                StartCoroutine(MoveObject(A.position,endPosition));
-                //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and bullet moves towards previous target
-                //similarly the coroutine is also called just once
-            }
-        }
-        if (shootOnce)
-        {
-            if ((Mathf.Approximately(bullet.transform.position.x, endPosition.x)) && (Mathf.Approximately(bullet.transform.position.y, endPosition.y)) && (Mathf.Approximately(bullet.transform.position.z, endPosition.z)))
+            if (B != null)
             {
-                print("Bullet movement complete");
-                shootOnce = false;
+                Transform A = gunmanControllerScript[i].A;
+                LineRenderer lineRenderer = gunmanControllerScript[i].lineRenderer;
+                bool shootOnce = gunmanControllerScript[i].shootOnce;
+
+                //float distance = Mathf.Sqrt((B.position.x - shipPosition.x) * (B.position.x - shipPosition.x) + (B.position.y - shipPosition.y) * (B.position.y - shipPosition.y) + (B.position.z - shipPosition.z) * (B.position.z - shipPosition.z));
+                float distance = Vector3.Distance(B.position, myShipPosition);
+
+                if (distance < gunmanMaxRange)
+                {
+                    lineRenderer.SetPosition(0, Evaluate(0,A,B));//set start point (vertex = 0, position = Evaluate(0))
+                    lineRenderer.SetPosition(1, Evaluate(1,A,B));//set end point
+
+                    //Check if shoot is pressed
+                    if (Input.GetKeyDown(KeyCode.S))
+                    {
+                        if (!shootOnce)
+                        {
+                            bullet = objectPoolBulletScript.ReturnProjectile();
+
+                            if (bullet != null)
+                            {
+                                bullet.transform.position = A.position;
+                                endPosition = B.transform.position;
+
+                                gunmanControllerScript[i].shootOnce = true;
+                                StartCoroutine(MoveObject(A.position, endPosition, bullet));
+                                StartCoroutine(CoolDownTime());
+                            }                            
+                        }
+                    }                    
+                }
+                else
+                {
+                    gunmanControllerScript[i].B = null;//once out of range make sure that the final position is not still pointing to previous ship
+                }
             }
-        }
+        }       
     }
-    private IEnumerator MoveObject(Vector3 startPos, Vector3 endPos)
+    private IEnumerator MoveObject(Vector3 startPos, Vector3 endPos, GameObject bullet)
     {
         bullet.transform.LookAt(endPos);
 
@@ -69,23 +127,18 @@ public class GunShoot : MonoBehaviour
         // Ensure the bullet reaches the exact end position.
         bullet.transform.position = endPos;
     }
-    private Vector3 Evaluate(float t)
+    private IEnumerator CoolDownTime()
+    {
+        yield return new WaitForSeconds(coolDownTime);
+        for (int i = 0; i < totalGunmanCount; i++)
+        {
+            gunmanControllerScript[i].shootOnce = false;
+        }
+    }
+
+    private Vector3 Evaluate(float t, Transform A, Transform B)
     {
         Vector3 ab = Vector3.Lerp(A.position, B.position, t);//Interpolate from point A to B
         return ab;
     }
-
-    private void OnDrawGizmos()//Draw Straight line between start and end points
-    {
-        if (A == null || B == null)
-        {
-            return;
-        }
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(Evaluate(0), Evaluate(1));//Only during scene view, draw a line between points
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(Evaluate(0), 0.01f);
-        Gizmos.DrawWireSphere(Evaluate(1), 0.01f);
-    }
-
 }

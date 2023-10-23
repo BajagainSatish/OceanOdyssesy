@@ -5,26 +5,29 @@ using static UnityEngine.GraphicsBuffer;
 
 public class ArrowShoot : MonoBehaviour
 {
-    [SerializeField] private ObjectPool_Arrows objectPoolArrowScript;
+    [SerializeField] private ObjectPool_Projectile objectPoolArrowScript;
     [SerializeField] private float lineWidth;
     [SerializeField] private float arrowVelocity;
     [SerializeField] private float leastDistanceForStraightHit;
     [SerializeField] private float adjustCurveAngle;
-    [SerializeField] private float archerMaxRange;
-    [SerializeField] private float upperYLimit = 0.7f;
-    [SerializeField] private float lowerYLimit = -0.1f;
-    [SerializeField] private float archerShootAngleRange = 80;
+    public float archerMaxRange;
+    [SerializeField] private float coolDownTime;
+    //[SerializeField] private float upperYLimit = 0.7f;
+    //[SerializeField] private float lowerYLimit = -0.1f;
+    //[SerializeField] private float archerShootAngleRange = 80;
 
     public static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
     public static int totalArcherCount = 8;
 
     private GameObject arrow;
-    private Vector3 shipPosition;
+    private Vector3 myShipPosition;
     private GameObject scaleFactorGameObject;
-    private GameObject shipCenter;
+    private GameObject myShipCenter;
     private GameObject archerParentObject;
     private GameObject[] archers = new GameObject[totalArcherCount];
     private ArcherController[] archerControllerScript = new ArcherController[totalArcherCount];
+
+    private float adjustDistanceFactor;
 
     private void Awake()
     {
@@ -37,7 +40,7 @@ public class ArrowShoot : MonoBehaviour
             }
             else if (gameObject.name == "ShipCenter")
             {
-                shipCenter = gameObject;
+                myShipCenter = gameObject;
             }
         }
         for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
@@ -51,9 +54,6 @@ public class ArrowShoot : MonoBehaviour
         for (int i = 0; i < totalArcherCount; i++)
         {
             archers[i] = archerParentObject.transform.GetChild(i).gameObject;
-        }
-        for (int i = 0; i < totalArcherCount; i++)
-        {
             archerControllerScript[i] = archers[i].GetComponent<ArcherController>();
         }
     }
@@ -68,7 +68,7 @@ public class ArrowShoot : MonoBehaviour
     }
     private void Update()
     {
-        shipPosition = shipCenter.transform.position;
+        myShipPosition = myShipCenter.transform.position;
         for (int i = 0; i < totalArcherCount; i++)
         {
             Transform B = archerControllerScript[i].B;
@@ -77,21 +77,24 @@ public class ArrowShoot : MonoBehaviour
                 Transform A = archerControllerScript[i].A;
                 Transform control = archerControllerScript[i].control;
 
-                bool withinArcherRotateRange = archerControllerScript[i].withinArcherRotateRange;
+                //bool withinArcherRotateRange = archerControllerScript[i].withinArcherRotateRange;
                 LineRenderer lineRenderer = archerControllerScript[i].lineRenderer;
-                float adjustDistanceFactor = archerControllerScript[i].adjustDistanceFactor;
-                bool shootOnce = archerControllerScript[i].shootOnce;
-                //GameObject arrow = archerControllerScript[i].arrow;
-                Vector3 endPosition = archerControllerScript[i].endPosition;
+                bool shootOnce = archerControllerScript[i].shootOnce;               
                 Vector3[] routePoints = archerControllerScript[i].routePoints;
 
-                float distance = Mathf.Sqrt((B.position.x - shipPosition.x) * (B.position.x - shipPosition.x) + (B.position.y - shipPosition.y) * (B.position.y - shipPosition.y) + (B.position.z - shipPosition.z) * (B.position.z - shipPosition.z));
+                //float distance = Mathf.Sqrt((B.position.x - shipPosition.x) * (B.position.x - shipPosition.x) + (B.position.y - shipPosition.y) * (B.position.y - shipPosition.y) + (B.position.z - shipPosition.z) * (B.position.z - shipPosition.z));
+                float distance = Vector3.Distance(B.position,myShipPosition);
+
+                /*
                 Vector3 difference = B.position - A.position;
                 Vector3 targetDirection = (B.position - A.position).normalized;
                 Vector3 archersForwardDirection = archerControllerScript[i].transform.forward;
 
                 // Calculate the angle between the forward direction and the target direction
-                float angle = Vector3.Angle(targetDirection, archersForwardDirection);
+                //float angle = Vector3.Angle(targetDirection, archersForwardDirection);
+
+                //Initially, we had constraints assuming archer didn't rotate towards target at all times and archer faced only one side of ship at a time
+                //If archer rotates towards target at all times, we can remove these 3 following constraints, we don't need withinArcherRotateRange variable, and can safely remove it
 
                 // Check if the angle is within the desired range
                 if (angle <= archerShootAngleRange && difference.y >= lowerYLimit && difference.y <= upperYLimit)
@@ -102,10 +105,11 @@ public class ArrowShoot : MonoBehaviour
                 {
                     withinArcherRotateRange = false;
                 }
-                if (distance <= archerMaxRange && withinArcherRotateRange)
+                */
+                //if (distance <= archerMaxRange && withinArcherRotateRange)
+                if (distance < archerMaxRange)
                 {
                     //Draw Line or Curve from archer to enemy
-                    lineRenderer.enabled = true;
                     for (int j = 0; j < curvePointsTotalCount + 1; j++)
                     {
                         lineRenderer.SetPosition(j, Evaluate(j / (float)curvePointsTotalCount, A, B, control));
@@ -132,33 +136,26 @@ public class ArrowShoot : MonoBehaviour
                     {
                         if (!shootOnce)
                         {
-                            arrow = objectPoolArrowScript.ReturnArrow();
+                            arrow = objectPoolArrowScript.ReturnProjectile();
 
                             if (arrow != null)
                             {
                                 arrow.transform.position = A.position;
-                                endPosition = B.transform.position;
                                 for (int j = 0; j < curvePointsTotalCount + 1; j++)
                                 {
                                     routePoints[j] = Evaluate(j / (float)curvePointsTotalCount, A, B, control);
                                 }
-                                shootOnce = true;
+                                archerControllerScript[i].shootOnce = true;
                                 StartCoroutine(MoveThroughRoute(arrow, routePoints));
+                                StartCoroutine(CoolDownTime());
                             }
                         }
                     }
-                    if (shootOnce)
-                    {
-                        if ((Mathf.Approximately(arrow.transform.position.x, endPosition.x)) && (Mathf.Approximately(arrow.transform.position.y, endPosition.y)) && (Mathf.Approximately(arrow.transform.position.z, endPosition.z)))
-                        {
-                            shootOnce = false;
-                        }
-                    }
-            }
-            else
-            {
-                lineRenderer.enabled = false;
-            }
+                }
+                else
+                {
+                    archerControllerScript[i].B = null;
+                }
             }
         }
     }
@@ -185,6 +182,14 @@ public class ArrowShoot : MonoBehaviour
         }
         // Ensure the arrow reaches the exact end position.
         arrow.transform.position = endPos;
+    }
+    private IEnumerator CoolDownTime()
+    {
+        yield return new WaitForSeconds(coolDownTime);
+        for (int i = 0; i < totalArcherCount; i++)
+        {
+            archerControllerScript[i].shootOnce = false;
+        }
     }
 
     private Vector3 Evaluate(float t, Transform A, Transform B, Transform control)//Quadratic Curve functionality

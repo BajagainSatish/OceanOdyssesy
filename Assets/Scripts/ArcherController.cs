@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class ArcherController : MonoBehaviour
 {
-    public Transform A;
+    [HideInInspector] public Transform A;
     public Transform B;
-    public Transform control;
-    public LineRenderer lineRenderer;
+    [HideInInspector] public Transform control;
+    [HideInInspector] public LineRenderer lineRenderer;
 
-    public float adjustDistanceFactor;
-    public bool shootOnce = false;
-    public Vector3 endPosition;
-    public Vector3[] routePoints = new Vector3[ArrowShoot.curvePointsTotalCount + 1];
-    public bool withinArcherRotateRange = false;
+    [HideInInspector] public bool shootOnce = false;
+    [HideInInspector] public Vector3 endPosition;
+    [HideInInspector] public Vector3[] routePoints = new Vector3[ArrowShoot.curvePointsTotalCount + 1];
+    [HideInInspector] public bool withinArcherRotateRange = false;
 
     private GameObject projectilePath;
     private int curvePointsTotalCount = ArrowShoot.curvePointsTotalCount;
@@ -44,7 +43,15 @@ public class ArcherController : MonoBehaviour
 
     private void Update()
     {
-        transform.LookAt(B);//archer faces the ship
+        if (B != null)
+        {
+            lineRenderer.enabled = true;
+            transform.LookAt(B);//archer faces the ship
+        }
+        else
+        {
+            lineRenderer.enabled = false;
+        }
     }
 
     private void OnDrawGizmos()//Draw Quadratic Curve
