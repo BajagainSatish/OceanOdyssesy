@@ -7,13 +7,17 @@ public class MortarShoot : MonoBehaviour
     [SerializeField] private Transform A;
     [SerializeField] private Transform B;
     [SerializeField] private Transform control;
-    [SerializeField] private GameObject mortarBomb;
+    [SerializeField] private ObjectPool_Projectile objectPoolMortarScript;
 
     [SerializeField] private float lineWidth;
     [SerializeField] private float mortarBombVelocity;
     [SerializeField] private float adjustCurveAngle;
+    [SerializeField] private float coolDownTime;
 
     private static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
+    public static int totalArtilleristCount = 6;//common mortarmen and cannonmen
+
+    private GameObject mortarBomb;
     private float adjustDistanceFactor;
     private LineRenderer lineRenderer;
     private bool shootOnce;
@@ -25,8 +29,6 @@ public class MortarShoot : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.startWidth = lineWidth;
         lineRenderer.positionCount = curvePointsTotalCount + 1;
-        mortarBomb.transform.position = routePoints[0];
-        mortarBomb.transform.LookAt(routePoints[1]);
         shootOnce = false;
     }
 
@@ -56,14 +58,20 @@ public class MortarShoot : MonoBehaviour
         {
             if (!shootOnce)
             {
-                mortarBomb.transform.position = A.position;
-                endPosition = B.transform.position;
-                for (int i = 0; i < curvePointsTotalCount + 1; i++)
+                mortarBomb = objectPoolMortarScript.ReturnProjectile();
+
+                if (mortarBomb != null)
                 {
-                    routePoints[i] = Evaluate(i / (float)curvePointsTotalCount);
-                }
-                shootOnce = true;
-                StartCoroutine(MoveThroughRoute());
+                    mortarBomb.transform.position = A.position;
+                    endPosition = B.transform.position;
+                    for (int i = 0; i < curvePointsTotalCount + 1; i++)
+                    {
+                        routePoints[i] = Evaluate(i / (float)curvePointsTotalCount);
+                    }
+                    shootOnce = true;
+                    StartCoroutine(MoveThroughRoute());
+                    StartCoroutine(CoolDownTime());
+                }               
                 //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and ball moves towards previous target
                 //similarly the coroutine is also called just once
             }
@@ -102,6 +110,15 @@ public class MortarShoot : MonoBehaviour
         // Ensure the mortar bomb reaches the exact end position.
         mortarBomb.transform.position = endPos;
     }
+    private IEnumerator CoolDownTime()
+    {
+        yield return new WaitForSeconds(coolDownTime);
+        for (int i = 0; i < totalArtilleristCount; i++)
+        {
+            shootOnce = false;
+        }
+    }
+
     private Vector3 Evaluate(float t)//Quadratic Curve functionality
     {
         Vector3 ac = Vector3.Lerp(A.position, control.position, t);//Interpolate from point A to ControlPoint

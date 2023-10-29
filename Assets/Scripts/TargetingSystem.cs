@@ -11,8 +11,12 @@ public class TargetingSystem : MonoBehaviour
 
     private GameObject[] archers = new GameObject[ArrowShoot.totalArcherCount];
     private GameObject[] gunmen = new GameObject[GunShoot.totalGunmanCount];
+    private GameObject[] shootUnitCannon = new GameObject[CanonController.totalCannonCount];
+
     private ArcherController[] archerControllerScript = new ArcherController[ArrowShoot.totalArcherCount];
     private GunmanController[] gunmanControllerScript = new GunmanController[GunShoot.totalGunmanCount];
+    private CanonController[] canonControllerScript = new CanonController[CanonController.totalCannonCount];
+
     private ArrowShoot arrowShootScript;
     private GunShoot gunShootScript;
 
@@ -27,7 +31,7 @@ public class TargetingSystem : MonoBehaviour
     private GameObject myShipCenter;
     private Vector3 myShipPosition;
 
-    //[SerializeField] private bool displayMyContents = false;
+    [SerializeField] private bool displayMyContents = false;
     private bool selectedShipNotInRange = true;
 
     private void Awake()
@@ -43,7 +47,7 @@ public class TargetingSystem : MonoBehaviour
         for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
         {
             GameObject gameObject = scaleFactorGameObject.transform.GetChild(i).gameObject;
-            if (gameObject.name == "Archers" || gameObject.name == "Gunmen")
+            if (gameObject.name == "Archers" || gameObject.name == "Gunmen" || gameObject.name == "CannonUnit")
             {
                 parentShooterObject = gameObject;
                 shooter = parentShooterObject.name;
@@ -60,6 +64,11 @@ public class TargetingSystem : MonoBehaviour
             {
                 gunmen[i] = parentShooterObject.transform.GetChild(i).gameObject;
                 gunmanControllerScript[i] = gunmen[i].GetComponent<GunmanController>();
+            }
+            else if (shooter == "CannonUnit")
+            {
+                shootUnitCannon[i] = parentShooterObject.transform.GetChild(i).gameObject;
+                canonControllerScript[i] = shootUnitCannon[i].GetComponent<CanonController>();
             }
         }
     }
@@ -78,23 +87,31 @@ public class TargetingSystem : MonoBehaviour
             maxRange = gunShootScript.gunmanMaxRange;
             arrowShootScript = null;
         }
+        else if (shooter == "CannonUnit")
+        {
+            maxRange = canonControllerScript[0].cannonMaxRange;
+            arrowShootScript = null;
+            gunShootScript = null;
+        }
+
         isNavyShip = this.GetComponent<ShipClassifier>().isNavyShip;
         for (int i = 0; i < ShipClassifier.shipCount; i++)
         {
             shipsInRange[i] = null;
         }
-        myShipCenter = transform.GetChild(0).gameObject;        
+        myShipCenter = transform.GetChild(0).gameObject;
     }
 
     private void Update()
     {
         /*
-            To display arrow over the currently selected ship, just implement that to selectedShip inside Update method.
-            eg. ArrowDisplay(selectedShip);
+           To display arrow over the currently selected ship, just implement that to selectedShip inside Update method.
+           eg. ArrowDisplay(selectedShip);
 
-            To switch left or right, just replace keycode.L and keycode.R by buttons
-         */
-/*        if (displayMyContents)
+           To switch left or right, just replace keycode.L and keycode.R by buttons
+        */
+
+        if (displayMyContents)
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
@@ -114,7 +131,7 @@ public class TargetingSystem : MonoBehaviour
                     print(shipsInRange[i].name);
                 }
             }
-        }*/
+        }
 
         myShipPosition = myShipCenter.transform.position;
         if (isNavyShip)
@@ -227,6 +244,13 @@ public class TargetingSystem : MonoBehaviour
                     gunmanControllerScript[i].B = null;
                 }
             }
+            else if (shooter == "CannonUnit")
+            {
+                for (int i = 0; i < CanonController.totalCannonCount; i++)
+                {
+                    canonControllerScript[i].B = null;
+                }
+            }
             selectedShip = null;
         }
         else if (shipsInRangeCount == 1)
@@ -253,6 +277,15 @@ public class TargetingSystem : MonoBehaviour
                             gunmanControllerScript[i].B = enemyShipCenter.transform;
                         }
                     }
+                    else if (shooter == "CannonUnit")
+                    {
+                        for (int i = 0; i < CanonController.totalCannonCount; i++)
+                        {
+                            GameObject enemyShipCenter = enemyShip.transform.GetChild(0).gameObject;
+                            canonControllerScript[i].B = enemyShipCenter.transform;
+                        }
+                    }
+
                 }
             }
         }      
@@ -334,6 +367,14 @@ public class TargetingSystem : MonoBehaviour
                     {
                         GameObject selectedShipCenter = selectedShip.transform.GetChild(0).gameObject;
                         gunmanControllerScript[i].B = selectedShipCenter.transform;
+                    }
+                }
+                else if (shooter == "CannonUnit")
+                {
+                    for (int i = 0; i < CanonController.totalCannonCount; i++)
+                    {
+                        GameObject selectedShipCenter = selectedShip.transform.GetChild(0).gameObject;
+                        canonControllerScript[i].B = selectedShipCenter.transform;
                     }
                 }
 

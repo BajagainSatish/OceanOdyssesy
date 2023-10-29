@@ -244,7 +244,7 @@ public class AnimationStateController : MonoBehaviour
         //currentState = ProcessingCannonBallStates.rotateTowardsInitialPosition;
         currentState = ProcessingCannonBallStates.lightTheRope;
 
-        canonControllerScript.objectPool_CanonBallScript.noCannonBallSelectedYet = true;//allow choosing of next cannonball
+        //canonControllerScript.objectPool_CanonBallScript.noCannonBallSelectedYet = true;//allow choosing of next cannonball
         //This line was specifically kept here because, rather than in the WaitForLightTheRope() or when readyToAttack were true, they would be called continuously in the Update,
         //making the boolean true, so it is made true only after animation is almost completed, preventing multiple cannonballs being shot at once.
     }
