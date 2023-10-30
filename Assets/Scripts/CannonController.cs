@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CanonController : MonoBehaviour
+public class CannonController : MonoBehaviour
 {
     public static int totalCannonCount = 4;
 
@@ -14,17 +14,17 @@ public class CanonController : MonoBehaviour
     public float cannonMaxRange;
 
     [SerializeField] private GameObject cannonRotator;
-    [SerializeField] private GameObject newCannon;
+    public GameObject newCannon;
 
     public ObjectPool_Projectile objectPool_CanonBallScript;
     private ParticleSystem[] smokeParticleEffect = new ParticleSystem[3];
-    public static int totalArtilleristCount = 6;//common mortarmen and cannonmen
 
-    [SerializeField] private float cannonShootAngleRange = 60;
+    public float cannonShootAngleRange = 60;
 
+    private Transform shipGameObject;
     private Vector3 myShipPosition;
     private GameObject cannonBall;
-    private LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
     private bool shootOnce;
     private Vector3 endPosition;
     private bool withinCannonRotateRange;
@@ -50,35 +50,23 @@ public class CanonController : MonoBehaviour
         lineRenderer.startWidth = lineWidth;
         lineRenderer.positionCount = 2;
         shootOnce = false;
+        shipGameObject = MortarController.FindHighestParent(this.transform);
     }
 
     private void Update()
     {
-        myShipPosition = this.transform.position;//same world position as parent ship
+        myShipPosition = shipGameObject.position;
 
         if (B != null)
         {
             float distance = Vector3.Distance(myShipPosition, B.position);
+
             if (distance < cannonMaxRange)
             {
                 lineRenderer.SetPosition(0, Evaluate(0));//set start point (vertex = 0, position = Evaluate(0))
                 lineRenderer.SetPosition(1, Evaluate(1));//set end point
 
-                Vector3 targetDirection = (B.position - newCannon.transform.position).normalized;
-                Vector3 cannonsForwardDirection = newCannon.transform.forward;//will remain constant
-
-                // Calculate the angle between the forward direction and the target direction
-                float angle = Vector3.Angle(targetDirection, cannonsForwardDirection);
-
-                // Check if the angle is within the desired range
-                if (angle < cannonShootAngleRange)
-                {
-                    withinCannonRotateRange = true;
-                }
-                else
-                {
-                    withinCannonRotateRange = false;
-                }
+                withinCannonRotateRange = CannonRangeCheck(newCannon,B,cannonShootAngleRange);
 
                 if (withinCannonRotateRange)
                 {
@@ -101,7 +89,6 @@ public class CanonController : MonoBehaviour
                                 StartCoroutine(MoveObject(A.position, endPosition, cannonBall));
                                 StartCoroutine(CoolDownTime());
                             }
-
                             //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and bullet moves towards previous target
                             //similarly the coroutine is also called just once
                         }
@@ -139,10 +126,7 @@ public class CanonController : MonoBehaviour
     private IEnumerator CoolDownTime()
     {
         yield return new WaitForSeconds(coolDownTime);
-        for (int i = 0; i < totalArtilleristCount; i++)
-        {
-            shootOnce = false;
-        }
+        shootOnce = false;       
     }
 
     private Vector3 Evaluate(float t)
@@ -183,5 +167,32 @@ public class CanonController : MonoBehaviour
     {
         Vector3 ab = Vector3.Lerp(A.position, B.position, t);//Interpolate from point A to B
         return ab;
+    }
+
+    public bool CannonRangeCheck(GameObject cannon, Transform targetPos, float shootAngleRange)
+    {
+        bool withinRotateRange;
+        if (targetPos == null)
+        {
+            print("targetPos null");
+            return false;
+        }
+
+        Vector3 targetDirection = (targetPos.position - cannon.transform.position).normalized;
+        Vector3 cannonsForwardDirection = cannon.transform.forward;//will remain constant
+
+        // Calculate the angle between the forward direction and the target direction
+        float angle = Vector3.Angle(targetDirection, cannonsForwardDirection);
+
+        // Check if the angle is within the desired range
+        if (angle < shootAngleRange)
+        {
+            withinRotateRange = true;
+        }
+        else
+        {
+            withinRotateRange = false;
+        }
+        return withinRotateRange;
     }
 }

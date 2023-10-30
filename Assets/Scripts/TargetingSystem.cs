@@ -11,23 +11,30 @@ public class TargetingSystem : MonoBehaviour
 
     private GameObject[] archers = new GameObject[ArrowShoot.totalArcherCount];
     private GameObject[] gunmen = new GameObject[GunShoot.totalGunmanCount];
-    private GameObject[] shootUnitCannon = new GameObject[CanonController.totalCannonCount];
+    private GameObject[] shootUnitCannon = new GameObject[CannonController.totalCannonCount];
+    private GameObject[] shootUnitMortar = new GameObject[MortarController.totalMortarCount];
 
     private ArcherController[] archerControllerScript = new ArcherController[ArrowShoot.totalArcherCount];
     private GunmanController[] gunmanControllerScript = new GunmanController[GunShoot.totalGunmanCount];
-    private CanonController[] canonControllerScript = new CanonController[CanonController.totalCannonCount];
+    private CannonController[] cannonControllerScript = new CannonController[CannonController.totalCannonCount];
+    private MortarController[] mortarControllerScript = new MortarController[MortarController.totalMortarCount];
 
     private ArrowShoot arrowShootScript;
     private GunShoot gunShootScript;
 
     private bool isNavyShip;
     private float maxRange;
+    private float mortarRange;
     private int selectedIndex = 0;
     private int shipsInRangeCount = 0;
+
     private string shooter;
+    private string shooter2;
 
     private GameObject scaleFactorGameObject;
     private GameObject parentShooterObject;
+    private GameObject parentShooterObject2;
+
     private GameObject myShipCenter;
     private Vector3 myShipPosition;
 
@@ -47,10 +54,22 @@ public class TargetingSystem : MonoBehaviour
         for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
         {
             GameObject gameObject = scaleFactorGameObject.transform.GetChild(i).gameObject;
-            if (gameObject.name == "Archers" || gameObject.name == "Gunmen" || gameObject.name == "CannonUnit")
+            if (gameObject.name == "Archers" || gameObject.name == "Gunmen")
             {
                 parentShooterObject = gameObject;
                 shooter = parentShooterObject.name;
+                parentShooterObject2 = null;
+                shooter2 = null;
+            }
+            else if (gameObject.name == "CannonUnit")
+            {
+                parentShooterObject = gameObject;
+                shooter = parentShooterObject.name;
+            }
+            else if (gameObject.name == "MortarUnit")
+            {
+                parentShooterObject2 = gameObject;
+                shooter2 = parentShooterObject2.name;
             }
         }
         for (int i = 0; i < parentShooterObject.transform.childCount; i++)
@@ -68,9 +87,18 @@ public class TargetingSystem : MonoBehaviour
             else if (shooter == "CannonUnit")
             {
                 shootUnitCannon[i] = parentShooterObject.transform.GetChild(i).gameObject;
-                canonControllerScript[i] = shootUnitCannon[i].GetComponent<CanonController>();
+                cannonControllerScript[i] = shootUnitCannon[i].GetComponent<CannonController>();
             }
         }
+        if (parentShooterObject2 != null)
+        {
+            for (int i = 0; i < parentShooterObject2.transform.childCount; i++)
+            {
+                shootUnitMortar[i] = parentShooterObject2.transform.GetChild(i).gameObject;
+                mortarControllerScript[i] = shootUnitMortar[i].GetComponent<MortarController>();
+            }
+        }
+        
     }
 
     private void Start()
@@ -89,10 +117,17 @@ public class TargetingSystem : MonoBehaviour
         }
         else if (shooter == "CannonUnit")
         {
-            maxRange = canonControllerScript[0].cannonMaxRange;
+            maxRange = cannonControllerScript[0].cannonMaxRange;
             arrowShootScript = null;
             gunShootScript = null;
         }
+
+        if (shooter2 == "MortarUnit")
+        {
+            mortarRange = mortarControllerScript[0].mortarMaxRange;
+        }
+
+        //we won't set maxrange to that of mortarMaxRange as both cannon and mortar are on same ship, and cannon has larger range than mortar
 
         isNavyShip = this.GetComponent<ShipClassifier>().isNavyShip;
         for (int i = 0; i < ShipClassifier.shipCount; i++)
@@ -134,94 +169,291 @@ public class TargetingSystem : MonoBehaviour
         }
 
         myShipPosition = myShipCenter.transform.position;
-        if (isNavyShip)
+
+        if (shooter == "Archers" || shooter == "Gunmen")
         {
-            foreach (ShipClassifier pirateEnemyShip in ShipClassifier.GetPirateShipList())
+            if (isNavyShip)
             {
-                bool foundInInnerLoop = false;
-                GameObject pirateEnemyShipCenter = pirateEnemyShip.transform.GetChild(0).gameObject;
-
-                if (Vector3.Distance(myShipPosition, pirateEnemyShipCenter.transform.position) < maxRange)
+                foreach (ShipClassifier pirateEnemyShip in ShipClassifier.GetPirateShipList())
                 {
-                    for (int i = 0; i < ShipClassifier.shipCount; i++)
-                    {
-                        if (shipsInRange[i] == pirateEnemyShip)
-                        {
-                            foundInInnerLoop = true;
-                            break;
-                        }
-                    }
-                    if (foundInInnerLoop)
-                    {
-                        continue;
-                    }
-                    for (int i = 0; i < ShipClassifier.shipCount; i++)
-                    {
-                        if (shipsInRange[i] == null)
-                        {
-                            shipsInRange[i] = pirateEnemyShip;
-                            shipsInRangeCount++;
-                            return;
-                        }
-                    }
+                    bool foundInInnerLoop = false;
+                    GameObject pirateEnemyShipCenter = pirateEnemyShip.transform.GetChild(0).gameObject;
 
+                    if (Vector3.Distance(myShipPosition, pirateEnemyShipCenter.transform.position) < maxRange)
+                    {
+                        for (int i = 0; i < ShipClassifier.shipCount; i++)
+                        {
+                            if (shipsInRange[i] == pirateEnemyShip)
+                            {
+                                foundInInnerLoop = true;
+                                break;
+                            }
+                        }
+                        if (foundInInnerLoop)
+                        {
+                            continue;
+                        }
+
+                        for (int i = 0; i < ShipClassifier.shipCount; i++)
+                        {
+                            if (shipsInRange[i] == null)
+                            {
+                                shipsInRange[i] = pirateEnemyShip;
+                                shipsInRangeCount++;
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ShipClassifier.shipCount; i++)
+                        {
+                            if (shipsInRange[i] == pirateEnemyShip)
+                            {
+                                shipsInRange[i] = null;
+                                circularlyArrangedShips[i] = null;
+                                shipsInRangeCount--;
+                                return;
+                            }
+                        }
+                    }
                 }
-                else
+            }
+            else
+            {
+                foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
                 {
-                    for (int i = 0; i < ShipClassifier.shipCount; i++)
+                    bool foundInInnerLoop = false;
+                    GameObject navyEnemyShipCenter = navyEnemyShip.transform.GetChild(0).gameObject;
+                    if (Vector3.Distance(myShipPosition, navyEnemyShipCenter.transform.position) < maxRange)
                     {
-                        if (shipsInRange[i] == pirateEnemyShip)
+                        for (int i = 0; i < ShipClassifier.shipCount; i++)
                         {
-                            shipsInRange[i] = null;
-                            circularlyArrangedShips[i] = null;
-                            shipsInRangeCount--;
-                            return;
+                            if (shipsInRange[i] == navyEnemyShip)
+                            {
+                                foundInInnerLoop = true;
+                                break;
+                            }
+                        }
+                        if (foundInInnerLoop)
+                        {
+                            continue;
+                        }
+                        for (int i = 0; i < ShipClassifier.shipCount; i++)
+                        {
+                            if (shipsInRange[i] == null)
+                            {
+                                shipsInRange[i] = navyEnemyShip;
+                                shipsInRangeCount++;
+                                return;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ShipClassifier.shipCount; i++)
+                        {
+                            if (shipsInRange[i] == navyEnemyShip)
+                            {
+                                shipsInRange[i] = null;
+                                circularlyArrangedShips[i] = null;
+                                shipsInRangeCount--;
+                                return;
+                            }
                         }
                     }
                 }
             }
         }
-        else
-        {
-            foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
-            {
-                bool foundInInnerLoop = false;
-                GameObject navyEnemyShipCenter = navyEnemyShip.transform.GetChild(0).gameObject;
-                if (Vector3.Distance(myShipPosition, navyEnemyShipCenter.transform.position) < maxRange)
-                {
-                    for (int i = 0; i < ShipClassifier.shipCount; i++)
-                    {
-                        if (shipsInRange[i] == navyEnemyShip)
-                        {
-                            foundInInnerLoop = true;
-                            break;
-                        }
-                    }
-                    if (foundInInnerLoop)
-                    {
-                        continue;
-                    }
-                    for (int i = 0; i < ShipClassifier.shipCount; i++)
-                    {
-                        if (shipsInRange[i] == null)
-                        {
-                            shipsInRange[i] = navyEnemyShip;
-                            shipsInRangeCount++;
-                            return;
-                        }
-                    }
 
-                }
-                else
+        if (shooter == "CannonUnit" && shooter2 == "MortarUnit")
+        {
+            if (isNavyShip)
+            {
+                foreach (ShipClassifier pirateEnemyShip in ShipClassifier.GetPirateShipList())
                 {
-                    for (int i = 0; i < ShipClassifier.shipCount; i++)
+                    bool foundInInnerLoop = false;
+                    GameObject pirateEnemyShipCenter = pirateEnemyShip.transform.GetChild(0).gameObject;
+
+                    if (Vector3.Distance(myShipPosition, pirateEnemyShipCenter.transform.position) < maxRange)
                     {
-                        if (shipsInRange[i] == navyEnemyShip)
+                        print("Inside range distance wise");
+                        bool addToShipsInRangeArray = false;
+
+                        //Mortar Check
+                        if (Vector3.Distance(myShipPosition, pirateEnemyShipCenter.transform.position) < mortarRange)
                         {
-                            shipsInRange[i] = null;
-                            circularlyArrangedShips[i] = null;
-                            shipsInRangeCount--;
-                            return;
+                            addToShipsInRangeArray = true;
+                            print("Inside range mortar wise");
+                        }
+
+                        //Cannon Range Check
+                        if (!addToShipsInRangeArray)
+                        {
+                            for (int i = 0; i < CannonController.totalCannonCount; i++)
+                            {
+                                GameObject newCannon = cannonControllerScript[i].newCannon;
+                                Transform B = pirateEnemyShipCenter.transform;
+                                float cannonShootAngleRange = cannonControllerScript[i].cannonShootAngleRange;
+
+                                if (cannonControllerScript[i].CannonRangeCheck(newCannon, B, cannonShootAngleRange))
+                                {
+                                    //means it lies inside range
+                                    print("lies inside cannon range");
+                                    addToShipsInRangeArray = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (addToShipsInRangeArray)
+                        {
+                            for (int i = 0; i < ShipClassifier.shipCount; i++)
+                            {
+                                if (shipsInRange[i] == pirateEnemyShip)
+                                {
+                                    foundInInnerLoop = true;
+                                    break;
+                                }
+                            }
+                            if (foundInInnerLoop)
+                            {
+                                continue;
+                            }
+
+                            for (int i = 0; i < ShipClassifier.shipCount; i++)
+                            {
+                                if (shipsInRange[i] == null)
+                                {
+                                    shipsInRange[i] = pirateEnemyShip;
+                                    shipsInRangeCount++;
+                                    return;
+                                }
+                            }
+                        }
+
+                        //remove from list if doesnot fulfill mortar distance or cannon range criteria
+                        if (!addToShipsInRangeArray)
+                        {
+                            for (int i = 0; i < ShipClassifier.shipCount; i++)
+                            {
+                                if (shipsInRange[i] == pirateEnemyShip)
+                                {
+                                    shipsInRange[i] = null;
+                                    circularlyArrangedShips[i] = null;
+                                    shipsInRangeCount--;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ShipClassifier.shipCount; i++)
+                        {
+                            if (shipsInRange[i] == pirateEnemyShip)
+                            {
+                                shipsInRange[i] = null;
+                                circularlyArrangedShips[i] = null;
+                                shipsInRangeCount--;
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
+                {
+                    bool foundInInnerLoop = false;
+                    GameObject navyEnemyShipCenter = navyEnemyShip.transform.GetChild(0).gameObject;
+                    if (Vector3.Distance(myShipPosition, navyEnemyShipCenter.transform.position) < maxRange)
+                    {
+                        print("Inside range distance wise");
+
+                        //Not only check distance for cannon, but check if in range for mortar, or any of cannon's range.
+                        bool addToShipsInRangeArray = false;
+
+                        //Mortar Check
+                        if (Vector3.Distance(myShipPosition, navyEnemyShipCenter.transform.position) < mortarRange)
+                        {
+                            addToShipsInRangeArray = true;
+                            print("Inside range mortar wise");
+                        }
+
+                        //Cannon Range Check
+                        if (!addToShipsInRangeArray)
+                        {
+                            for (int i = 0; i < CannonController.totalCannonCount; i++)
+                            {
+                                GameObject newCannon = cannonControllerScript[i].newCannon;
+                                Transform B = navyEnemyShipCenter.transform;
+                                float cannonShootAngleRange = cannonControllerScript[i].cannonShootAngleRange;
+
+                                if (cannonControllerScript[i].CannonRangeCheck(newCannon, B, cannonShootAngleRange))
+                                {
+                                    //means it lies inside range
+                                    print("lies inside cannon range");
+                                    addToShipsInRangeArray = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (addToShipsInRangeArray)
+                        {
+
+                            for (int i = 0; i < ShipClassifier.shipCount; i++)
+                            {
+                                if (shipsInRange[i] == navyEnemyShip)
+                                {
+                                    foundInInnerLoop = true;
+                                    break;
+                                }
+                            }
+                            if (foundInInnerLoop)
+                            {
+                                continue;
+                            }
+                            for (int i = 0; i < ShipClassifier.shipCount; i++)
+                            {
+                                if (shipsInRange[i] == null)
+                                {
+                                    shipsInRange[i] = navyEnemyShip;
+                                    shipsInRangeCount++;
+                                    return;
+                                }
+                            }
+                        }
+
+                        //remove from list if doesnot fulfill mortar distance or cannon range criteria
+                        if (!addToShipsInRangeArray)
+                        {
+                            for (int i = 0; i < ShipClassifier.shipCount; i++)
+                            {
+                                if (shipsInRange[i] == navyEnemyShip)
+                                {
+                                    shipsInRange[i] = null;
+                                    circularlyArrangedShips[i] = null;
+                                    shipsInRangeCount--;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ShipClassifier.shipCount; i++)
+                        {
+                            if (shipsInRange[i] == navyEnemyShip)
+                            {
+                                shipsInRange[i] = null;
+                                circularlyArrangedShips[i] = null;
+                                shipsInRangeCount--;
+                                return;
+                            }
                         }
                     }
                 }
@@ -246,9 +478,17 @@ public class TargetingSystem : MonoBehaviour
             }
             else if (shooter == "CannonUnit")
             {
-                for (int i = 0; i < CanonController.totalCannonCount; i++)
+                for (int i = 0; i < CannonController.totalCannonCount; i++)
                 {
-                    canonControllerScript[i].B = null;
+                    cannonControllerScript[i].B = null;
+                }
+            }
+
+            if (shooter2 == "MortarUnit")
+            {
+                for (int i = 0; i < MortarController.totalMortarCount; i++)
+                {
+                    mortarControllerScript[i].B = null;
                 }
             }
             selectedShip = null;
@@ -279,13 +519,21 @@ public class TargetingSystem : MonoBehaviour
                     }
                     else if (shooter == "CannonUnit")
                     {
-                        for (int i = 0; i < CanonController.totalCannonCount; i++)
+                        for (int i = 0; i < CannonController.totalCannonCount; i++)
                         {
                             GameObject enemyShipCenter = enemyShip.transform.GetChild(0).gameObject;
-                            canonControllerScript[i].B = enemyShipCenter.transform;
+                            cannonControllerScript[i].B = enemyShipCenter.transform;
                         }
                     }
 
+                    if (shooter2 == "MortarUnit")
+                    {
+                        for (int i = 0; i < MortarController.totalMortarCount; i++)
+                        {
+                            GameObject enemyShipCenter = enemyShip.transform.GetChild(0).gameObject;
+                            mortarControllerScript[i].B = enemyShipCenter.transform;
+                        }
+                    }
                 }
             }
         }      
@@ -371,10 +619,19 @@ public class TargetingSystem : MonoBehaviour
                 }
                 else if (shooter == "CannonUnit")
                 {
-                    for (int i = 0; i < CanonController.totalCannonCount; i++)
+                    for (int i = 0; i < CannonController.totalCannonCount; i++)
                     {
                         GameObject selectedShipCenter = selectedShip.transform.GetChild(0).gameObject;
-                        canonControllerScript[i].B = selectedShipCenter.transform;
+                        cannonControllerScript[i].B = selectedShipCenter.transform;
+                    }
+                }
+
+                if (shooter2 == "MortarUnit")
+                {
+                    for (int i = 0; i < MortarController.totalMortarCount; i++)
+                    {
+                        GameObject selectedShipCenter = selectedShip.transform.GetChild(0).gameObject;
+                        mortarControllerScript[i].B = selectedShipCenter.transform;
                     }
                 }
 
@@ -388,8 +645,8 @@ public class TargetingSystem : MonoBehaviour
                 else if (Input.GetKeyDown(KeyCode.L))
                 {
                     SelectNextShipCounterclockwise();
-                }
-            }            
+                }          
+            }
         }      
     }
     private void SelectNextShipClockwise()

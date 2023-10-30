@@ -2,27 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MortarShoot : MonoBehaviour
+public class MortarController : MonoBehaviour
 {
-    [SerializeField] private Transform A;
-    [SerializeField] private Transform B;
-    [SerializeField] private Transform control;
-    [SerializeField] private ObjectPool_Projectile objectPoolMortarScript;
+    public static int totalMortarCount = 2;
 
+    [SerializeField] private Transform A;
+    public Transform B;
+    [SerializeField] private Transform control;
     [SerializeField] private float lineWidth;
     [SerializeField] private float mortarBombVelocity;
-    [SerializeField] private float adjustCurveAngle;
     [SerializeField] private float coolDownTime;
+    public float mortarMaxRange;
+    [SerializeField] private float adjustCurveAngle;
 
     private static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
-    public static int totalArtilleristCount = 6;//common mortarmen and cannonmen
 
-    private GameObject mortarBomb;
     private float adjustDistanceFactor;
-    private LineRenderer lineRenderer;
-    private bool shootOnce;
-    private Vector3 endPosition;
     private Vector3[] routePoints = new Vector3[curvePointsTotalCount + 1];
+
+    private Transform shipGameObject;
+    private Vector3 myShipPosition;
+    private GameObject mortarBomb;
+    public LineRenderer lineRenderer;
+    private bool shootOnce;
+
+    [SerializeField] private ObjectPool_Projectile objectPoolMortarScript;
 
     private void Start()
     {
@@ -30,58 +34,58 @@ public class MortarShoot : MonoBehaviour
         lineRenderer.startWidth = lineWidth;
         lineRenderer.positionCount = curvePointsTotalCount + 1;
         shootOnce = false;
+        shipGameObject = FindHighestParent(this.transform);
     }
 
     private void Update()
     {
-        for (int i = 0; i < curvePointsTotalCount + 1; i++)//1 more for last line to destination point
+        myShipPosition = shipGameObject.position;
+
+        if (B != null)
         {
-            lineRenderer.SetPosition(i, Evaluate(i / (float)curvePointsTotalCount));
-        }
-        //Evaluate proper position for middle control point of curve
-        float distance = Mathf.Sqrt((B.position.x - A.position.x) * (B.position.x - A.position.x) + (B.position.y - A.position.y) * (B.position.y - A.position.y) + (B.position.z - A.position.z) * (B.position.z - A.position.z));
+            float distance = Vector3.Distance(myShipPosition, B.position);
 
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            print("Distance: " + distance);
-        }
-
-        adjustDistanceFactor = -(adjustCurveAngle * distance);
-
-        float p = (A.position.x + B.position.x) / 2f;
-        float r = (A.position.z + B.position.z) / 2f;
-        float q = (distance + (A.position.y + B.position.y) / 2f) + adjustDistanceFactor;
-
-        control.transform.position = new Vector3(p, q, r);
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (!shootOnce)
+            if (distance < mortarMaxRange)
             {
-                mortarBomb = objectPoolMortarScript.ReturnProjectile();
+                adjustDistanceFactor = -(adjustCurveAngle * distance);//curve path
 
-                if (mortarBomb != null)
+                //Evaluate proper position for control point
+                float p = (A.position.x + B.position.x) / 2f;
+                float r = (A.position.z + B.position.z) / 2f;
+                float q = (distance + (A.position.y + B.position.y) / 2f) + adjustDistanceFactor;
+                control.transform.position = new Vector3(p, q, r);
+
+                lineRenderer.enabled = true;
+                for (int i = 0; i < curvePointsTotalCount + 1; i++)//1 more for last line to destination point
                 {
-                    mortarBomb.transform.position = A.position;
-                    endPosition = B.transform.position;
-                    for (int i = 0; i < curvePointsTotalCount + 1; i++)
+                    lineRenderer.SetPosition(i, Evaluate(i / (float)curvePointsTotalCount));
+                }
+
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    if (!shootOnce)
                     {
-                        routePoints[i] = Evaluate(i / (float)curvePointsTotalCount);
+                        mortarBomb = objectPoolMortarScript.ReturnProjectile();
+
+                        if (mortarBomb != null)
+                        {
+                            mortarBomb.transform.position = A.position;
+                            for (int i = 0; i < curvePointsTotalCount + 1; i++)
+                            {
+                                routePoints[i] = Evaluate(i / (float)curvePointsTotalCount);
+                            }
+                            shootOnce = true;
+                            StartCoroutine(MoveThroughRoute());
+                            StartCoroutine(CoolDownTime());
+                        }
+                        //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and ball moves towards previous target
+                        //similarly the coroutine is also called just once
                     }
-                    shootOnce = true;
-                    StartCoroutine(MoveThroughRoute());
-                    StartCoroutine(CoolDownTime());
-                }               
-                //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and ball moves towards previous target
-                //similarly the coroutine is also called just once
+                }
             }
-        }
-        if (shootOnce)
-        {
-            if ((Mathf.Approximately(mortarBomb.transform.position.x, endPosition.x)) && (Mathf.Approximately(mortarBomb.transform.position.y, endPosition.y)) && (Mathf.Approximately(mortarBomb.transform.position.z, endPosition.z)))
+            else
             {
-                print("Mortarbomb movement complete");
-                shootOnce = false;
+                lineRenderer.enabled = false;
             }
         }
     }
@@ -113,10 +117,7 @@ public class MortarShoot : MonoBehaviour
     private IEnumerator CoolDownTime()
     {
         yield return new WaitForSeconds(coolDownTime);
-        for (int i = 0; i < totalArtilleristCount; i++)
-        {
-            shootOnce = false;
-        }
+        shootOnce = false;        
     }
 
     private Vector3 Evaluate(float t)//Quadratic Curve functionality
@@ -142,5 +143,16 @@ public class MortarShoot : MonoBehaviour
         }
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(Evaluate(1f), 0.01f);
+    }
+    public static Transform FindHighestParent(Transform childTransform)
+    {
+        if (childTransform.parent == null)
+        {
+            return childTransform;
+        }
+        else
+        {
+            return FindHighestParent(childTransform.parent);
+        }
     }
 }

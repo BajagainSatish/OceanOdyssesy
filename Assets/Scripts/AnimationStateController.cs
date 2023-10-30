@@ -6,7 +6,7 @@ public class AnimationStateController : MonoBehaviour
 {
     public bool selectedUnitToShoot;
 
-    [SerializeField] private CanonController canonControllerScript;
+    [SerializeField] private CannonController canonControllerScript;
     [SerializeField] private RopeBurn ropeBurnScript;
 
     [SerializeField] private GameObject actualCanonLid;
