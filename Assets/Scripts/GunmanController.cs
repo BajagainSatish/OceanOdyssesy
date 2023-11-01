@@ -9,6 +9,7 @@ public class GunmanController : MonoBehaviour
     public LineRenderer lineRenderer;
 
     public bool shootOnce = false;
+    public bool enableLineRenderer;
 
     private GameObject projectilePath;
     private GameObject rifle;
@@ -42,8 +43,15 @@ public class GunmanController : MonoBehaviour
     {
         if (B != null)
         {
-            lineRenderer.enabled = true;
             transform.LookAt(B);//archer faces the ship
+            if (enableLineRenderer)
+            {
+                lineRenderer.enabled = true;
+            }
+            else
+            {
+                lineRenderer.enabled = false;
+            }
         }
         else
         {

@@ -62,6 +62,7 @@ public class ArrowShoot : MonoBehaviour
         {
             archerControllerScript[i].lineRenderer.startWidth = lineWidth;
             archerControllerScript[i].lineRenderer.positionCount = curvePointsTotalCount + 1;
+            archerControllerScript[i].enableLineRenderer = true;
         }
     }
     private void Update()
@@ -145,6 +146,7 @@ public class ArrowShoot : MonoBehaviour
                                 }
                                 archerControllerScript[i].shootOnce = true;
                                 StartCoroutine(MoveThroughRoute(arrow, routePoints));
+                                archerControllerScript[i].enableLineRenderer = false;
                                 StartCoroutine(CoolDownTime());
                             }
                         }
@@ -187,6 +189,7 @@ public class ArrowShoot : MonoBehaviour
         for (int i = 0; i < totalArcherCount; i++)
         {
             archerControllerScript[i].shootOnce = false;
+            archerControllerScript[i].enableLineRenderer = true;
         }
     }
 

@@ -26,6 +26,7 @@ public class MortarController : MonoBehaviour
     private GameObject mortarBomb;
     public LineRenderer lineRenderer;
     private bool shootOnce;
+    private bool enableLineRenderer;
 
     [SerializeField] private ObjectPool_Projectile objectPoolMortarScript;
 
@@ -37,6 +38,7 @@ public class MortarController : MonoBehaviour
         shootOnce = false;
         shipGameObject = FindHighestParent(this.transform);
         myShipCenter = shipGameObject.GetChild(0);
+        enableLineRenderer = true;
     }
 
     private void Update()
@@ -57,7 +59,15 @@ public class MortarController : MonoBehaviour
                 float q = (distance + (A.position.y + B.position.y) / 2f) + adjustDistanceFactor;
                 control.transform.position = new Vector3(p, q, r);
 
-                lineRenderer.enabled = true;
+                if (enableLineRenderer)
+                {
+                    lineRenderer.enabled = true;
+                }
+                else
+                {
+                    lineRenderer.enabled = false;
+                }
+
                 for (int i = 0; i < curvePointsTotalCount + 1; i++)//1 more for last line to destination point
                 {
                     lineRenderer.SetPosition(i, Evaluate(i / (float)curvePointsTotalCount));
@@ -78,6 +88,7 @@ public class MortarController : MonoBehaviour
                             }
                             shootOnce = true;
                             StartCoroutine(MoveThroughRoute());
+                            enableLineRenderer = false;
                             StartCoroutine(CoolDownTime());
                         }
                         //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and ball moves towards previous target
@@ -119,7 +130,8 @@ public class MortarController : MonoBehaviour
     private IEnumerator CoolDownTime()
     {
         yield return new WaitForSeconds(coolDownTime);
-        shootOnce = false;        
+        shootOnce = false;
+        enableLineRenderer = true;
     }
 
     private Vector3 Evaluate(float t)//Quadratic Curve functionality

@@ -58,6 +58,7 @@ public class GunShoot : MonoBehaviour
         {
             gunmanControllerScript[i].lineRenderer.startWidth = lineWidth;
             gunmanControllerScript[i].lineRenderer.positionCount = 2;
+            gunmanControllerScript[i].enableLineRenderer = true;
         }
     }
 
@@ -97,6 +98,7 @@ public class GunShoot : MonoBehaviour
 
                                 gunmanControllerScript[i].shootOnce = true;
                                 StartCoroutine(MoveObject(A.position, endPosition, bullet));
+                                gunmanControllerScript[i].enableLineRenderer = false;
                                 StartCoroutine(CoolDownTime());
                             }                            
                         }
@@ -133,6 +135,7 @@ public class GunShoot : MonoBehaviour
         for (int i = 0; i < totalGunmanCount; i++)
         {
             gunmanControllerScript[i].shootOnce = false;
+            gunmanControllerScript[i].enableLineRenderer = true;
         }
     }
 

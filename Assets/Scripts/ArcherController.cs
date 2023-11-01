@@ -8,6 +8,7 @@ public class ArcherController : MonoBehaviour
     public Transform B;
     [HideInInspector] public Transform control;
     [HideInInspector] public LineRenderer lineRenderer;
+    public bool enableLineRenderer;
 
     [HideInInspector] public bool shootOnce = false;
     [HideInInspector] public Vector3 endPosition;
@@ -45,7 +46,14 @@ public class ArcherController : MonoBehaviour
     {
         if (B != null)
         {
-            lineRenderer.enabled = true;
+            if (enableLineRenderer)
+            {
+                lineRenderer.enabled = true;
+            }
+            else
+            {
+                lineRenderer.enabled = false;
+            }
             transform.LookAt(B);//archer faces the ship
         }
         else

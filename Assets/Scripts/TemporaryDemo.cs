@@ -117,8 +117,8 @@ public class TemporaryDemo : MonoBehaviour
             }
             else if (currentActiveShip.GetComponent<GunShoot>() != null)
             {
-                xOffset = 4;
-                yOffset = 6;
+                xOffset = 8;
+                yOffset = 10;
             }
             else//artillery ship
             {

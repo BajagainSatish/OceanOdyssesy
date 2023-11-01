@@ -30,6 +30,7 @@ public class CannonController : MonoBehaviour
     private bool shootOnce;
     private Vector3 endPosition;
     private bool withinCannonRotateRange;
+    private bool enableLineRenderer;
 
     private void Awake()
     {
@@ -54,6 +55,7 @@ public class CannonController : MonoBehaviour
         shootOnce = false;
         shipGameObject = MortarController.FindHighestParent(this.transform);
         myShipCenter = shipGameObject.GetChild(0);
+        enableLineRenderer = true;
     }
 
     private void Update()
@@ -73,7 +75,15 @@ public class CannonController : MonoBehaviour
 
                 if (withinCannonRotateRange)
                 {
-                    lineRenderer.enabled = true;
+                    if (enableLineRenderer)
+                    {
+                        lineRenderer.enabled = true;
+                    }
+                    else
+                    {
+                        lineRenderer.enabled = false;
+                    }
+
                     lineRenderer.SetPosition(0, Evaluate(0, A, B));//set start point (vertex = 0, position = Evaluate(0))
                     lineRenderer.SetPosition(1, Evaluate(1, A, B));//set end point
                     cannonRotator.transform.LookAt(B.position);//we set the x-rotation of gameobject to -8, so that the gameobject aligns with the cannons shooting end
@@ -90,6 +100,7 @@ public class CannonController : MonoBehaviour
                                 endPosition = B.transform.position;
                                 shootOnce = true;
                                 StartCoroutine(MoveObject(A.position, endPosition, cannonBall));
+                                enableLineRenderer = false;
                                 StartCoroutine(CoolDownTime());
                             }
                             //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and bullet moves towards previous target
@@ -129,7 +140,8 @@ public class CannonController : MonoBehaviour
     private IEnumerator CoolDownTime()
     {
         yield return new WaitForSeconds(coolDownTime);
-        shootOnce = false;       
+        shootOnce = false;
+        enableLineRenderer = true;
     }
 
     private Vector3 Evaluate(float t)
