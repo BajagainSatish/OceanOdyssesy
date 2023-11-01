@@ -10,6 +10,7 @@ public class ArrowShoot : MonoBehaviour
     [SerializeField] private float adjustCurveAngle;
     public float archerMaxRange;
     [SerializeField] private float coolDownTime;
+
     //[SerializeField] private float upperYLimit = 0.7f;
     //[SerializeField] private float lowerYLimit = -0.1f;
     //[SerializeField] private float archerShootAngleRange = 80;
@@ -24,6 +25,7 @@ public class ArrowShoot : MonoBehaviour
     private GameObject archerParentObject;
     private GameObject[] archers = new GameObject[totalArcherCount];
     private ArcherController[] archerControllerScript = new ArcherController[totalArcherCount];
+    private AnimationArcher[] archerAnimatorScript = new AnimationArcher[totalArcherCount];
 
     private float adjustDistanceFactor;
 
@@ -53,6 +55,7 @@ public class ArrowShoot : MonoBehaviour
         {
             archers[i] = archerParentObject.transform.GetChild(i).gameObject;
             archerControllerScript[i] = archers[i].GetComponent<ArcherController>();
+            archerAnimatorScript[i] = archers[i].GetComponent<AnimationArcher>();
         }
     }
 
@@ -108,7 +111,18 @@ public class ArrowShoot : MonoBehaviour
                 //if (distance <= archerMaxRange && withinArcherRotateRange)
                 if (distance < archerMaxRange)
                 {
-                    //Draw Line or Curve from archer to enemy
+                    //archer animation, aiming towards enemy
+                    if (lineRenderer.enabled)
+                    {
+                        archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.aim;
+                    }
+                    else
+                    {
+                        archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.idle;
+
+                    }
+
+                    //Draw Curve from archer to enemy
                     for (int j = 0; j < curvePointsTotalCount + 1; j++)
                     {
                         lineRenderer.SetPosition(j, Evaluate(j / (float)curvePointsTotalCount, A, B, control));
@@ -137,6 +151,9 @@ public class ArrowShoot : MonoBehaviour
                         {
                             arrow = objectPoolArrowScript.ReturnProjectile();
 
+                            //archer shoot animation
+                            archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.shoot;
+
                             if (arrow != null)
                             {
                                 arrow.transform.position = A.position;
@@ -145,6 +162,7 @@ public class ArrowShoot : MonoBehaviour
                                     routePoints[j] = Evaluate(j / (float)curvePointsTotalCount, A, B, control);
                                 }
                                 archerControllerScript[i].shootOnce = true;
+
                                 StartCoroutine(MoveThroughRoute(arrow, routePoints));
                                 archerControllerScript[i].enableLineRenderer = false;
                                 StartCoroutine(CoolDownTime());
@@ -156,6 +174,11 @@ public class ArrowShoot : MonoBehaviour
                 {
                     archerControllerScript[i].B = null;
                 }
+            }
+            else//B = null
+            {
+                //archer idle animation
+                archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.idle;
             }
         }
     }
