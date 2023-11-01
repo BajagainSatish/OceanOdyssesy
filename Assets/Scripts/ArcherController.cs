@@ -16,6 +16,8 @@ public class ArcherController : MonoBehaviour
     [HideInInspector] public bool withinArcherRotateRange = false;
 
     private GameObject projectilePath;
+    private GameObject mixamorigHips;
+
     private int curvePointsTotalCount = ArrowShoot.curvePointsTotalCount;
     private void Awake()
     {
@@ -27,19 +29,27 @@ public class ArcherController : MonoBehaviour
                     projectilePath = gameObject;
                     lineRenderer = projectilePath.GetComponent<LineRenderer>();
                 }
+                else if (gameObject.name == "mixamorig:Hips")
+                {
+                mixamorigHips = gameObject;
+                }
         }
         for (int k = 0; k < projectilePath.transform.childCount; k++)
         {
             GameObject gameObject = projectilePath.transform.GetChild(k).gameObject;
+            if (gameObject.name == "MidControl")
+            {
+                control = gameObject.transform;
+            }
+        }
+        for (int k = 0; k < mixamorigHips.transform.childCount; k++)
+        {
+            GameObject gameObject = mixamorigHips.transform.GetChild(k).gameObject;
             if (gameObject.name == "StartPoint")
             {
                 A = gameObject.transform;
             }
-            else if (gameObject.name == "MidControl")
-            {
-                control = gameObject.transform;
-            }
-        }         
+        }
     }
 
     private void Update()

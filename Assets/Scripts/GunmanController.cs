@@ -12,7 +12,8 @@ public class GunmanController : MonoBehaviour
     public bool enableLineRenderer;
 
     private GameObject projectilePath;
-    private GameObject rifle;
+    private GameObject mixamorigHips;
+    public GameObject rifle;
 
     private void Awake()
     {
@@ -24,7 +25,15 @@ public class GunmanController : MonoBehaviour
                 projectilePath = gameObject;
                 lineRenderer = projectilePath.GetComponent<LineRenderer>();
             }
-            else if (gameObject.name == "rifle")
+            else if (gameObject.name == "mixamorig:Hips")
+            {
+                mixamorigHips = gameObject;
+            }
+        }
+        for (int i = 0; i < mixamorigHips.transform.childCount; i++)
+        {
+            GameObject gameObject = mixamorigHips.transform.GetChild(i).gameObject;
+            if (gameObject.name == "rifle")
             {
                 rifle = gameObject;
             }

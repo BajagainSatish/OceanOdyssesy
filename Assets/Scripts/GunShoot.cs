@@ -19,6 +19,7 @@ public class GunShoot : MonoBehaviour
     private GameObject gunmanParentObject;
     private GameObject[] gunmen = new GameObject[totalGunmanCount];
     private GunmanController[] gunmanControllerScript = new GunmanController[totalGunmanCount];
+    private AnimationGunman[] gunmanAnimationScript = new AnimationGunman[totalGunmanCount];
 
     private Vector3 endPosition;
 
@@ -49,6 +50,7 @@ public class GunShoot : MonoBehaviour
         {
             gunmen[i] = gunmanParentObject.transform.GetChild(i).gameObject;
             gunmanControllerScript[i] = gunmen[i].GetComponent<GunmanController>();
+            gunmanAnimationScript[i] = gunmen[i].GetComponent<AnimationGunman>();
         }
     }
 
@@ -81,6 +83,16 @@ public class GunShoot : MonoBehaviour
 
                 if (distance < gunmanMaxRange)
                 {
+                    //gunman animation, aiming towards enemy
+                    if (lineRenderer.enabled)
+                    {
+                        gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.aim;
+                    }
+                    else
+                    {
+                        gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.idle;
+                    }
+
                     lineRenderer.SetPosition(0, Evaluate(0,A,B));//set start point (vertex = 0, position = Evaluate(0))
                     lineRenderer.SetPosition(1, Evaluate(1,A,B));//set end point
 
@@ -90,6 +102,9 @@ public class GunShoot : MonoBehaviour
                         if (!shootOnce)
                         {
                             bullet = objectPoolBulletScript.ReturnProjectile();
+
+                            //gunman shoot animation
+                            gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.shoot;
 
                             if (bullet != null)
                             {
@@ -108,6 +123,10 @@ public class GunShoot : MonoBehaviour
                 {
                     gunmanControllerScript[i].B = null;//once out of range make sure that the final position is not still pointing to previous ship
                 }
+            }
+            else
+            {
+                gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.idle;
             }
         }       
     }
