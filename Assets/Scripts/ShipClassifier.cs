@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class ShipClassifier : MonoBehaviour
 {
-    public static int shipCount = 4;
+    public static int shipCount = 7;
     private static ShipClassifier[] pirateShipList = new ShipClassifier[shipCount];
     private static ShipClassifier[] navyShipList = new ShipClassifier[shipCount];
 
     public bool isNavyShip;
+    public bool isActive;
     public static ShipClassifier[] GetPirateShipList()
     {
         return pirateShipList;

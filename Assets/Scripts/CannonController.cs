@@ -22,6 +22,8 @@ public class CannonController : MonoBehaviour
     public float cannonShootAngleRange = 60;
 
     private Transform shipGameObject;
+    private Transform myShipCenter;
+
     private Vector3 myShipPosition;
     private GameObject cannonBall;
     public LineRenderer lineRenderer;
@@ -51,11 +53,12 @@ public class CannonController : MonoBehaviour
         lineRenderer.positionCount = 2;
         shootOnce = false;
         shipGameObject = MortarController.FindHighestParent(this.transform);
+        myShipCenter = shipGameObject.GetChild(0);
     }
 
     private void Update()
     {
-        myShipPosition = shipGameObject.position;
+        myShipPosition = myShipCenter.position;
 
         if (B != null)
         {

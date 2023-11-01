@@ -21,6 +21,7 @@ public class MortarController : MonoBehaviour
     private Vector3[] routePoints = new Vector3[curvePointsTotalCount + 1];
 
     private Transform shipGameObject;
+    private Transform myShipCenter;
     private Vector3 myShipPosition;
     private GameObject mortarBomb;
     public LineRenderer lineRenderer;
@@ -35,11 +36,12 @@ public class MortarController : MonoBehaviour
         lineRenderer.positionCount = curvePointsTotalCount + 1;
         shootOnce = false;
         shipGameObject = FindHighestParent(this.transform);
+        myShipCenter = shipGameObject.GetChild(0);
     }
 
     private void Update()
     {
-        myShipPosition = shipGameObject.position;
+        myShipPosition = myShipCenter.position;
 
         if (B != null)
         {

@@ -7,22 +7,28 @@ public class TargetingSystem : MonoBehaviour
 {
     private ShipClassifier[] shipsInRange = new ShipClassifier[ShipClassifier.shipCount];
     private ShipClassifier[] circularlyArrangedShips = new ShipClassifier[ShipClassifier.shipCount];
-    private ShipClassifier selectedShip;
+    public ShipClassifier selectedShip;
 
-    private GameObject[] archers = new GameObject[ArrowShoot.totalArcherCount];
-    private GameObject[] gunmen = new GameObject[GunShoot.totalGunmanCount];
-    private GameObject[] shootUnitCannon = new GameObject[CannonController.totalCannonCount];
-    private GameObject[] shootUnitMortar = new GameObject[MortarController.totalMortarCount];
+    private TargetingSystem targetingSystemScript;
 
-    private ArcherController[] archerControllerScript = new ArcherController[ArrowShoot.totalArcherCount];
-    private GunmanController[] gunmanControllerScript = new GunmanController[GunShoot.totalGunmanCount];
-    private CannonController[] cannonControllerScript = new CannonController[CannonController.totalCannonCount];
-    private MortarController[] mortarControllerScript = new MortarController[MortarController.totalMortarCount];
+    private readonly GameObject[] archers = new GameObject[ArrowShoot.totalArcherCount];
+    private readonly GameObject[] gunmen = new GameObject[GunShoot.totalGunmanCount];
+    private readonly GameObject[] shootUnitCannon = new GameObject[CannonController.totalCannonCount];
+    private readonly GameObject[] shootUnitMortar = new GameObject[MortarController.totalMortarCount];
+
+    private readonly ArcherController[] archerControllerScript = new ArcherController[ArrowShoot.totalArcherCount];
+    private readonly GunmanController[] gunmanControllerScript = new GunmanController[GunShoot.totalGunmanCount];
+    private readonly CannonController[] cannonControllerScript = new CannonController[CannonController.totalCannonCount];
+    private readonly MortarController[] mortarControllerScript = new MortarController[MortarController.totalMortarCount];
+
+    private ShipClassifier shipClassifierScript;
 
     private ArrowShoot arrowShootScript;
     private GunShoot gunShootScript;
 
     private bool isNavyShip;
+    private bool isActiveShip;
+
     private float maxRange;
     private float mortarRange;
     private int selectedIndex = 0;
@@ -31,6 +37,8 @@ public class TargetingSystem : MonoBehaviour
     private string shooter;
     private string shooter2;
 
+    public GameObject activeMarker;
+
     private GameObject scaleFactorGameObject;
     private GameObject parentShooterObject;
     private GameObject parentShooterObject2;
@@ -38,7 +46,7 @@ public class TargetingSystem : MonoBehaviour
     private GameObject myShipCenter;
     private Vector3 myShipPosition;
 
-    [SerializeField] private bool displayMyContents = false;
+    //[SerializeField] private bool displayMyContents = false;
     private bool selectedShipNotInRange = true;
 
     private void Awake()
@@ -49,6 +57,10 @@ public class TargetingSystem : MonoBehaviour
             if (gameObject.name == "ScaleFactorGameObject")
             {
                 scaleFactorGameObject = gameObject;
+            }
+            else if (gameObject.name == "activeMarker")
+            {
+                activeMarker = gameObject;
             }
         }
         for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
@@ -98,11 +110,12 @@ public class TargetingSystem : MonoBehaviour
                 mortarControllerScript[i] = shootUnitMortar[i].GetComponent<MortarController>();
             }
         }
-        
+        shipClassifierScript = this.GetComponent<ShipClassifier>();
     }
 
     private void Start()
     {
+        activeMarker.SetActive(false);
         if (shooter == "Archers")
         {
             arrowShootScript = this.GetComponent<ArrowShoot>();
@@ -129,7 +142,7 @@ public class TargetingSystem : MonoBehaviour
 
         //we won't set maxrange to that of mortarMaxRange as both cannon and mortar are on same ship, and cannon has larger range than mortar
 
-        isNavyShip = this.GetComponent<ShipClassifier>().isNavyShip;
+        isNavyShip = shipClassifierScript.isNavyShip;
         for (int i = 0; i < ShipClassifier.shipCount; i++)
         {
             shipsInRange[i] = null;
@@ -146,7 +159,7 @@ public class TargetingSystem : MonoBehaviour
            To switch left or right, just replace keycode.L and keycode.R by buttons
         */
 
-        if (displayMyContents)
+        /*if (displayMyContents)
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
@@ -166,9 +179,10 @@ public class TargetingSystem : MonoBehaviour
                     print(shipsInRange[i].name);
                 }
             }
-        }
+        }*/
 
         myShipPosition = myShipCenter.transform.position;
+        isActiveShip = shipClassifierScript.isActive;
 
         if (shooter == "Archers" || shooter == "Gunmen")
         {
@@ -219,7 +233,7 @@ public class TargetingSystem : MonoBehaviour
                     }
                 }
             }
-            else
+            else//is pirate ship
             {
                 foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
                 {
@@ -278,14 +292,12 @@ public class TargetingSystem : MonoBehaviour
 
                     if (Vector3.Distance(myShipPosition, pirateEnemyShipCenter.transform.position) < maxRange)
                     {
-                        print("Inside range distance wise");
                         bool addToShipsInRangeArray = false;
 
                         //Mortar Check
                         if (Vector3.Distance(myShipPosition, pirateEnemyShipCenter.transform.position) < mortarRange)
                         {
                             addToShipsInRangeArray = true;
-                            print("Inside range mortar wise");
                         }
 
                         //Cannon Range Check
@@ -300,7 +312,6 @@ public class TargetingSystem : MonoBehaviour
                                 if (cannonControllerScript[i].CannonRangeCheck(newCannon, B, cannonShootAngleRange))
                                 {
                                     //means it lies inside range
-                                    print("lies inside cannon range");
                                     addToShipsInRangeArray = true;
                                     break;
                                 }
@@ -363,7 +374,7 @@ public class TargetingSystem : MonoBehaviour
                     }
                 }
             }
-            else
+            else//isPirateShip
             {
                 foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
                 {
@@ -371,8 +382,6 @@ public class TargetingSystem : MonoBehaviour
                     GameObject navyEnemyShipCenter = navyEnemyShip.transform.GetChild(0).gameObject;
                     if (Vector3.Distance(myShipPosition, navyEnemyShipCenter.transform.position) < maxRange)
                     {
-                        print("Inside range distance wise");
-
                         //Not only check distance for cannon, but check if in range for mortar, or any of cannon's range.
                         bool addToShipsInRangeArray = false;
 
@@ -380,7 +389,6 @@ public class TargetingSystem : MonoBehaviour
                         if (Vector3.Distance(myShipPosition, navyEnemyShipCenter.transform.position) < mortarRange)
                         {
                             addToShipsInRangeArray = true;
-                            print("Inside range mortar wise");
                         }
 
                         //Cannon Range Check
@@ -395,7 +403,6 @@ public class TargetingSystem : MonoBehaviour
                                 if (cannonControllerScript[i].CannonRangeCheck(newCannon, B, cannonShootAngleRange))
                                 {
                                     //means it lies inside range
-                                    print("lies inside cannon range");
                                     addToShipsInRangeArray = true;
                                     break;
                                 }
@@ -491,7 +498,7 @@ public class TargetingSystem : MonoBehaviour
                     mortarControllerScript[i].B = null;
                 }
             }
-            selectedShip = null;
+            selectedShip = null;                    
         }
         else if (shipsInRangeCount == 1)
         {
@@ -638,28 +645,145 @@ public class TargetingSystem : MonoBehaviour
                 //now when R is pressed, select the ship at next index from selectedIndex and so on
                 //when L is pressed, select ship at index left and so on
 
-                if (Input.GetKeyDown(KeyCode.R))
+                if (Input.GetKeyDown(KeyCode.R) && isActiveShip)
                 {
                     SelectNextShipClockwise();
                 }
-                else if (Input.GetKeyDown(KeyCode.L))
+                else if (Input.GetKeyDown(KeyCode.L) && isActiveShip)
                 {
                     SelectNextShipCounterclockwise();
                 }          
             }
-        }      
+        }
+
+        //Assign marker to ships
+        if (shipsInRangeCount >= 1)
+        {
+            if (isNavyShip)
+            {
+                foreach (ShipClassifier pirateEnemyShip in ShipClassifier.GetPirateShipList())
+                {
+                    if (isActiveShip)
+                    {
+                        if (pirateEnemyShip != selectedShip)
+                        {
+                            targetingSystemScript = pirateEnemyShip.GetComponent<TargetingSystem>();
+                            if (targetingSystemScript.activeMarker.activeSelf)
+                            {
+                                targetingSystemScript.activeMarker.SetActive(false);
+                            }
+                        }
+                        else
+                        {
+                            targetingSystemScript = pirateEnemyShip.GetComponent<TargetingSystem>();
+                            if (!targetingSystemScript.activeMarker.activeSelf)
+                            {
+                                targetingSystemScript.activeMarker.SetActive(true);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
+                {
+                    if (isActiveShip)
+                    {
+                        if (navyEnemyShip != selectedShip)
+                        {
+                            targetingSystemScript = navyEnemyShip.GetComponent<TargetingSystem>();
+                            if (targetingSystemScript.activeMarker.activeSelf)
+                            {
+                                targetingSystemScript.activeMarker.SetActive(false);
+                            }
+                        }
+                        else
+                        {
+                            targetingSystemScript = navyEnemyShip.GetComponent<TargetingSystem>();
+                            if (!targetingSystemScript.activeMarker.activeSelf)
+                            {
+                                targetingSystemScript.activeMarker.SetActive(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else//shipsInRangeCount == 0
+        {
+            if (isActiveShip)
+            {
+                if (isNavyShip)
+                {
+                    foreach (ShipClassifier pirateEnemyShip in ShipClassifier.GetPirateShipList())
+                    {
+                        targetingSystemScript = pirateEnemyShip.GetComponent<TargetingSystem>();
+                        if (targetingSystemScript.activeMarker.activeSelf)
+                        {
+                            targetingSystemScript.activeMarker.SetActive(false);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
+                    {
+                        targetingSystemScript = navyEnemyShip.GetComponent<TargetingSystem>();
+                        if (targetingSystemScript.activeMarker.activeSelf)
+                        {
+                            targetingSystemScript.activeMarker.SetActive(false);
+                        }
+                    }
+                }
+            }         
+        }
+
+        //Debug multiple markers case, if any pirate/navy ship is active, then any other pirate/navy ship cannot have its own marker active
+        if (isNavyShip && isActiveShip)
+        {
+            foreach (ShipClassifier navyEnemyShip in ShipClassifier.GetNavyShipList())
+            {
+                targetingSystemScript = navyEnemyShip.GetComponent<TargetingSystem>();
+                if (targetingSystemScript.activeMarker.activeSelf)
+                {
+                    targetingSystemScript.activeMarker.SetActive(false);
+                }
+            }
+        }
+        else if (!isNavyShip && isActiveShip)
+        {
+            foreach (ShipClassifier pirateEnemyShip in ShipClassifier.GetPirateShipList())
+            {
+                targetingSystemScript = pirateEnemyShip.GetComponent<TargetingSystem>();
+                if (targetingSystemScript.activeMarker.activeSelf)
+                {
+                    targetingSystemScript.activeMarker.SetActive(false);
+                }
+            }
+        }
     }
     private void SelectNextShipClockwise()
     {
+        targetingSystemScript = selectedShip.GetComponent<TargetingSystem>();
+        targetingSystemScript.activeMarker.SetActive(false);
+
         selectedIndex = (selectedIndex + 1) % shipsInRangeCount;
         selectedShip = circularlyArrangedShips[selectedIndex];
-        //print("Selected Ship " + selectedShip);
+
+        targetingSystemScript = selectedShip.GetComponent<TargetingSystem>();
+        targetingSystemScript.activeMarker.SetActive(true);
     }
 
     private void SelectNextShipCounterclockwise()
     {
+        targetingSystemScript = selectedShip.GetComponent<TargetingSystem>();
+        targetingSystemScript.activeMarker.SetActive(false);
+
         selectedIndex = (selectedIndex - 1 + shipsInRangeCount) % shipsInRangeCount;
         selectedShip = circularlyArrangedShips[selectedIndex];
-        //print("Selected Ship " + selectedShip);
+
+        targetingSystemScript = selectedShip.GetComponent<TargetingSystem>();
+        targetingSystemScript.activeMarker.SetActive(true);
     }
 }
