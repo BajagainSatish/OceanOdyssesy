@@ -596,7 +596,7 @@ public class TargetingSystem : MonoBehaviour
                 });
 
                 //3. Sort those elements according to angle, so they are now circularly arranged in new array
-                ShipSort.SortShips(circularlyArrangedShips, this.gameObject);
+                ShipSort.SortShips(circularlyArrangedShips, gameObject);
 
                 //start from the element of array that was being targeted at when count was equal to 1, continue making B.position equal to this ship
                 //B.pos = selected ship inside new array, so search at which pos selected ship is and put selectedIndex equal to that value

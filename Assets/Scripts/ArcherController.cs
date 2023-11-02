@@ -8,7 +8,7 @@ public class ArcherController : MonoBehaviour
     public Transform B;
     [HideInInspector] public Transform control;
     [HideInInspector] public LineRenderer lineRenderer;
-    public bool enableLineRenderer;
+    [HideInInspector] public bool enableLineRenderer;
 
     [HideInInspector] public bool shootOnce = false;
     [HideInInspector] public Vector3 endPosition;
@@ -18,12 +18,15 @@ public class ArcherController : MonoBehaviour
     private GameObject projectilePath;
     private GameObject mixamorigHips;
 
-    private int curvePointsTotalCount = ArrowShoot.curvePointsTotalCount;
+    private readonly int curvePointsTotalCount = ArrowShoot.curvePointsTotalCount;
+
     private void Awake()
     {
-        for (int i = 0; i < this.transform.childCount; i++)
+        //Assigning gameobjects in scene to respective fields
+
+        for (int i = 0; i < transform.childCount; i++)
         {
-            GameObject gameObject = this.transform.GetChild(i).gameObject;
+            GameObject gameObject = transform.GetChild(i).gameObject;
                 if (gameObject.name == "ProjectilePath")
                 {
                     projectilePath = gameObject;
@@ -58,20 +61,21 @@ public class ArcherController : MonoBehaviour
         {
             if (enableLineRenderer)
             {
-                lineRenderer.enabled = true;
+                lineRenderer.enabled = true;//show projectile pathway if target is in range
             }
             else
             {
-                lineRenderer.enabled = false;
+                lineRenderer.enabled = false;//disable line renderer temporarily, eg. during cooldown time
             }
-            transform.LookAt(B);//archer faces the ship
+            transform.LookAt(B);//archer faces the target ship
         }
         else
         {
-            lineRenderer.enabled = false;
+            lineRenderer.enabled = false;//no target, no trajectory
         }
     }
 
+    //Only during scene view, draw lines between intermediate points
     private void OnDrawGizmos()//Draw Quadratic Curve
     {
         if (A == null || B == null || control == null)
@@ -81,7 +85,7 @@ public class ArcherController : MonoBehaviour
         for (int j = 0; j < curvePointsTotalCount + 1; j++)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(Evaluate(j / (float)curvePointsTotalCount), Evaluate((j + 1) / (float)curvePointsTotalCount));//During scene view, draw lines between intermediate points
+            Gizmos.DrawLine(Evaluate(j / (float)curvePointsTotalCount), Evaluate((j + 1) / (float)curvePointsTotalCount));
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(Evaluate(j / (float)curvePointsTotalCount), 0.01f);
         }

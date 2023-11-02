@@ -79,36 +79,12 @@ public class ArrowShoot : MonoBehaviour
                 Transform A = archerControllerScript[i].A;
                 Transform control = archerControllerScript[i].control;
 
-                //bool withinArcherRotateRange = archerControllerScript[i].withinArcherRotateRange;
                 LineRenderer lineRenderer = archerControllerScript[i].lineRenderer;
                 bool shootOnce = archerControllerScript[i].shootOnce;               
                 Vector3[] routePoints = archerControllerScript[i].routePoints;
 
-                //float distance = Mathf.Sqrt((B.position.x - shipPosition.x) * (B.position.x - shipPosition.x) + (B.position.y - shipPosition.y) * (B.position.y - shipPosition.y) + (B.position.z - shipPosition.z) * (B.position.z - shipPosition.z));
                 float distance = Vector3.Distance(B.position,myShipPosition);
-
-                /*
-                Vector3 difference = B.position - A.position;
-                Vector3 targetDirection = (B.position - A.position).normalized;
-                Vector3 archersForwardDirection = archerControllerScript[i].transform.forward;
-
-                // Calculate the angle between the forward direction and the target direction
-                //float angle = Vector3.Angle(targetDirection, archersForwardDirection);
-
-                //Initially, we had constraints assuming archer didn't rotate towards target at all times and archer faced only one side of ship at a time
-                //If archer rotates towards target at all times, we can remove these 3 following constraints, we don't need withinArcherRotateRange variable, and can safely remove it
-
-                // Check if the angle is within the desired range
-                if (angle <= archerShootAngleRange && difference.y >= lowerYLimit && difference.y <= upperYLimit)
-                {
-                    withinArcherRotateRange = true;
-                }
-                else
-                {
-                    withinArcherRotateRange = false;
-                }
-                */
-                //if (distance <= archerMaxRange && withinArcherRotateRange)
+               
                 if (distance < archerMaxRange)
                 {
                     //archer animation, aiming towards enemy
@@ -157,6 +133,7 @@ public class ArrowShoot : MonoBehaviour
                             if (arrow != null)
                             {
                                 arrow.transform.position = A.position;
+
                                 for (int j = 0; j < curvePointsTotalCount + 1; j++)
                                 {
                                     routePoints[j] = Evaluate(j / (float)curvePointsTotalCount, A, B, control);
@@ -164,7 +141,7 @@ public class ArrowShoot : MonoBehaviour
                                 archerControllerScript[i].shootOnce = true;
 
                                 StartCoroutine(MoveThroughRoute(arrow, routePoints));
-                                archerControllerScript[i].enableLineRenderer = false;
+                                archerControllerScript[i].enableLineRenderer = false;//disable projectile path for cool down time
                                 StartCoroutine(CoolDownTime());
                             }
                         }
@@ -211,8 +188,8 @@ public class ArrowShoot : MonoBehaviour
         yield return new WaitForSeconds(coolDownTime);
         for (int i = 0; i < totalArcherCount; i++)
         {
-            archerControllerScript[i].shootOnce = false;
-            archerControllerScript[i].enableLineRenderer = true;
+            archerControllerScript[i].shootOnce = false;//don't allow shoot to occur even if S is pressed
+            archerControllerScript[i].enableLineRenderer = true;//display projectile path again
         }
     }
 

@@ -18,9 +18,9 @@ public class ObjectPool_Projectile : MonoBehaviour
 
     public GameObject ReturnProjectile()
     {
-        for (int i = 0; i < this.transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            GameObject child = this.transform.GetChild(i).gameObject;
+            GameObject child = transform.GetChild(i).gameObject;
             if (!child.activeInHierarchy)
             {
                 child.SetActive(true);
@@ -30,7 +30,7 @@ public class ObjectPool_Projectile : MonoBehaviour
 
         // If no inactive objects are available, instantiate a new one
         GameObject newProjectile = Instantiate(projectilePrefab);
-        newProjectile.transform.SetParent(this.transform); // Add it to the pool
+        newProjectile.transform.SetParent(transform); // Add it to the pool
         newProjectile.SetActive(true);
         return newProjectile;
     }

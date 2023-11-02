@@ -21,9 +21,6 @@ public class AnimationArcher : MonoBehaviour
         aimAtTargetHash = Animator.StringToHash("aimAtTarget");
         shootAtTargetHash = Animator.StringToHash("shootAtTarget");
 
-        animator.SetBool(aimAtTargetHash,false);
-        animator.SetBool(shootAtTargetHash,false);
-
         archerState = ArcherStates.idle;
     }
 
@@ -32,18 +29,20 @@ public class AnimationArcher : MonoBehaviour
         //Play idle animation/ No animation
         if (archerState == ArcherStates.idle)
         {
-            animator.SetBool(aimAtTargetHash, false);
-            animator.SetBool(shootAtTargetHash, false);
+            AnimateArcher(false,false);//no aim, no shoot
         }
         else if (archerState == ArcherStates.aim)//Play aim animation
         {
-            animator.SetBool(aimAtTargetHash, true);
-            animator.SetBool(shootAtTargetHash, false);
+            AnimateArcher(true,false);//aim true, false shoot
         }
         else if (archerState == ArcherStates.shoot)
         {
-            animator.SetBool(aimAtTargetHash, false);
-            animator.SetBool(shootAtTargetHash, true);
+            AnimateArcher(false,true);//aim false, shoot true
         }
+    }
+    private void AnimateArcher(bool aimAtOurTarget, bool shootAtOurTarget)
+    {
+        animator.SetBool(aimAtTargetHash, aimAtOurTarget);
+        animator.SetBool(shootAtTargetHash, shootAtOurTarget);
     }
 }

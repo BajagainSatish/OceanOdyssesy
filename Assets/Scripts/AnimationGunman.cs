@@ -24,12 +24,8 @@ public class AnimationGunman : MonoBehaviour
         aimAtTargetHash = Animator.StringToHash("aimAtTarget");
         shootAtTargetHash = Animator.StringToHash("shootAtTarget");
 
-        animator.SetBool(aimAtTargetHash, false);
-        animator.SetBool(shootAtTargetHash, false);
-
         gunmanState = GunmanStates.idle;
-
-        gunmanControllerScript = this.GetComponent<GunmanController>();
+        gunmanControllerScript = GetComponent<GunmanController>();
     }
 
     private void Update()
@@ -37,24 +33,41 @@ public class AnimationGunman : MonoBehaviour
         //Play idle animation/ No animation
         if (gunmanState == GunmanStates.idle)
         {
-            gunmanControllerScript.rifle.transform.localPosition = new Vector3(-0.125008509f, 0.109148838f, 0.291305363f);
-            gunmanControllerScript.rifle.transform.localEulerAngles = new Vector3(341.935364f, 112.180405f, -0.00198736391f);
+            //Set appropriate position and rotation for rifle during idle animation
+            SetRiflePosition(-0.125008509f, 0.109148838f, 0.291305363f);
+            SetRifleEulerAngles(341.935364f, 112.180405f, -0.00198736391f);
 
-            animator.SetBool(aimAtTargetHash, false);
-            animator.SetBool(shootAtTargetHash, false);
+            //Neither aim nor shoot, both false
+            AnimateGunman(false,false);
         }
         else if (gunmanState == GunmanStates.aim)//Play aim animation
         {
-            gunmanControllerScript.rifle.transform.localPosition = new Vector3(-0.193000004f, 0.307000011f, 0.532999992f);
-            gunmanControllerScript.rifle.transform.localEulerAngles = new Vector3(346.360016f, 136.391998f, 1.44500279f);
+            //Set appropriate position and rotation for rifle during aiming animation
+            SetRiflePosition(-0.193000004f, 0.307000011f, 0.532999992f);
+            SetRifleEulerAngles(346.360016f, 136.391998f, 1.44500279f);
 
-            animator.SetBool(aimAtTargetHash, true);
-            animator.SetBool(shootAtTargetHash, false);
+            //Aim at target, but not shoot
+            AnimateGunman(true, false);
         }
         else if (gunmanState == GunmanStates.shoot)
         {
-            animator.SetBool(aimAtTargetHash, false);
-            animator.SetBool(shootAtTargetHash, true);
+            //Aim = false, Shoot = true
+            AnimateGunman(false, true);
         }
+    }
+
+    private void SetRiflePosition(float x, float y, float z)
+    {
+        gunmanControllerScript.rifle.transform.localPosition = new Vector3(x,y,z);
+    }
+    private void SetRifleEulerAngles(float x, float y, float z)
+    {
+        gunmanControllerScript.rifle.transform.localEulerAngles = new Vector3(x,y,z);
+    }
+
+    private void AnimateGunman(bool aimAtOurTarget, bool shootAtOurTarget)
+    {
+        animator.SetBool(aimAtTargetHash, aimAtOurTarget);
+        animator.SetBool(shootAtTargetHash, shootAtOurTarget);
     }
 }

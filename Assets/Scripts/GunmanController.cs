@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class GunmanController : MonoBehaviour
 {
-    public Transform A;
+    [HideInInspector] public Transform A;
     public Transform B;
-    public LineRenderer lineRenderer;
+    [HideInInspector] public LineRenderer lineRenderer;
+    [HideInInspector] public GameObject rifle;
 
-    public bool shootOnce = false;
-    public bool enableLineRenderer;
+    [HideInInspector] public bool shootOnce = false;
+    [HideInInspector] public bool enableLineRenderer;
 
     private GameObject projectilePath;
     private GameObject mixamorigHips;
-    public GameObject rifle;
 
     private void Awake()
     {
+        //Assign gameobjects in scene to respective fields
+
         for (int i = 0; i < this.transform.childCount; i++)
         {
             GameObject gameObject = this.transform.GetChild(i).gameObject;
@@ -68,6 +70,7 @@ public class GunmanController : MonoBehaviour
         }
     }
 
+    //Only during scene view, draw a line between points
     private void OnDrawGizmos()//Draw Straight line between start and end points
     {
         if (A == null || B == null)
@@ -75,7 +78,7 @@ public class GunmanController : MonoBehaviour
             return;
         }
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(Evaluate(0), Evaluate(1));//Only during scene view, draw a line between points
+        Gizmos.DrawLine(Evaluate(0), Evaluate(1));
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(Evaluate(0), 0.01f);
         Gizmos.DrawWireSphere(Evaluate(1), 0.01f);

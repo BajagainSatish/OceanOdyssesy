@@ -23,18 +23,26 @@ public static class ShipSort
             float angleB = Mathf.Atan2(dirB.x, dirB.z);
 
             if (angleA < angleB)
+            {
                 return -1;
+            }
             if (angleA > angleB)
+            {
                 return 1;
+            }
 
             // If angles are the same, sort by distance
             float distanceA = Vector3.Distance(a.transform.position, mainShipPos);
             float distanceB = Vector3.Distance(b.transform.position, mainShipPos);
 
             if (distanceA < distanceB)
+            {
                 return -1;
+            }
             if (distanceA > distanceB)
+            {
                 return 1;
+            }
 
             // If angles and distances are the same, sort by unique identifier (e.g., ship name)
             return a.name.CompareTo(b.name);

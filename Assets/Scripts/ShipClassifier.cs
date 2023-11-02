@@ -10,6 +10,7 @@ public class ShipClassifier : MonoBehaviour
 
     public bool isNavyShip;
     public bool isActive;
+
     public static ShipClassifier[] GetPirateShipList()
     {
         return pirateShipList;
@@ -23,24 +24,43 @@ public class ShipClassifier : MonoBehaviour
     {
         if (isNavyShip)
         {
-            for (int i = 0; i < shipCount; i++)
-            {
-                if (navyShipList[i] == null)
-                {
-                    navyShipList[i] = this;
-                    return;
-                }
-            }
+            AddNavyShipToNavyShipList();
         }
         else
         {
-            for (int i = 0; i < shipCount; i++)
+            AddPirateShipToPirateShipList();
+        }
+    }
+
+    private void Start()
+    {
+        //Check if each ship's 0th child is ShipCenter
+        if (transform.GetChild(0).name != "ShipCenter")
+        {
+            Debug.LogWarning("Ensure that 0th child is ShipCenter for proper distance calculation between ships!!!" + this.name);
+        }
+    }
+
+    private void AddNavyShipToNavyShipList()
+    {
+        for (int i = 0; i < shipCount; i++)
+        {
+            if (navyShipList[i] == null)
             {
-                if (pirateShipList[i] == null)
-                {
-                    pirateShipList[i] = this;
-                    return;
-                }
+                navyShipList[i] = this;
+                return;
+            }
+        }
+    }
+
+    private void AddPirateShipToPirateShipList()
+    {
+        for (int i = 0; i < shipCount; i++)
+        {
+            if (pirateShipList[i] == null)
+            {
+                pirateShipList[i] = this;
+                return;
             }
         }
     }
