@@ -15,10 +15,11 @@ public class MortarController : MonoBehaviour
     public float mortarMaxRange;
     [SerializeField] private float adjustCurveAngle;
 
-    private static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
+    private readonly static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
 
     private float adjustDistanceFactor;
     private Vector3[] routePoints = new Vector3[curvePointsTotalCount + 1];
+    [SerializeField] private ObjectPool_Projectile objectPoolMortarScript;
 
     private Transform shipGameObject;
     private Transform myShipCenter;
@@ -26,9 +27,26 @@ public class MortarController : MonoBehaviour
     private GameObject mortarBomb;
     public LineRenderer lineRenderer;
     private bool shootOnce;
-    private bool enableLineRenderer;
+    public bool enableLineRenderer;
 
-    [SerializeField] private ObjectPool_Projectile objectPoolMortarScript;
+    private GameObject parentCannonUnit;
+    private GameObject parentScaleFactorGameObject;
+    private GameObject parentMainShip;
+
+    private CommonArtilleryShoot commonArtilleryShootScript;
+
+    private bool shipIsActive;
+    private bool hasNotShotEvenOnce;
+
+    private void Awake()
+    {
+        //Use recursion to directly access main parent later
+        parentCannonUnit = transform.parent.gameObject;
+        parentScaleFactorGameObject = parentCannonUnit.transform.parent.gameObject;
+        parentMainShip = parentScaleFactorGameObject.transform.parent.gameObject;
+
+        commonArtilleryShootScript = parentMainShip.GetComponent<CommonArtilleryShoot>();
+    }
 
     private void Start()
     {
@@ -38,19 +56,36 @@ public class MortarController : MonoBehaviour
         shootOnce = false;
         shipGameObject = FindHighestParent(this.transform);
         myShipCenter = shipGameObject.GetChild(0);
-        enableLineRenderer = true;
+        enableLineRenderer = false;
     }
 
     private void Update()
     {
+        shipIsActive = commonArtilleryShootScript.shipIsActive;
+        hasNotShotEvenOnce = commonArtilleryShootScript.hasNotShotEvenOnce;
+
         myShipPosition = myShipCenter.position;
 
         if (B != null)
         {
             float distance = Vector3.Distance(myShipPosition, B.position);
 
+            if (shipIsActive && enableLineRenderer)
+            {
+                enableLineRenderer = true;
+            }
+            else if (!shipIsActive)
+            {
+                enableLineRenderer = false;
+            }
+
             if (distance < mortarMaxRange)
             {
+                if (shipIsActive && hasNotShotEvenOnce)
+                {
+                    enableLineRenderer = true;
+                }
+
                 adjustDistanceFactor = -(adjustCurveAngle * distance);//curve path
 
                 //Evaluate proper position for control point
@@ -73,8 +108,12 @@ public class MortarController : MonoBehaviour
                     lineRenderer.SetPosition(i, Evaluate(i / (float)curvePointsTotalCount));
                 }
 
-                if (Input.GetKeyDown(KeyCode.S))
+                if (Input.GetKeyDown(KeyCode.S) && shipIsActive)
                 {
+                    if (hasNotShotEvenOnce)
+                    {
+                        commonArtilleryShootScript.hasNotShotEvenOnce = false;
+                    }
                     if (!shootOnce)
                     {
                         mortarBomb = objectPoolMortarScript.ReturnProjectile();

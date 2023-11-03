@@ -17,17 +17,21 @@ public class GunShoot : MonoBehaviour
     private GameObject scaleFactorGameObject;
     private GameObject shipCenter;
     private GameObject gunmanParentObject;
-    private GameObject[] gunmen = new GameObject[totalGunmanCount];
-    private GunmanController[] gunmanControllerScript = new GunmanController[totalGunmanCount];
-    private AnimationGunman[] gunmanAnimationScript = new AnimationGunman[totalGunmanCount];
+    private readonly GameObject[] gunmen = new GameObject[totalGunmanCount];
+    private readonly GunmanController[] gunmanControllerScript = new GunmanController[totalGunmanCount];
+    private readonly AnimationGunman[] gunmanAnimationScript = new AnimationGunman[totalGunmanCount];
+
+    private ShipClassifier shipClassifierScript;
 
     private Vector3 endPosition;
+    private bool shipIsActive;
+    private bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
 
     private void Awake()
     {
-        for (int i = 0; i < this.transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            GameObject gameObject = this.transform.GetChild(i).gameObject;
+            GameObject gameObject = transform.GetChild(i).gameObject;
             if (gameObject.name == "ScaleFactorGameObject")
             {
                 scaleFactorGameObject = gameObject;
@@ -52,6 +56,7 @@ public class GunShoot : MonoBehaviour
             gunmanControllerScript[i] = gunmen[i].GetComponent<GunmanController>();
             gunmanAnimationScript[i] = gunmen[i].GetComponent<AnimationGunman>();
         }
+        shipClassifierScript = GetComponent<ShipClassifier>();
     }
 
     private void Start()
@@ -60,12 +65,15 @@ public class GunShoot : MonoBehaviour
         {
             gunmanControllerScript[i].lineRenderer.startWidth = lineWidth;
             gunmanControllerScript[i].lineRenderer.positionCount = 2;
-            gunmanControllerScript[i].enableLineRenderer = true;
+            gunmanControllerScript[i].enableLineRenderer = false;
         }
+        hasNotShotEvenOnce = true;
+        shipIsActive = false;
     }
 
     private void Update()
     {
+        shipIsActive = shipClassifierScript.isActive;
         myShipPosition = shipCenter.transform.position;
 
         for (int i = 0; i < totalGunmanCount; i++)
@@ -81,8 +89,23 @@ public class GunShoot : MonoBehaviour
                 //float distance = Mathf.Sqrt((B.position.x - shipPosition.x) * (B.position.x - shipPosition.x) + (B.position.y - shipPosition.y) * (B.position.y - shipPosition.y) + (B.position.z - shipPosition.z) * (B.position.z - shipPosition.z));
                 float distance = Vector3.Distance(B.position, myShipPosition);
 
+                //Show line renderer only for currently selected ship, and if not during cool down time
+                if (shipIsActive && gunmanControllerScript[i].enableLineRenderer)
+                {
+                    gunmanControllerScript[i].enableLineRenderer = true;
+                }
+                else if (!shipIsActive)
+                {
+                    gunmanControllerScript[i].enableLineRenderer = false;
+                }
+
                 if (distance < gunmanMaxRange)
                 {
+                    if (hasNotShotEvenOnce && shipIsActive)
+                    {
+                        gunmanControllerScript[i].enableLineRenderer = true;
+                    }
+
                     //gunman animation, aiming towards enemy
                     if (lineRenderer.enabled)
                     {
@@ -93,12 +116,16 @@ public class GunShoot : MonoBehaviour
                         gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.idle;
                     }
 
-                    lineRenderer.SetPosition(0, Evaluate(0,A,B));//set start point (vertex = 0, position = Evaluate(0))
-                    lineRenderer.SetPosition(1, Evaluate(1,A,B));//set end point
+                    lineRenderer.SetPosition(0, Evaluate(0, A, B));//set start point (vertex = 0, position = Evaluate(0))
+                    lineRenderer.SetPosition(1, Evaluate(1, A, B));//set end point
 
                     //Check if shoot is pressed
-                    if (Input.GetKeyDown(KeyCode.S))
+                    if (Input.GetKeyDown(KeyCode.S) && shipIsActive)//shoot only if ship is selected
                     {
+                        if (hasNotShotEvenOnce)
+                        {
+                            hasNotShotEvenOnce = false;
+                        }
                         if (!shootOnce)
                         {
                             bullet = objectPoolBulletScript.ReturnProjectile();
@@ -115,9 +142,9 @@ public class GunShoot : MonoBehaviour
                                 StartCoroutine(MoveObject(A.position, endPosition, bullet));
                                 gunmanControllerScript[i].enableLineRenderer = false;
                                 StartCoroutine(CoolDownTime());
-                            }                            
+                            }
                         }
-                    }                    
+                    }
                 }
                 else
                 {
@@ -128,7 +155,7 @@ public class GunShoot : MonoBehaviour
             {
                 gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.idle;
             }
-        }       
+        }
     }
     private IEnumerator MoveObject(Vector3 startPos, Vector3 endPos, GameObject bullet)
     {

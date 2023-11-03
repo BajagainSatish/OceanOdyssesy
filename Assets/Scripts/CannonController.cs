@@ -17,7 +17,7 @@ public class CannonController : MonoBehaviour
     public GameObject newCannon;
 
     public ObjectPool_Projectile objectPool_CanonBallScript;
-    private ParticleSystem[] smokeParticleEffect = new ParticleSystem[3];
+    private readonly ParticleSystem[] smokeParticleEffect = new ParticleSystem[3];
 
     public float cannonShootAngleRange = 60;
 
@@ -30,7 +30,16 @@ public class CannonController : MonoBehaviour
     private bool shootOnce;
     private Vector3 endPosition;
     private bool withinCannonRotateRange;
-    private bool enableLineRenderer;
+    public bool enableLineRenderer;
+
+    private GameObject parentCannonUnit;
+    private GameObject parentScaleFactorGameObject;
+    private GameObject parentMainShip;
+
+    private CommonArtilleryShoot commonArtilleryShootScript;
+
+    private bool shipIsActive;
+    private bool hasNotShotEvenOnce;
 
     private void Awake()
     {
@@ -44,7 +53,14 @@ public class CannonController : MonoBehaviour
                     smokeParticleEffect[j] = particleEffectsObject.transform.GetChild(j).GetComponent<ParticleSystem>();
                 }
             }
-        }       
+        }
+
+        //Use recursion to directly access main parent later
+        parentCannonUnit = transform.parent.gameObject;
+        parentScaleFactorGameObject = parentCannonUnit.transform.parent.gameObject;
+        parentMainShip = parentScaleFactorGameObject.transform.parent.gameObject;
+
+        commonArtilleryShootScript = parentMainShip.GetComponent<CommonArtilleryShoot>();
     }
 
     private void Start()
@@ -55,19 +71,36 @@ public class CannonController : MonoBehaviour
         shootOnce = false;
         shipGameObject = MortarController.FindHighestParent(this.transform);
         myShipCenter = shipGameObject.GetChild(0);
-        enableLineRenderer = true;
+        enableLineRenderer = false;
     }
 
     private void Update()
     {
+        shipIsActive = commonArtilleryShootScript.shipIsActive;
+        hasNotShotEvenOnce = commonArtilleryShootScript.hasNotShotEvenOnce;
+
         myShipPosition = myShipCenter.position;
 
         if (B != null)
         {
             float distance = Vector3.Distance(myShipPosition, B.position);
 
+            if (shipIsActive && enableLineRenderer)
+            {
+                enableLineRenderer = true;
+            }
+            else if (!shipIsActive)
+            {
+                enableLineRenderer = false;
+            }
+
             if (distance < cannonMaxRange)
             {
+                if (shipIsActive && hasNotShotEvenOnce)
+                {
+                    enableLineRenderer = true;
+                }
+
                 lineRenderer.SetPosition(0, Evaluate(0));//set start point (vertex = 0, position = Evaluate(0))
                 lineRenderer.SetPosition(1, Evaluate(1));//set end point
 
@@ -88,8 +121,12 @@ public class CannonController : MonoBehaviour
                     lineRenderer.SetPosition(1, Evaluate(1, A, B));//set end point
                     cannonRotator.transform.LookAt(B.position);//we set the x-rotation of gameobject to -8, so that the gameobject aligns with the cannons shooting end
 
-                    if (Input.GetKeyDown(KeyCode.S))
+                    if (Input.GetKeyDown(KeyCode.S) && shipIsActive)
                     {
+                        if (hasNotShotEvenOnce)
+                        {
+                            commonArtilleryShootScript.hasNotShotEvenOnce = false;
+                        }
                         if (!shootOnce)
                         {
                             cannonBall = objectPool_CanonBallScript.ReturnProjectile();

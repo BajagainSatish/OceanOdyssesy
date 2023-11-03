@@ -27,13 +27,17 @@ public class ArrowShoot : MonoBehaviour
     private ArcherController[] archerControllerScript = new ArcherController[totalArcherCount];
     private AnimationArcher[] archerAnimatorScript = new AnimationArcher[totalArcherCount];
 
+    private ShipClassifier shipClassifierScript;
+
+    private bool shipIsActive;
+    private bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
     private float adjustDistanceFactor;
 
     private void Awake()
     {
-        for (int i = 0; i < this.transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            GameObject gameObject = this.transform.GetChild(i).gameObject;
+            GameObject gameObject = transform.GetChild(i).gameObject;
             if (gameObject.name == "ScaleFactorGameObject")
             {
                 scaleFactorGameObject = gameObject;
@@ -57,6 +61,7 @@ public class ArrowShoot : MonoBehaviour
             archerControllerScript[i] = archers[i].GetComponent<ArcherController>();
             archerAnimatorScript[i] = archers[i].GetComponent<AnimationArcher>();
         }
+        shipClassifierScript = GetComponent<ShipClassifier>();
     }
 
     private void Start()
@@ -65,11 +70,16 @@ public class ArrowShoot : MonoBehaviour
         {
             archerControllerScript[i].lineRenderer.startWidth = lineWidth;
             archerControllerScript[i].lineRenderer.positionCount = curvePointsTotalCount + 1;
-            archerControllerScript[i].enableLineRenderer = true;
+            archerControllerScript[i].enableLineRenderer = false;
         }
+        hasNotShotEvenOnce = true;
+        shipIsActive = false;
     }
     private void Update()
     {
+        //Show line renderer only for currently selected ship
+        shipIsActive = shipClassifierScript.isActive;
+
         myShipPosition = myShipCenter.transform.position;
         for (int i = 0; i < totalArcherCount; i++)
         {
@@ -80,13 +90,28 @@ public class ArrowShoot : MonoBehaviour
                 Transform control = archerControllerScript[i].control;
 
                 LineRenderer lineRenderer = archerControllerScript[i].lineRenderer;
-                bool shootOnce = archerControllerScript[i].shootOnce;               
+                bool shootOnce = archerControllerScript[i].shootOnce;
                 Vector3[] routePoints = archerControllerScript[i].routePoints;
 
-                float distance = Vector3.Distance(B.position,myShipPosition);
-               
+                float distance = Vector3.Distance(B.position, myShipPosition);
+
+                //Show line renderer only for currently selected ship, and if not during cool down time
+                if (shipIsActive && archerControllerScript[i].enableLineRenderer)
+                {
+                    archerControllerScript[i].enableLineRenderer = true;
+                }
+                else if (!shipIsActive)
+                {
+                    archerControllerScript[i].enableLineRenderer = false;
+                }
+
                 if (distance < archerMaxRange)
                 {
+                    if (hasNotShotEvenOnce && shipIsActive)
+                    {
+                        archerControllerScript[i].enableLineRenderer = true;
+                    }
+
                     //archer animation, aiming towards enemy
                     if (lineRenderer.enabled)
                     {
@@ -121,8 +146,12 @@ public class ArrowShoot : MonoBehaviour
                     control.transform.position = new Vector3(p, q, r);
 
                     //Check if shoot is pressed
-                    if (Input.GetKeyDown(KeyCode.S))
+                    if (Input.GetKeyDown(KeyCode.S) && shipIsActive)//shoot only if ship is selected
                     {
+                        if (hasNotShotEvenOnce)
+                        {
+                            hasNotShotEvenOnce = false;
+                        }
                         if (!shootOnce)
                         {
                             arrow = objectPoolArrowScript.ReturnProjectile();
@@ -165,7 +194,7 @@ public class ArrowShoot : MonoBehaviour
         for (int i = 0; i < curvePointsTotalCount + 1; i++)
         {
             arrow.transform.LookAt(routePoints[i]);
-            yield return StartCoroutine(MoveObject(arrow.transform.position, routePoints[i],arrow));
+            yield return StartCoroutine(MoveObject(arrow.transform.position, routePoints[i], arrow));
         }
     }
     private IEnumerator MoveObject(Vector3 startPos, Vector3 endPos, GameObject arrow)
@@ -195,9 +224,9 @@ public class ArrowShoot : MonoBehaviour
 
     private Vector3 Evaluate(float t, Transform A, Transform B, Transform control)//Quadratic Curve functionality
     {
-        Vector3 ac = Vector3.Lerp(A.position,control.position,t);//Interpolate from point A to ControlPoint
+        Vector3 ac = Vector3.Lerp(A.position, control.position, t);//Interpolate from point A to ControlPoint
         Vector3 cb = Vector3.Lerp(control.position, B.position, t);//Interpolate from ControlPoint to Point B
 
-        return Vector3.Lerp(ac,cb,t);
+        return Vector3.Lerp(ac, cb, t);
     }
 }

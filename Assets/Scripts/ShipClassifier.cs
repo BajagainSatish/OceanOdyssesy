@@ -34,6 +34,9 @@ public class ShipClassifier : MonoBehaviour
 
     private void Start()
     {
+        //Set each ship to deactive at first
+        isActive = false;
+
         //Check if each ship's 0th child is ShipCenter
         if (transform.GetChild(0).name != "ShipCenter")
         {
