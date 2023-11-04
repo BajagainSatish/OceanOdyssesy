@@ -11,6 +11,9 @@ public class CommonArtilleryShoot : MonoBehaviour
     private readonly GameObject[] shootUnitCannon = new GameObject[CannonController.totalCannonCount];
     private readonly GameObject[] shootUnitMortar = new GameObject[MortarController.totalMortarCount];
 
+    private GameObject[] mortarObject = new GameObject[MortarController.totalMortarCount];
+    private GameObject[] mortarBarrel = new GameObject[MortarController.totalMortarCount];
+
     private readonly CannonController[] cannonControllerScript = new CannonController[CannonController.totalCannonCount];
     private readonly MortarController[] mortarControllerScript = new MortarController[MortarController.totalMortarCount];
 
@@ -52,6 +55,12 @@ public class CommonArtilleryShoot : MonoBehaviour
             mortarControllerScript[i] = shootUnitMortar[i].GetComponent<MortarController>();
         }
         shipClassifierScript = GetComponent<ShipClassifier>();
+
+        for (int i = 0; i < MortarController.totalMortarCount; i++)
+        {
+            mortarObject[i] = shootUnitMortar[i].transform.GetChild(0).gameObject;
+            mortarBarrel[i] = mortarObject[i].transform.GetChild(0).gameObject;
+        }
     }
 
     private void Start()
@@ -90,9 +99,22 @@ public class CommonArtilleryShoot : MonoBehaviour
             {
                 mortarControllerScript[i].enableLineRenderer = false;
             }
+
+            Transform B = mortarControllerScript[i].B;
+            if (B != null)
+            {
+                Vector3 targetDirection = (B.position - mortarBarrel[i].transform.position).normalized;              
+                mortarBarrel[i].transform.rotation = Quaternion.LookRotation(targetDirection);
+                mortarBarrel[i].transform.localEulerAngles = new Vector3(0, mortarBarrel[i].transform.localEulerAngles.y, 0);
+            }
+            if (mortarBarrel != null && B != null)
+            {
+                Debug.DrawLine(mortarBarrel[i].transform.position, B.position, Color.blue);
+            }
         }
     }
 }
+
 //Other functional portion in respective script
 /*
             if (hasNotShotEvenOnce && shipIsActive)
