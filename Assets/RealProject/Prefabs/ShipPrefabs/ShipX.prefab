@@ -9,9 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2186220175697514473}
-  - component: {fileID: 2038262464147050277}
-  - component: {fileID: 1487329908794805987}
-  - component: {fileID: 2922219524887110979}
+  - component: {fileID: 6925756300066683501}
   m_Layer: 0
   m_Name: ShipX
   m_TagString: Untagged
@@ -36,7 +34,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &2038262464147050277
+--- !u!114 &6925756300066683501
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,44 +43,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4149126135670364798}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be3a0a1ffd75d224d96f3501de9ac6f3, type: 3}
+  m_Script: {fileID: 11500000, guid: cd591dacc5929294bb61768f9d7a785e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectPoolArrowScript: {fileID: 0}
-  lineWidth: 0.01
-  arrowVelocity: 2.5
-  leastDistanceForStraightHit: 0.8
-  adjustCurveAngle: 0.8
-  archerMaxRange: 7
-  coolDownTime: 8
---- !u!114 &1487329908794805987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4149126135670364798}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1b33b77a0d9b9b4082f6aef53857a8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isNavyShip: 1
-  isActive: 0
---- !u!114 &2922219524887110979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4149126135670364798}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d0c7de8e0cf8994da701f33ff3cd935, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedShip: {fileID: 0}
-  activeMarker: {fileID: 0}
+  isP1Ship: 0
 --- !u!1 &4910293607477913631
 GameObject:
   m_ObjectHideFlags: 0

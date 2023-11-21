@@ -3393,9 +3393,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8420698664460210961}
-  - component: {fileID: 4206574890394468528}
-  - component: {fileID: 5134638204855077213}
-  - component: {fileID: 2675691790620758868}
+  - component: {fileID: 582147256749012490}
   m_Layer: 0
   m_Name: StylizedPirateShip
   m_TagString: Untagged
@@ -3418,9 +3416,9 @@ Transform:
   - {fileID: 6162349732307579961}
   - {fileID: 2418500082810449124}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
---- !u!114 &4206574890394468528
+--- !u!114 &582147256749012490
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3429,39 +3427,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7476012147820114070}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1b33b77a0d9b9b4082f6aef53857a8e, type: 3}
+  m_Script: {fileID: 11500000, guid: cd591dacc5929294bb61768f9d7a785e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isNavyShip: 0
-  isActive: 0
---- !u!114 &5134638204855077213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7476012147820114070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d0c7de8e0cf8994da701f33ff3cd935, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedShip: {fileID: 0}
-  activeMarker: {fileID: 0}
---- !u!114 &2675691790620758868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7476012147820114070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8203403fd85ed3c4ab6e0c44643f6ac2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shipIsActive: 0
-  hasNotShotEvenOnce: 0
+  isP1Ship: 0
 --- !u!1 &7748366126500935148
 GameObject:
   m_ObjectHideFlags: 0
