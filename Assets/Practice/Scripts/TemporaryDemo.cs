@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class TemporaryDemo : MonoBehaviour
 {
+    /*
     [SerializeField] private static int totalShipInSceneCount = 14;
     [SerializeField] private GameObject[] allShipsInScene = new GameObject[totalShipInSceneCount];
 
@@ -184,4 +185,5 @@ public class TemporaryDemo : MonoBehaviour
             transform.eulerAngles = new Vector3(defaultXCameraRot, defaultYCameraRot, defaultZCameraRot);
         }
     }
+    */
 }

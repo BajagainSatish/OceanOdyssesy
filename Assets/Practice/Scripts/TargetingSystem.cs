@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class TargetingSystem : MonoBehaviour
 {
+    /*
     private ShipClassifier[] shipsInRange = new ShipClassifier[ShipClassifier.shipCount];
     private ShipClassifier[] circularlyArrangedShips = new ShipClassifier[ShipClassifier.shipCount];
     public ShipClassifier selectedShip;
@@ -639,4 +640,5 @@ public class TargetingSystem : MonoBehaviour
         targetingSystemScript = selectedShip.GetComponent<TargetingSystem>();
         targetingSystemScript.activeMarker.SetActive(temp);
     }
+    */
 }

@@ -44,7 +44,7 @@ public class ArcherShoot : MonoBehaviour
         for (int i = 0; i < scaleFactorGameObject.transform.childCount; i++)
         {
             GameObject gameObject = scaleFactorGameObject.transform.GetChild(i).gameObject;
-            if (gameObject.name == "Shooter")
+            if (gameObject.name == "Archers")
             {
                 archerParentObject = gameObject;
             }

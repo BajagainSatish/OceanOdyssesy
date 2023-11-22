@@ -12,13 +12,13 @@ public class ArcherController : MonoBehaviour
 
     [HideInInspector] public bool shootOnce = false;
     [HideInInspector] public Vector3 endPosition;
-    [HideInInspector] public Vector3[] routePoints = new Vector3[ArrowShoot.curvePointsTotalCount + 1];
+    [HideInInspector] public Vector3[] routePoints = new Vector3[ArcherShoot.curvePointsTotalCount + 1];
     [HideInInspector] public bool withinArcherRotateRange = false;
 
     private GameObject projectilePath;
     private GameObject mixamorigHips;
 
-    private readonly int curvePointsTotalCount = ArrowShoot.curvePointsTotalCount;
+    private readonly int curvePointsTotalCount = ArcherShoot.curvePointsTotalCount;
 
     private void Awake()
     {
