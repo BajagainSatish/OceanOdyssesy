@@ -5,24 +5,23 @@ using UnityEngine;
 public class ArcherShoot : MonoBehaviour
 {
     [SerializeField] private ObjectPool_Projectile objectPoolArrowScript;
-    [SerializeField] private float lineWidth;
-    [SerializeField] private float arrowVelocity;
-    [SerializeField] private float leastDistanceForStraightHit;
-    [SerializeField] private float adjustCurveAngle;
-    public float archerMaxRange;
-    [SerializeField] private float coolDownTime;
-
-    public static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
-    public static int totalArcherCount = 4;
+    private float lineWidth;
+    private float arrowVelocity;
+    private float leastDistanceForStraightHit;
+    private float adjustCurveAngle;
+    private float archerMaxRange;
+    private float coolDownTime;
+    private float totalArcherCount;
+    private int curvePointsTotalCount;
 
     private GameObject arrow;
     private Vector3 myShipPosition;
     private GameObject scaleFactorGameObject;
     private GameObject myShipCenter;
     private GameObject archerParentObject;
-    private GameObject[] archers = new GameObject[totalArcherCount];
-    private ArcherController[] archerControllerScript = new ArcherController[totalArcherCount];
-    private AnimationArcher[] archerAnimatorScript = new AnimationArcher[totalArcherCount];
+    private GameObject[] archers = new GameObject[SetParameters.totalArcherCount];
+    private ArcherController[] archerControllerScript = new ArcherController[SetParameters.totalArcherCount];
+    private AnimationArcher[] archerAnimatorScript = new AnimationArcher[SetParameters.totalArcherCount];
 
     private bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
     private float adjustDistanceFactor;
@@ -49,13 +48,23 @@ public class ArcherShoot : MonoBehaviour
                 archerParentObject = gameObject;
             }
         }
-        for (int i = 0; i < totalArcherCount; i++)
+        for (int i = 0; i < SetParameters.totalArcherCount; i++)
         {
             archers[i] = archerParentObject.transform.GetChild(i).gameObject;
             archerControllerScript[i] = archers[i].GetComponent<ArcherController>();
             archerAnimatorScript[i] = archers[i].GetComponent<AnimationArcher>();
         }
-    }
+
+        totalArcherCount = SetParameters.totalArcherCount;
+        curvePointsTotalCount = SetParameters.curvePointsTotalCount;
+        lineWidth = SetParameters.archerLineWidth;        
+        arrowVelocity = SetParameters.archerArrowVelocity;
+        leastDistanceForStraightHit = SetParameters.archersleastDistanceForStraightHit;
+        adjustCurveAngle = SetParameters.archerAdjustCurveAngle;
+        archerMaxRange = SetParameters.shipMaxRange;
+        coolDownTime = SetParameters.archerCoolDownTime;
+        totalArcherCount = SetParameters.totalArcherCount;
+}
 
     private void Start()
     {
