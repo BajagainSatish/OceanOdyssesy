@@ -19,9 +19,9 @@ public class ArcherShoot : MonoBehaviour
     private GameObject scaleFactorGameObject;
     private GameObject myShipCenter;
     private GameObject archerParentObject;
-    private GameObject[] archers = new GameObject[SetParameters.totalArcherCount];
-    private ArcherController[] archerControllerScript = new ArcherController[SetParameters.totalArcherCount];
-    private AnimationArcher[] archerAnimatorScript = new AnimationArcher[SetParameters.totalArcherCount];
+    private GameObject[] archers = new GameObject[SetParameters.mediumShipMenCount];
+    private ArcherController[] archerControllerScript = new ArcherController[SetParameters.mediumShipMenCount];
+    private AnimationArcher[] archerAnimatorScript = new AnimationArcher[SetParameters.mediumShipMenCount];
 
     private bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
     private float adjustDistanceFactor;
@@ -48,22 +48,21 @@ public class ArcherShoot : MonoBehaviour
                 archerParentObject = gameObject;
             }
         }
-        for (int i = 0; i < SetParameters.totalArcherCount; i++)
+        for (int i = 0; i < SetParameters.mediumShipMenCount; i++)
         {
             archers[i] = archerParentObject.transform.GetChild(i).gameObject;
             archerControllerScript[i] = archers[i].GetComponent<ArcherController>();
             archerAnimatorScript[i] = archers[i].GetComponent<AnimationArcher>();
         }
 
-        totalArcherCount = SetParameters.totalArcherCount;
+        totalArcherCount = SetParameters.mediumShipMenCount;
         curvePointsTotalCount = SetParameters.curvePointsTotalCount;
         lineWidth = SetParameters.archerLineWidth;        
         arrowVelocity = SetParameters.archerArrowVelocity;
         leastDistanceForStraightHit = SetParameters.archersleastDistanceForStraightHit;
         adjustCurveAngle = SetParameters.archerAdjustCurveAngle;
-        archerMaxRange = SetParameters.shipMaxRange;
+        archerMaxRange = SetParameters.levelSpecificWeaponRange;
         coolDownTime = SetParameters.archerCoolDownTime;
-        totalArcherCount = SetParameters.totalArcherCount;
 }
 
     private void Start()

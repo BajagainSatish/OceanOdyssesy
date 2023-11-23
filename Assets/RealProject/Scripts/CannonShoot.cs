@@ -7,9 +7,9 @@ public class CannonShoot : MonoBehaviour
     private GameObject scaleFactorGameObject;
     private GameObject cannonUnit;
 
-    private readonly GameObject[] shootUnitCannon = new GameObject[CannonController.totalCannonCount];
+    private readonly GameObject[] shootUnitCannon = new GameObject[SetParameters.mediumShipMenCount];
 
-    private readonly CannonController[] cannonControllerScript = new CannonController[CannonController.totalCannonCount];
+    private readonly CannonController[] cannonControllerScript = new CannonController[SetParameters.mediumShipMenCount];
 
     public bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
 
@@ -31,7 +31,7 @@ public class CannonShoot : MonoBehaviour
                 cannonUnit = gameObject;
             }
         }
-        for (int i = 0; i < CannonController.totalCannonCount; i++)
+        for (int i = 0; i < SetParameters.mediumShipMenCount; i++)
         {
             shootUnitCannon[i] = cannonUnit.transform.GetChild(i).gameObject;
             cannonControllerScript[i] = shootUnitCannon[i].GetComponent<CannonController>();

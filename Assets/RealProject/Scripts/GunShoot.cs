@@ -5,21 +5,20 @@ using UnityEngine;
 public class GunShoot : MonoBehaviour
 {
     [SerializeField] private ObjectPool_Projectile objectPoolBulletScript;
-    [SerializeField] private float lineWidth;
-    [SerializeField] private float bulletVelocity;
-    public float gunmanMaxRange;
-    [SerializeField] private float coolDownTime;
-
-    public static int totalGunmanCount = 4;
+    private float lineWidth;
+    private float bulletVelocity;
+    private float gunmanMaxRange;
+    private float coolDownTime;
+    private int totalGunmanCount;
 
     private GameObject bullet;
     private Vector3 myShipPosition;
     private GameObject scaleFactorGameObject;
     private GameObject shipCenter;
     private GameObject gunmanParentObject;
-    private readonly GameObject[] gunmen = new GameObject[totalGunmanCount];
-    private readonly GunmanController[] gunmanControllerScript = new GunmanController[totalGunmanCount];
-    private readonly AnimationGunman[] gunmanAnimationScript = new AnimationGunman[totalGunmanCount];
+    private readonly GameObject[] gunmen = new GameObject[SetParameters.mediumShipMenCount];
+    private readonly GunmanController[] gunmanControllerScript = new GunmanController[SetParameters.mediumShipMenCount];
+    private readonly AnimationGunman[] gunmanAnimationScript = new AnimationGunman[SetParameters.mediumShipMenCount];
 
     private Vector3 endPosition;
     private bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
@@ -47,12 +46,18 @@ public class GunShoot : MonoBehaviour
                 gunmanParentObject = gameObject;
             }
         }
-        for (int i = 0; i < totalGunmanCount; i++)
+        for (int i = 0; i < SetParameters.mediumShipMenCount; i++)
         {
             gunmen[i] = gunmanParentObject.transform.GetChild(i).gameObject;
             gunmanControllerScript[i] = gunmen[i].GetComponent<GunmanController>();
             gunmanAnimationScript[i] = gunmen[i].GetComponent<AnimationGunman>();
         }
+
+        totalGunmanCount = SetParameters.mediumShipMenCount;
+        lineWidth = SetParameters.gunmanLineWidth;
+        bulletVelocity = SetParameters.gunmanBulletVelocity;
+        gunmanMaxRange = SetParameters.levelSpecificWeaponRange;
+        coolDownTime = SetParameters.gunmanCoolDownTime;
     }
 
     private void Start()

@@ -4,21 +4,19 @@ using UnityEngine;
 
 public class MortarController : MonoBehaviour
 {
-    public static int totalMortarCount = 4;
-
     [SerializeField] private Transform A;
     public Transform B;
     [SerializeField] private Transform control;
-    [SerializeField] private float lineWidth;
-    [SerializeField] private float mortarBombVelocity;
-    [SerializeField] private float coolDownTime;
-    public float mortarMaxRange;
-    [SerializeField] private float adjustCurveAngle;
 
-    private readonly static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
+    private float lineWidth;
+    private float mortarBombVelocity;
+    private float coolDownTime;
+    private float mortarMaxRange;
+    private float adjustCurveAngle;
+    private int curvePointsTotalCount;
 
     private float adjustDistanceFactor;
-    private Vector3[] routePoints = new Vector3[curvePointsTotalCount + 1];
+    private Vector3[] routePoints = new Vector3[SetParameters.curvePointsTotalCount + 1];
     [SerializeField] private ObjectPool_Projectile objectPoolMortarScript;
 
     private Transform shipGameObject;
@@ -37,14 +35,21 @@ public class MortarController : MonoBehaviour
 
     private bool hasNotShotEvenOnce;
 
+
     private void Awake()
     {
         //Use recursion to directly access main parent later
         parentCannonUnit = transform.parent.gameObject;
         parentScaleFactorGameObject = parentCannonUnit.transform.parent.gameObject;
         parentMainShip = parentScaleFactorGameObject.transform.parent.gameObject;
-
         mortarShootScript = parentMainShip.GetComponent<MortarShoot>();
+
+        lineWidth = SetParameters.mortarLineWidth;
+        mortarBombVelocity = SetParameters.mortarBombVelocity;
+        coolDownTime = SetParameters.mortarCoolDownTime;
+        mortarMaxRange = SetParameters.levelSpecificWeaponRange;
+        adjustCurveAngle = SetParameters.mortarAdjustCurveAngle;
+        curvePointsTotalCount = SetParameters.curvePointsTotalCount;
     }
 
     private void Start()
@@ -126,8 +131,12 @@ public class MortarController : MonoBehaviour
             }
             else
             {
-                lineRenderer.enabled = false;
+                B = null;
             }
+        }
+        else//B is null
+        {
+            lineRenderer.enabled = false;
         }
     }
 

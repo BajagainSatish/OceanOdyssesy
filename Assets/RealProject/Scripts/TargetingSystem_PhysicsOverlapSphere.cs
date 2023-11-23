@@ -101,7 +101,7 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
         }
 
         shipCenter = transform.GetChild(0).transform;
-        shipMaxRange = SetParameters.shipMaxRange;
+        shipMaxRange = SetParameters.levelSpecificWeaponRange;
     }
     private void Start()
     {

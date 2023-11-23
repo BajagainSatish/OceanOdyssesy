@@ -7,12 +7,12 @@ public class MortarShoot : MonoBehaviour
     private GameObject scaleFactorGameObject;
     private GameObject mortarUnit;
 
-    private readonly GameObject[] shootUnitMortar = new GameObject[MortarController.totalMortarCount];
+    private readonly GameObject[] shootUnitMortar = new GameObject[SetParameters.mediumShipMenCount];
 
-    private GameObject[] mortarObject = new GameObject[MortarController.totalMortarCount];
-    private GameObject[] mortarBarrel = new GameObject[MortarController.totalMortarCount];
+    private GameObject[] mortarObject = new GameObject[SetParameters.mediumShipMenCount];
+    private GameObject[] mortarBarrel = new GameObject[SetParameters.mediumShipMenCount];
 
-    private readonly MortarController[] mortarControllerScript = new MortarController[MortarController.totalMortarCount];
+    private readonly MortarController[] mortarControllerScript = new MortarController[SetParameters.mediumShipMenCount];
 
     public bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
 
@@ -34,13 +34,13 @@ public class MortarShoot : MonoBehaviour
                 mortarUnit = gameObject;
             }
         }
-        for (int i = 0; i < MortarController.totalMortarCount; i++)
+        for (int i = 0; i < SetParameters.mediumShipMenCount; i++)
         {
             shootUnitMortar[i] = mortarUnit.transform.GetChild(i).gameObject;
             mortarControllerScript[i] = shootUnitMortar[i].GetComponent<MortarController>();
         }
 
-        for (int i = 0; i < MortarController.totalMortarCount; i++)
+        for (int i = 0; i < SetParameters.mediumShipMenCount; i++)
         {
             mortarObject[i] = shootUnitMortar[i].transform.GetChild(0).gameObject;
             mortarBarrel[i] = mortarObject[i].transform.GetChild(0).gameObject;
@@ -55,7 +55,7 @@ public class MortarShoot : MonoBehaviour
     private void Update()
     {
         //Mortar Controller
-        for (int i = 0; i < MortarController.totalMortarCount; i++)
+        for (int i = 0; i < SetParameters.mediumShipMenCount; i++)
         {
             Transform B = mortarControllerScript[i].B;
             if (B != null)

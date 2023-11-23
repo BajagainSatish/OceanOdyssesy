@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class CannonController : MonoBehaviour
 {
-    public static int totalCannonCount = 4;
-
     [SerializeField] private Transform A;
     public Transform B;
-    [SerializeField] private float lineWidth;
-    [SerializeField] private float cannonBallVelocity;
-    [SerializeField] private float coolDownTime;
-    public float cannonMaxRange;
+
+    private float lineWidth;
+    private float cannonBallVelocity;
+    private float coolDownTime;
+    private float cannonMaxRange;
+    private float cannonShootAngleRange;
 
     [SerializeField] private GameObject cannonRotator;
     public GameObject newCannon;
@@ -19,7 +19,6 @@ public class CannonController : MonoBehaviour
     public ObjectPool_Projectile objectPool_CanonBallScript;
     private readonly ParticleSystem[] smokeParticleEffect = new ParticleSystem[3];
 
-    public float cannonShootAngleRange = 60;
 
     private Transform shipGameObject;
     private Transform myShipCenter;
@@ -60,6 +59,12 @@ public class CannonController : MonoBehaviour
         parentMainShip = parentScaleFactorGameObject.transform.parent.gameObject;
 
         cannonShootScript = parentMainShip.GetComponent<CannonShoot>();
+
+        lineWidth = SetParameters.cannonLineWidth;
+        cannonBallVelocity = SetParameters.cannonBallVelocity;
+        coolDownTime = SetParameters.cannonCoolDownTime;
+        cannonMaxRange = SetParameters.levelSpecificWeaponRange;
+        cannonShootAngleRange = SetParameters.cannonShootAngleRange;
     }
 
     private void Start()
@@ -68,7 +73,7 @@ public class CannonController : MonoBehaviour
         lineRenderer.startWidth = lineWidth;
         lineRenderer.positionCount = 2;
         shootOnce = false;
-        shipGameObject = MortarController.FindHighestParent(this.transform);
+        shipGameObject = MortarController.FindHighestParent(transform);
         myShipCenter = shipGameObject.GetChild(0);
         enableLineRenderer = false;
     }
@@ -141,9 +146,13 @@ public class CannonController : MonoBehaviour
             }
             else
             {
-                lineRenderer.enabled = false;//persisting line renderer is no longer visible
+                B = null;
             }
-        }           
+        }
+        else
+        {
+            lineRenderer.enabled = false;//persisting line renderer is no longer visible
+        }
     }
     private IEnumerator MoveObject(Vector3 startPos, Vector3 endPos, GameObject cannonBall)
     {
