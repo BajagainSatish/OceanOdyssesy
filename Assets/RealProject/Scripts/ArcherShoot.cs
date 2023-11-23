@@ -10,7 +10,9 @@ public class ArcherShoot : MonoBehaviour
     private float leastDistanceForStraightHit;
     private float adjustCurveAngle;
     private float archerMaxRange;
-    private float coolDownTime;
+    private float waitBeforeShoot_FirstEncounter;
+    private float waitBeforeShoot_Aiming;
+    private float WaitAfterShoot;
     private float totalArcherCount;
     private int curvePointsTotalCount;
 
@@ -23,9 +25,7 @@ public class ArcherShoot : MonoBehaviour
     private ArcherController[] archerControllerScript = new ArcherController[SetParameters.mediumShipMenCount];
     private AnimationArcher[] archerAnimatorScript = new AnimationArcher[SetParameters.mediumShipMenCount];
 
-    private bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
     private float adjustDistanceFactor;
-
     private void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -62,8 +62,10 @@ public class ArcherShoot : MonoBehaviour
         leastDistanceForStraightHit = SetParameters.archersleastDistanceForStraightHit;
         adjustCurveAngle = SetParameters.archerAdjustCurveAngle;
         archerMaxRange = SetParameters.levelSpecificWeaponRange;
-        coolDownTime = SetParameters.archerCoolDownTime;
-}
+        waitBeforeShoot_FirstEncounter = SetParameters.archer_WaitBeforeShoot_FirstEncounter;
+        waitBeforeShoot_Aiming = SetParameters.archer_WaitBeforeShoot_Aiming;
+        WaitAfterShoot = SetParameters.archer_WaitAfterShoot;
+    }
 
     private void Start()
     {
@@ -71,9 +73,8 @@ public class ArcherShoot : MonoBehaviour
         {
             archerControllerScript[i].lineRenderer.startWidth = lineWidth;
             archerControllerScript[i].lineRenderer.positionCount = curvePointsTotalCount + 1;
-            archerControllerScript[i].enableLineRenderer = false;
+            archerControllerScript[i].enableLineRenderer = true;
         }
-        hasNotShotEvenOnce = true;
     }
     private void Update()
     {
@@ -90,15 +91,13 @@ public class ArcherShoot : MonoBehaviour
                 bool shootOnce = archerControllerScript[i].shootOnce;
                 Vector3[] routePoints = archerControllerScript[i].routePoints;
 
+                bool noEnemyInSight = archerControllerScript[i].noEnemyInSight;
+                bool shootArrow = archerControllerScript[i].shootArrow;
+
                 float distance = Vector3.Distance(B.position, myShipPosition);
 
                 if (distance < archerMaxRange)
                 {
-                    if (hasNotShotEvenOnce)
-                    {
-                        archerControllerScript[i].enableLineRenderer = true;
-                    }
-
                     //archer animation, aiming towards enemy
                     if (lineRenderer.enabled)
                     {
@@ -107,7 +106,6 @@ public class ArcherShoot : MonoBehaviour
                     else
                     {
                         archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.idle;
-
                     }
 
                     //Draw Curve from archer to enemy
@@ -132,36 +130,43 @@ public class ArcherShoot : MonoBehaviour
                     float q = (distance + (A.position.y + B.position.y) / 2f) + adjustDistanceFactor;
                     control.transform.position = new Vector3(p, q, r);
 
-                    //Check if shoot is pressed
-                    if (Input.GetKeyDown(KeyCode.S))
+                    if (noEnemyInSight)
                     {
-                        if (hasNotShotEvenOnce)
-                        {
-                            hasNotShotEvenOnce = false;
-                        }
-                        if (!shootOnce)
-                        {
-                            arrow = objectPoolArrowScript.ReturnProjectile();
+                        archerControllerScript[i].enableLineRenderer = true;//Then now aim animation will play
 
-                            //archer shoot animation
-                            archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.shoot;
-
-                            if (arrow != null)
+                        //Wait for some time before shoot, then set noEnemyInSight to false
+                        StartCoroutine(WaitForFirstWeaponLoad());
+                    }
+                    else
+                    {
+                        //Check if shoot is pressed
+                        if (shootArrow)
+                        {
+                            archerControllerScript[i].shootArrow = false;
+                            if (!shootOnce)
                             {
-                                arrow.transform.position = A.position;
+                                arrow = objectPoolArrowScript.ReturnProjectile();
 
-                                for (int j = 0; j < curvePointsTotalCount + 1; j++)
+                                //archer shoot animation
+                                archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.shoot;
+
+                                if (arrow != null)
                                 {
-                                    routePoints[j] = Evaluate(j / (float)curvePointsTotalCount, A, B, control);
-                                }
-                                archerControllerScript[i].shootOnce = true;
+                                    arrow.transform.position = A.position;
 
-                                StartCoroutine(MoveThroughRoute(arrow, routePoints));
-                                archerControllerScript[i].enableLineRenderer = false;//disable projectile path for cool down time
-                                StartCoroutine(CoolDownTime());
+                                    for (int j = 0; j < curvePointsTotalCount + 1; j++)
+                                    {
+                                        routePoints[j] = Evaluate(j / (float)curvePointsTotalCount, A, B, control);
+                                    }
+                                    archerControllerScript[i].shootOnce = true;
+
+                                    archerControllerScript[i].enableLineRenderer = false;//disable projectile path for cool down time
+                                    StartCoroutine(MoveThroughRoute(arrow, routePoints));
+                                    StartCoroutine(CoolDownTime());
+                                }
                             }
                         }
-                    }
+                    }     
                 }
                 else
                 {
@@ -172,6 +177,11 @@ public class ArcherShoot : MonoBehaviour
             {
                 //archer idle animation
                 archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.idle;
+
+                //For preventing immediate shoot of arrow without archer aim animation playing when first encountered new ship
+                //Such problem occured only during first encounter, where arrow was shot immediately but no animation played, and no delay was there
+                //To solve that problem, bool noEnemyInSight was introduced
+                archerControllerScript[i].noEnemyInSight = true;
             }
         }
     }
@@ -201,11 +211,26 @@ public class ArcherShoot : MonoBehaviour
     }
     private IEnumerator CoolDownTime()
     {
-        yield return new WaitForSeconds(coolDownTime);
+        yield return new WaitForSeconds(waitBeforeShoot_Aiming);
+        for (int i = 0; i < totalArcherCount; i++)
+        {
+            archerControllerScript[i].enableLineRenderer = true;//display projectile path again
+        }
+
+        yield return new WaitForSeconds(WaitAfterShoot);
         for (int i = 0; i < totalArcherCount; i++)
         {
             archerControllerScript[i].shootOnce = false;//don't allow shoot to occur even if S is pressed
-            archerControllerScript[i].enableLineRenderer = true;//display projectile path again
+            archerControllerScript[i].shootArrow = true;//display projectile path again
+        }
+    }
+
+    private IEnumerator WaitForFirstWeaponLoad()
+    {
+        yield return new WaitForSeconds(waitBeforeShoot_FirstEncounter);
+        for (int i = 0; i < totalArcherCount; i++)
+        {
+            archerControllerScript[i].noEnemyInSight = false;
         }
     }
 

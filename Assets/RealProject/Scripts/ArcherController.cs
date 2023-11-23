@@ -19,6 +19,8 @@ public class ArcherController : MonoBehaviour
     private GameObject mixamorigHips;
 
     private readonly int curvePointsTotalCount = SetParameters.curvePointsTotalCount;
+    public bool shootArrow;
+    public bool noEnemyInSight;
 
     private void Awake()
     {
@@ -55,8 +57,15 @@ public class ArcherController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        shootArrow = true;
+        noEnemyInSight = true;
+    }
+
     private void Update()
     {
+        print("Shoot Arrow: " + shootArrow);
         if (B != null)
         {
             if (enableLineRenderer)
@@ -65,7 +74,7 @@ public class ArcherController : MonoBehaviour
             }
             else
             {
-                lineRenderer.enabled = false;//disable line renderer temporarily, eg. during cooldown time
+                lineRenderer.enabled = false;
             }
             transform.LookAt(B);//archer faces the target ship
         }

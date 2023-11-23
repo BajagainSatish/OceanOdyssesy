@@ -73,7 +73,7 @@ public class CannonController : MonoBehaviour
         lineRenderer.startWidth = lineWidth;
         lineRenderer.positionCount = 2;
         shootOnce = false;
-        shipGameObject = MortarController.FindHighestParent(transform);
+        shipGameObject = MortarController.FindHighestParent(this.transform);
         myShipCenter = shipGameObject.GetChild(0);
         enableLineRenderer = false;
     }

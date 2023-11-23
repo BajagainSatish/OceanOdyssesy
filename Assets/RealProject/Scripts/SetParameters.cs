@@ -13,7 +13,11 @@ public static class SetParameters
     public static float archerArrowVelocity = 2.5f;
     public static float archersleastDistanceForStraightHit = 2f;
     public static float archerAdjustCurveAngle = 0.7f;
-    public static float archerCoolDownTime = 8f;
+    public static float archer_WaitBeforeShoot_FirstEncounter = 4f;
+    public static float archer_WaitBeforeShoot_Aiming = 4f;
+    public static float archer_WaitAfterShoot = 4f;
+
+    //Total shoot time = archer_WaitBeforeShoot_Aiming + archer_WaitAfterShoot
 
     //Gunmen Values
     public static float gunmanLineWidth = 0.01f;
