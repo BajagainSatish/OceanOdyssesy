@@ -24,8 +24,12 @@ public class GunShoot : MonoBehaviour
 
     private Vector3 endPosition;
 
+    private ShipCategorizer_Level shipCategorizer_LevelScript;
+
     private void Awake()
     {
+        shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
+
         for (int i = 0; i < transform.childCount; i++)
         {
             GameObject gameObject = transform.GetChild(i).gameObject;
@@ -57,10 +61,9 @@ public class GunShoot : MonoBehaviour
         totalGunmanCount = SetParameters.mediumShipMenCount;
         lineWidth = SetParameters.gunmanLineWidth;
         bulletVelocity = SetParameters.gunmanBulletVelocity;
-        gunmanMaxRange = SetParameters.levelSpecificWeaponRange;
         waitBeforeShoot_FirstEncounter = SetParameters.gunman_WaitBeforeShoot_FirstEncounter;
         waitBeforeShoot_Aiming = SetParameters.gunman_WaitBeforeShoot_Aiming;
-        waitAfterShoot = SetParameters.gunman_WaitAfterShoot;
+        waitAfterShoot = SetParameters.gunman_WaitAfterShoot;        
     }
 
     private void Start()
@@ -71,6 +74,8 @@ public class GunShoot : MonoBehaviour
             gunmanControllerScript[i].lineRenderer.positionCount = 2;
             gunmanControllerScript[i].enableLineRenderer = true;
         }
+        gunmanMaxRange = shipCategorizer_LevelScript.weaponRange;
+        print(this.name + gunmanMaxRange);
     }
 
     private void Update()

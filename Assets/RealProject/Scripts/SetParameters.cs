@@ -6,7 +6,6 @@ public static class SetParameters
 {
     //Common to all 4 attacking ships
     public static int mediumShipMenCount = 4;
-    public static float levelSpecificWeaponRange = 5f;
 
     //Archer Values
     public static float archerLineWidth = 0.01f;
@@ -44,4 +43,18 @@ public static class SetParameters
 
     //Common Archer and Mortar Values
     public static int curvePointsTotalCount = 20;//change this value to change the number of points in curve, and control smoothness of curve by increasing the number
+
+    //Ship Attributes on basis of Levels
+    public static float[] archerWeaponRange = new float[] { 3f, 5f, 7f, 10f };
+    public static float[] cannonWeaponRange = new float[] { 3f, 5f, 7f, 10f };
+    public static float[] gunmanWeaponRange = new float[] { 3f, 5f, 7f, 10f };
+    public static float[] mortarWeaponRange = new float[] { 3f, 5f, 7f, 10f };
+
+    public static float[] shipHealth = new float[] {160f,220f,280f,340f};
+    public static float[] shipSpeed = new float[] {1.05f,1.10f,1.15f,1.20f};
+    public static int[] shipCost = new int[] {80,120,160,200};
+
+    public static float[] weaponDamage = new float[] {7f,22f,25f,20f};
+    public static float[] weaponReloadSpeed = new float[] {0.8f, 0.7f, 0.6f, 0.5f};
+    public static int[] weaponMaxAmmo = new int[] {30,50,60,70};
 }

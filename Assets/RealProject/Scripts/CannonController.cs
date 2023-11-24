@@ -35,6 +35,8 @@ public class CannonController : MonoBehaviour
     private bool shootCannonBall;
     private bool noEnemyInSight;
 
+    private ShipCategorizer_Level shipCategorizer_LevelScript;
+
     private void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -51,11 +53,10 @@ public class CannonController : MonoBehaviour
 
         lineWidth = SetParameters.cannonLineWidth;
         cannonBallVelocity = SetParameters.cannonBallVelocity;
-        cannonMaxRange = SetParameters.levelSpecificWeaponRange;
         cannonShootAngleRange = SetParameters.cannonShootAngleRange;
         waitBeforeShoot_FirstEncounter = SetParameters.cannon_WaitBeforeShoot_FirstEncounter;
         waitBeforeShoot_Aiming = SetParameters.cannon_WaitBeforeShoot_Aiming;
-        waitAfterShoot = SetParameters.cannon_WaitAfterShoot;
+        waitAfterShoot = SetParameters.cannon_WaitAfterShoot;      
     }
 
     private void Start()
@@ -70,6 +71,11 @@ public class CannonController : MonoBehaviour
 
         shootCannonBall = true;
         noEnemyInSight = true;
+
+        shipCategorizer_LevelScript = shipGameObject.GetComponent<ShipCategorizer_Level>();
+        cannonMaxRange = shipCategorizer_LevelScript.weaponRange;
+
+        print(this.name + cannonMaxRange);
     }
 
     private void Update()

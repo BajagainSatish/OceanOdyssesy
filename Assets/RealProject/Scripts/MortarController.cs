@@ -32,11 +32,12 @@ public class MortarController : MonoBehaviour
     private bool shootMortarBomb;
     private bool noEnemyInSight;
 
+    private ShipCategorizer_Level shipCategorizer_LevelScript;
+
     private void Awake()
     {
         lineWidth = SetParameters.mortarLineWidth;
         mortarBombVelocity = SetParameters.mortarBombVelocity;
-        mortarMaxRange = SetParameters.levelSpecificWeaponRange;
         adjustCurveAngle = SetParameters.mortarAdjustCurveAngle;
         curvePointsTotalCount = SetParameters.curvePointsTotalCount;
         waitBeforeShoot_FirstEncounter = SetParameters.mortar_WaitBeforeShoot_FirstEncounter;
@@ -46,6 +47,7 @@ public class MortarController : MonoBehaviour
 
     private void Start()
     {
+
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.startWidth = lineWidth;
         lineRenderer.positionCount = curvePointsTotalCount + 1;
@@ -56,6 +58,11 @@ public class MortarController : MonoBehaviour
 
         shootMortarBomb = true;
         noEnemyInSight = true;
+
+        shipCategorizer_LevelScript = shipGameObject.GetComponent<ShipCategorizer_Level>();
+
+        mortarMaxRange = shipCategorizer_LevelScript.weaponRange;
+        print(this.name + mortarMaxRange);
     }
 
     private void Update()

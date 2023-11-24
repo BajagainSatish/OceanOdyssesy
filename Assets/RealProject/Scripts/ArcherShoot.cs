@@ -25,9 +25,13 @@ public class ArcherShoot : MonoBehaviour
     private ArcherController[] archerControllerScript = new ArcherController[SetParameters.mediumShipMenCount];
     private AnimationArcher[] archerAnimatorScript = new AnimationArcher[SetParameters.mediumShipMenCount];
 
+    private ShipCategorizer_Level shipCategorizer_LevelScript;
+
     private float adjustDistanceFactor;
     private void Awake()
     {
+        shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
+
         for (int i = 0; i < transform.childCount; i++)
         {
             GameObject gameObject = transform.GetChild(i).gameObject;
@@ -55,13 +59,14 @@ public class ArcherShoot : MonoBehaviour
             archerAnimatorScript[i] = archers[i].GetComponent<AnimationArcher>();
         }
 
+
+
         totalArcherCount = SetParameters.mediumShipMenCount;
         curvePointsTotalCount = SetParameters.curvePointsTotalCount;
         lineWidth = SetParameters.archerLineWidth;        
         arrowVelocity = SetParameters.archerArrowVelocity;
         leastDistanceForStraightHit = SetParameters.archersleastDistanceForStraightHit;
         adjustCurveAngle = SetParameters.archerAdjustCurveAngle;
-        archerMaxRange = SetParameters.levelSpecificWeaponRange;
         waitBeforeShoot_FirstEncounter = SetParameters.archer_WaitBeforeShoot_FirstEncounter;
         waitBeforeShoot_Aiming = SetParameters.archer_WaitBeforeShoot_Aiming;
         waitAfterShoot = SetParameters.archer_WaitAfterShoot;
@@ -75,6 +80,9 @@ public class ArcherShoot : MonoBehaviour
             archerControllerScript[i].lineRenderer.positionCount = curvePointsTotalCount + 1;
             archerControllerScript[i].enableLineRenderer = true;
         }
+
+        archerMaxRange = shipCategorizer_LevelScript.weaponRange;
+        print(this.name + archerMaxRange);
     }
     private void Update()
     {

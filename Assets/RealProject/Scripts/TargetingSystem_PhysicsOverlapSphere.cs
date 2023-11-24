@@ -33,8 +33,12 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
     public ShipType thisShipType;
     private Vector3 myShipPosition;
 
+    private ShipCategorizer_Level shipCategorizer_LevelScript;
+
     private void Awake()
     {
+        shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
+
         for (int i = 0; i < transform.childCount; i++)
         {
             GameObject gameObject = transform.GetChild(i).gameObject;
@@ -101,7 +105,7 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
         }
 
         shipCenter = transform.GetChild(0).transform;
-        shipMaxRange = SetParameters.levelSpecificWeaponRange;
+        shipMaxRange = shipCategorizer_LevelScript.weaponRange;
     }
     private void Start()
     {
