@@ -21,7 +21,7 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
     private readonly MortarController[] mortarControllerScript = new MortarController[SetParameters.mediumShipMenCount];
 
     private Transform shipCenter;
-    public bool testActiveShip;
+    //public bool testActiveShip;
     private float shipMaxRange;
 
     private List<Collider> enemyShipsInRange = new List<Collider>();
@@ -147,10 +147,10 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
                     {
                         if (!tempList.Contains(collider))
                         {
-                            if (testActiveShip)
+                            /*if (testActiveShip)
                             {
                                 print("Added " + collider.name + " to our list.");
-                            }
+                            }*/
                             enemyShipsInRange.Add(collider);
                         }
                     }  
@@ -172,10 +172,10 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
 
             if (distance > shipMaxRange)
             {
-                if (testActiveShip)
+                /*if (testActiveShip)
                 {
                     print("Removed " + enemyShip.name + " from our list.");
-                }
+                }*/
                 enemyShipsInRange.Remove(enemyShip);
             }              
         }
@@ -331,7 +331,7 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
             }
         }
     }
-    private void TestShipCode()
+    /*private void TestShipCode()
     {
         if (testActiveShip)
         {
@@ -344,7 +344,7 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
                 //print("Target: " + target.GetComponentInParent<Collider>().name);
             }
         }
-    }
+    }*/
 }
 
 //Use of the method Physics.OverlapSphere() also adds current ship into the array. The length of array increases as number of ships in range increases and decreases accordingly.
