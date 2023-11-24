@@ -119,7 +119,7 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
         DetermineWhichShipToAttack();
         AssignTargetToEachAttackerShip();
 
-        TestShipCode();
+        //TestShipCode();
     }
 
     private void AddEnemyShipsInRangeToOurList()
@@ -201,7 +201,7 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
             foreach (Collider oneEnemyShipInList in enemyShipsInRange)
             {
                 targetCollider = oneEnemyShipInList;
-                target = targetCollider.transform.GetChild(0).gameObject;//ShipCenter of enemyShip is target
+                target = targetCollider.gameObject;//ShipCenter of enemyShip is target
             }
         }
     }
@@ -259,7 +259,6 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
             //If our target ship is not inside enemyShipsInRange List, select another ship
             if (!tempEnemyShipsInRangeList.Contains(targetCollider))
             {
-                print("This ship :" + targetCollider.name + " out of range. We select next ship now.");
                 SelectAnotherShipInRangeAsTarget();
             }
         }       
@@ -268,32 +267,35 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
     {
         if (target != null)
         {
+            GameObject targetShipCenter = target.transform.GetChild(0).gameObject;
+            Transform targetShipCenterTransform = targetShipCenter.transform;
+
             if (thisShipType == ShipType.ArcherShip)
             {
                 foreach (ArcherController subArcherControllerScript in archerControllerScript)
                 {
-                    subArcherControllerScript.B = target.transform;
+                    subArcherControllerScript.B = targetShipCenterTransform;
                 }
             }
             else if (thisShipType == ShipType.CannonShip)
             {
                 foreach (CannonController subCannonControllerScript in cannonControllerScript)
                 {
-                    subCannonControllerScript.B = target.transform;
+                    subCannonControllerScript.B = targetShipCenterTransform;
                 }
             }
             else if (thisShipType == ShipType.GunmanShip)
             {
                 foreach (GunmanController subGunmanControllerScript in gunmanControllerScript)
                 {
-                    subGunmanControllerScript.B = target.transform;
+                    subGunmanControllerScript.B = targetShipCenterTransform;
                 }
             }
             else if (thisShipType == ShipType.MortarShip)
             {
                 foreach (MortarController subMortarControllerScript in mortarControllerScript)
                 {
-                    subMortarControllerScript.B = target.transform;
+                    subMortarControllerScript.B = targetShipCenterTransform;
                 }
             }
         }
@@ -333,14 +335,13 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
     {
         if (testActiveShip)
         {
-            print("Enemy ships of " + this.name);
             foreach (Collider enemyShip in enemyShipsInRange)
             {
-                print(enemyShip.name);
+                //print(enemyShip.name);
             }
             if (target != null)
             {
-                print("Target: " + target.GetComponentInParent<Collider>().name);
+                //print("Target: " + target.GetComponentInParent<Collider>().name);
             }
         }
     }

@@ -65,7 +65,6 @@ public class ArcherController : MonoBehaviour
 
     private void Update()
     {
-        print("Shoot Arrow: " + shootArrow);
         if (B != null)
         {
             if (enableLineRenderer)

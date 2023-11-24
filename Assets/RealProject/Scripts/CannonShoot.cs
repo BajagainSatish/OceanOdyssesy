@@ -11,8 +11,6 @@ public class CannonShoot : MonoBehaviour
 
     private readonly CannonController[] cannonControllerScript = new CannonController[SetParameters.mediumShipMenCount];
 
-    public bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
-
     private void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -36,11 +34,6 @@ public class CannonShoot : MonoBehaviour
             shootUnitCannon[i] = cannonUnit.transform.GetChild(i).gameObject;
             cannonControllerScript[i] = shootUnitCannon[i].GetComponent<CannonController>();
         }
-    }
-
-    private void Start()
-    {
-        hasNotShotEvenOnce = true;
     }
 }
 

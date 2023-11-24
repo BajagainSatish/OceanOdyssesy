@@ -9,16 +9,17 @@ public class CannonController : MonoBehaviour
 
     private float lineWidth;
     private float cannonBallVelocity;
-    private float coolDownTime;
     private float cannonMaxRange;
     private float cannonShootAngleRange;
+    private float waitBeforeShoot_FirstEncounter;
+    private float waitBeforeShoot_Aiming;
+    private float waitAfterShoot;
 
     [SerializeField] private GameObject cannonRotator;
     public GameObject newCannon;
 
     public ObjectPool_Projectile objectPool_CanonBallScript;
     private readonly ParticleSystem[] smokeParticleEffect = new ParticleSystem[3];
-
 
     private Transform shipGameObject;
     private Transform myShipCenter;
@@ -31,13 +32,8 @@ public class CannonController : MonoBehaviour
     private bool withinCannonRotateRange;
     public bool enableLineRenderer;
 
-    private GameObject parentCannonUnit;
-    private GameObject parentScaleFactorGameObject;
-    private GameObject parentMainShip;
-
-    private CannonShoot cannonShootScript;
-
-    private bool hasNotShotEvenOnce;
+    private bool shootCannonBall;
+    private bool noEnemyInSight;
 
     private void Awake()
     {
@@ -53,18 +49,13 @@ public class CannonController : MonoBehaviour
             }
         }
 
-        //Later you will change this code to use recursion to directly access main parent
-        parentCannonUnit = transform.parent.gameObject;
-        parentScaleFactorGameObject = parentCannonUnit.transform.parent.gameObject;
-        parentMainShip = parentScaleFactorGameObject.transform.parent.gameObject;
-
-        cannonShootScript = parentMainShip.GetComponent<CannonShoot>();
-
         lineWidth = SetParameters.cannonLineWidth;
         cannonBallVelocity = SetParameters.cannonBallVelocity;
-        coolDownTime = SetParameters.cannonCoolDownTime;
         cannonMaxRange = SetParameters.levelSpecificWeaponRange;
         cannonShootAngleRange = SetParameters.cannonShootAngleRange;
+        waitBeforeShoot_FirstEncounter = SetParameters.cannon_WaitBeforeShoot_FirstEncounter;
+        waitBeforeShoot_Aiming = SetParameters.cannon_WaitBeforeShoot_Aiming;
+        waitAfterShoot = SetParameters.cannon_WaitAfterShoot;
     }
 
     private void Start()
@@ -73,15 +64,16 @@ public class CannonController : MonoBehaviour
         lineRenderer.startWidth = lineWidth;
         lineRenderer.positionCount = 2;
         shootOnce = false;
-        shipGameObject = MortarController.FindHighestParent(this.transform);
+        shipGameObject = MortarController.FindHighestParent(transform);
         myShipCenter = shipGameObject.GetChild(0);
-        enableLineRenderer = false;
+        enableLineRenderer = true;
+
+        shootCannonBall = true;
+        noEnemyInSight = true;
     }
 
     private void Update()
     {
-        hasNotShotEvenOnce = cannonShootScript.hasNotShotEvenOnce;
-
         myShipPosition = myShipCenter.position;
 
         if (B != null)
@@ -90,11 +82,6 @@ public class CannonController : MonoBehaviour
 
             if (distance < cannonMaxRange)
             {
-                if (hasNotShotEvenOnce)
-                {
-                    enableLineRenderer = true;
-                }
-
                 lineRenderer.SetPosition(0, Evaluate(0));//set start point (vertex = 0, position = Evaluate(0))
                 lineRenderer.SetPosition(1, Evaluate(1));//set end point
 
@@ -115,27 +102,32 @@ public class CannonController : MonoBehaviour
                     lineRenderer.SetPosition(1, Evaluate(1, A, B));//set end point
                     cannonRotator.transform.LookAt(B.position);//we set the x-rotation of gameobject to -8, so that the gameobject aligns with the cannons shooting end
 
-                    if (Input.GetKeyDown(KeyCode.S))
+                    if (noEnemyInSight)
                     {
-                        if (hasNotShotEvenOnce)
+                        enableLineRenderer = true;
+                        StartCoroutine(WaitForFirstWeaponLoad());
+                    }
+                    else
+                    {
+                        if (shootCannonBall)
                         {
-                            cannonShootScript.hasNotShotEvenOnce = false;
-                        }
-                        if (!shootOnce)
-                        {
-                            cannonBall = objectPool_CanonBallScript.ReturnProjectile();
-
-                            if (cannonBall != null)
+                            shootCannonBall = false;
+                            if (!shootOnce)
                             {
-                                cannonBall.transform.position = A.position;
-                                endPosition = B.transform.position;
-                                shootOnce = true;
-                                StartCoroutine(MoveObject(A.position, endPosition, cannonBall));
-                                enableLineRenderer = false;
-                                StartCoroutine(CoolDownTime());
+                                cannonBall = objectPool_CanonBallScript.ReturnProjectile();
+
+                                if (cannonBall != null)
+                                {
+                                    cannonBall.transform.position = A.position;
+                                    endPosition = B.transform.position;
+                                    shootOnce = true;
+                                    enableLineRenderer = false;
+                                    StartCoroutine(MoveObject(A.position, endPosition, cannonBall));
+                                    StartCoroutine(CoolDownTime());
+                                }
+                                //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and bullet moves towards previous target
+                                //similarly the coroutine is also called just once
                             }
-                            //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and bullet moves towards previous target
-                            //similarly the coroutine is also called just once
                         }
                     }
                 }
@@ -149,9 +141,10 @@ public class CannonController : MonoBehaviour
                 B = null;
             }
         }
-        else
+        else//B = null
         {
             lineRenderer.enabled = false;//persisting line renderer is no longer visible
+            noEnemyInSight = true;
         }
     }
     private IEnumerator MoveObject(Vector3 startPos, Vector3 endPos, GameObject cannonBall)
@@ -174,11 +167,17 @@ public class CannonController : MonoBehaviour
     }
     private IEnumerator CoolDownTime()
     {
-        yield return new WaitForSeconds(coolDownTime);
-        shootOnce = false;
+        yield return new WaitForSeconds(waitBeforeShoot_Aiming);
         enableLineRenderer = true;
+        yield return new WaitForSeconds(waitAfterShoot);
+        shootOnce = false;
+        shootCannonBall = true;
     }
-
+    private IEnumerator WaitForFirstWeaponLoad()
+    {
+        yield return new WaitForSeconds(waitBeforeShoot_FirstEncounter);
+        noEnemyInSight = false;
+    }
     private Vector3 Evaluate(float t)
     {
         Vector3 ab = Vector3.Lerp(A.position, B.position, t);//Interpolate from point A to B

@@ -12,7 +12,7 @@ public class ArcherShoot : MonoBehaviour
     private float archerMaxRange;
     private float waitBeforeShoot_FirstEncounter;
     private float waitBeforeShoot_Aiming;
-    private float WaitAfterShoot;
+    private float waitAfterShoot;
     private float totalArcherCount;
     private int curvePointsTotalCount;
 
@@ -64,7 +64,7 @@ public class ArcherShoot : MonoBehaviour
         archerMaxRange = SetParameters.levelSpecificWeaponRange;
         waitBeforeShoot_FirstEncounter = SetParameters.archer_WaitBeforeShoot_FirstEncounter;
         waitBeforeShoot_Aiming = SetParameters.archer_WaitBeforeShoot_Aiming;
-        WaitAfterShoot = SetParameters.archer_WaitAfterShoot;
+        waitAfterShoot = SetParameters.archer_WaitAfterShoot;
     }
 
     private void Start()
@@ -217,7 +217,7 @@ public class ArcherShoot : MonoBehaviour
             archerControllerScript[i].enableLineRenderer = true;//display projectile path again
         }
 
-        yield return new WaitForSeconds(WaitAfterShoot);
+        yield return new WaitForSeconds(waitAfterShoot);
         for (int i = 0; i < totalArcherCount; i++)
         {
             archerControllerScript[i].shootOnce = false;//don't allow shoot to occur even if S is pressed

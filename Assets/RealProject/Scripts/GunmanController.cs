@@ -15,6 +15,9 @@ public class GunmanController : MonoBehaviour
     private GameObject projectilePath;
     private GameObject mixamorigHips;
 
+    public bool shootBullet;
+    public bool noEnemyInSight;
+
     private void Awake()
     {
         //Assign gameobjects in scene to respective fields
@@ -49,7 +52,11 @@ public class GunmanController : MonoBehaviour
             }
         }
     }
-
+    private void Start()
+    {
+        shootBullet = true;
+        noEnemyInSight = true;
+    }
     private void Update()
     {
         if (B != null)

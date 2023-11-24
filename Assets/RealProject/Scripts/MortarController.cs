@@ -10,10 +10,12 @@ public class MortarController : MonoBehaviour
 
     private float lineWidth;
     private float mortarBombVelocity;
-    private float coolDownTime;
     private float mortarMaxRange;
     private float adjustCurveAngle;
     private int curvePointsTotalCount;
+    private float waitBeforeShoot_FirstEncounter;
+    private float waitBeforeShoot_Aiming;
+    private float waitAfterShoot;
 
     private float adjustDistanceFactor;
     private Vector3[] routePoints = new Vector3[SetParameters.curvePointsTotalCount + 1];
@@ -27,29 +29,19 @@ public class MortarController : MonoBehaviour
     private bool shootOnce;
     public bool enableLineRenderer;
 
-    private GameObject parentCannonUnit;
-    private GameObject parentScaleFactorGameObject;
-    private GameObject parentMainShip;
-
-    private MortarShoot mortarShootScript;
-
-    private bool hasNotShotEvenOnce;
-
+    private bool shootMortarBomb;
+    private bool noEnemyInSight;
 
     private void Awake()
     {
-        //Use recursion to directly access main parent later
-        parentCannonUnit = transform.parent.gameObject;
-        parentScaleFactorGameObject = parentCannonUnit.transform.parent.gameObject;
-        parentMainShip = parentScaleFactorGameObject.transform.parent.gameObject;
-        mortarShootScript = parentMainShip.GetComponent<MortarShoot>();
-
         lineWidth = SetParameters.mortarLineWidth;
         mortarBombVelocity = SetParameters.mortarBombVelocity;
-        coolDownTime = SetParameters.mortarCoolDownTime;
         mortarMaxRange = SetParameters.levelSpecificWeaponRange;
         adjustCurveAngle = SetParameters.mortarAdjustCurveAngle;
         curvePointsTotalCount = SetParameters.curvePointsTotalCount;
+        waitBeforeShoot_FirstEncounter = SetParameters.mortar_WaitBeforeShoot_FirstEncounter;
+        waitBeforeShoot_Aiming = SetParameters.mortar_WaitBeforeShoot_Aiming;
+        waitAfterShoot = SetParameters.mortar_WaitAfterShoot;
     }
 
     private void Start()
@@ -60,13 +52,14 @@ public class MortarController : MonoBehaviour
         shootOnce = false;
         shipGameObject = FindHighestParent(transform);
         myShipCenter = shipGameObject.GetChild(0);
-        enableLineRenderer = false;
+        enableLineRenderer = true;
+
+        shootMortarBomb = true;
+        noEnemyInSight = true;
     }
 
     private void Update()
     {
-        hasNotShotEvenOnce = mortarShootScript.hasNotShotEvenOnce;
-
         myShipPosition = myShipCenter.position;
 
         if (B != null)
@@ -75,11 +68,6 @@ public class MortarController : MonoBehaviour
 
             if (distance < mortarMaxRange)
             {
-                if (hasNotShotEvenOnce)
-                {
-                    enableLineRenderer = true;
-                }
-
                 adjustDistanceFactor = -(adjustCurveAngle * distance);//curve path
 
                 //Evaluate proper position for control point
@@ -102,30 +90,35 @@ public class MortarController : MonoBehaviour
                     lineRenderer.SetPosition(i, Evaluate(i / (float)curvePointsTotalCount));
                 }
 
-                if (Input.GetKeyDown(KeyCode.S))
+                if (noEnemyInSight)
                 {
-                    if (hasNotShotEvenOnce)
+                    enableLineRenderer = true;
+                    StartCoroutine(WaitForFirstWeaponLoad());
+                }
+                else
+                {
+                    if (shootMortarBomb)
                     {
-                        mortarShootScript.hasNotShotEvenOnce = false;
-                    }
-                    if (!shootOnce)
-                    {
-                        mortarBomb = objectPoolMortarScript.ReturnProjectile();
-
-                        if (mortarBomb != null)
+                        shootMortarBomb = false;
+                        if (!shootOnce)
                         {
-                            mortarBomb.transform.position = A.position;
-                            for (int i = 0; i < curvePointsTotalCount + 1; i++)
+                            mortarBomb = objectPoolMortarScript.ReturnProjectile();
+
+                            if (mortarBomb != null)
                             {
-                                routePoints[i] = Evaluate(i / (float)curvePointsTotalCount);
+                                mortarBomb.transform.position = A.position;
+                                for (int i = 0; i < curvePointsTotalCount + 1; i++)
+                                {
+                                    routePoints[i] = Evaluate(i / (float)curvePointsTotalCount);
+                                }
+                                shootOnce = true;
+                                enableLineRenderer = false;
+                                StartCoroutine(MoveThroughRoute());
+                                StartCoroutine(CoolDownTime());
                             }
-                            shootOnce = true;
-                            StartCoroutine(MoveThroughRoute());
-                            enableLineRenderer = false;
-                            StartCoroutine(CoolDownTime());
+                            //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and ball moves towards previous target
+                            //similarly the coroutine is also called just once
                         }
-                        //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and ball moves towards previous target
-                        //similarly the coroutine is also called just once
                     }
                 }
             }
@@ -137,6 +130,7 @@ public class MortarController : MonoBehaviour
         else//B is null
         {
             lineRenderer.enabled = false;
+            noEnemyInSight = true;
         }
     }
 
@@ -166,11 +160,17 @@ public class MortarController : MonoBehaviour
     }
     private IEnumerator CoolDownTime()
     {
-        yield return new WaitForSeconds(coolDownTime);
-        shootOnce = false;
+        yield return new WaitForSeconds(waitBeforeShoot_Aiming);
         enableLineRenderer = true;
+        yield return new WaitForSeconds(waitAfterShoot);
+        shootOnce = false;
+        shootMortarBomb = true;
     }
-
+    private IEnumerator WaitForFirstWeaponLoad()
+    {
+        yield return new WaitForSeconds(waitBeforeShoot_FirstEncounter);
+        noEnemyInSight = false;
+    }
     private Vector3 Evaluate(float t)//Quadratic Curve functionality
     {
         Vector3 ac = Vector3.Lerp(A.position, control.position, t);//Interpolate from point A to ControlPoint

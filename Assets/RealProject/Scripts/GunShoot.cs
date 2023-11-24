@@ -8,7 +8,9 @@ public class GunShoot : MonoBehaviour
     private float lineWidth;
     private float bulletVelocity;
     private float gunmanMaxRange;
-    private float coolDownTime;
+    private float waitBeforeShoot_FirstEncounter;
+    private float waitBeforeShoot_Aiming;
+    private float waitAfterShoot;
     private int totalGunmanCount;
 
     private GameObject bullet;
@@ -21,7 +23,6 @@ public class GunShoot : MonoBehaviour
     private readonly AnimationGunman[] gunmanAnimationScript = new AnimationGunman[SetParameters.mediumShipMenCount];
 
     private Vector3 endPosition;
-    private bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
 
     private void Awake()
     {
@@ -57,7 +58,9 @@ public class GunShoot : MonoBehaviour
         lineWidth = SetParameters.gunmanLineWidth;
         bulletVelocity = SetParameters.gunmanBulletVelocity;
         gunmanMaxRange = SetParameters.levelSpecificWeaponRange;
-        coolDownTime = SetParameters.gunmanCoolDownTime;
+        waitBeforeShoot_FirstEncounter = SetParameters.gunman_WaitBeforeShoot_FirstEncounter;
+        waitBeforeShoot_Aiming = SetParameters.gunman_WaitBeforeShoot_Aiming;
+        waitAfterShoot = SetParameters.gunman_WaitAfterShoot;
     }
 
     private void Start()
@@ -66,9 +69,8 @@ public class GunShoot : MonoBehaviour
         {
             gunmanControllerScript[i].lineRenderer.startWidth = lineWidth;
             gunmanControllerScript[i].lineRenderer.positionCount = 2;
-            gunmanControllerScript[i].enableLineRenderer = false;
+            gunmanControllerScript[i].enableLineRenderer = true;
         }
-        hasNotShotEvenOnce = true;
     }
 
     private void Update()
@@ -85,16 +87,14 @@ public class GunShoot : MonoBehaviour
                 LineRenderer lineRenderer = gunmanControllerScript[i].lineRenderer;
                 bool shootOnce = gunmanControllerScript[i].shootOnce;
 
+                bool noEnemyInSight = gunmanControllerScript[i].noEnemyInSight;
+                bool shootBullet = gunmanControllerScript[i].shootBullet;
+
                 //float distance = Mathf.Sqrt((B.position.x - shipPosition.x) * (B.position.x - shipPosition.x) + (B.position.y - shipPosition.y) * (B.position.y - shipPosition.y) + (B.position.z - shipPosition.z) * (B.position.z - shipPosition.z));
                 float distance = Vector3.Distance(B.position, myShipPosition);
 
                 if (distance < gunmanMaxRange)
                 {
-                    if (hasNotShotEvenOnce)
-                    {
-                        gunmanControllerScript[i].enableLineRenderer = true;
-                    }
-
                     //gunman animation, aiming towards enemy
                     if (lineRenderer.enabled)
                     {
@@ -108,29 +108,35 @@ public class GunShoot : MonoBehaviour
                     lineRenderer.SetPosition(0, Evaluate(0, A, B));//set start point (vertex = 0, position = Evaluate(0))
                     lineRenderer.SetPosition(1, Evaluate(1, A, B));//set end point
 
-                    //Check if shoot is pressed
-                    if (Input.GetKeyDown(KeyCode.S))
+                    if (noEnemyInSight)
                     {
-                        if (hasNotShotEvenOnce)
-                        {
-                            hasNotShotEvenOnce = false;
-                        }
-                        if (!shootOnce)
-                        {
-                            bullet = objectPoolBulletScript.ReturnProjectile();
+                        gunmanControllerScript[i].enableLineRenderer = true;
 
-                            //gunman shoot animation
-                            gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.shoot;
-
-                            if (bullet != null)
+                        StartCoroutine(WaitForFirstWeaponLoad());
+                    }
+                    else
+                    {
+                        //Check if shoot is pressed
+                        if (shootBullet)
+                        {
+                            gunmanControllerScript[i].shootBullet = false;
+                            if (!shootOnce)
                             {
-                                bullet.transform.position = A.position;
-                                endPosition = B.transform.position;
+                                bullet = objectPoolBulletScript.ReturnProjectile();
 
-                                gunmanControllerScript[i].shootOnce = true;
-                                StartCoroutine(MoveObject(A.position, endPosition, bullet));
-                                gunmanControllerScript[i].enableLineRenderer = false;
-                                StartCoroutine(CoolDownTime());
+                                //gunman shoot animation
+                                gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.shoot;
+
+                                if (bullet != null)
+                                {
+                                    bullet.transform.position = A.position;
+                                    endPosition = B.transform.position;
+                                    gunmanControllerScript[i].shootOnce = true;
+
+                                    gunmanControllerScript[i].enableLineRenderer = false;
+                                    StartCoroutine(MoveObject(A.position, endPosition, bullet));
+                                    StartCoroutine(CoolDownTime());
+                                }
                             }
                         }
                     }
@@ -140,9 +146,11 @@ public class GunShoot : MonoBehaviour
                     gunmanControllerScript[i].B = null;//once out of range make sure that the final position is not still pointing to previous ship
                 }
             }
-            else
+            else//B = null
             {
                 gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.idle;
+
+                gunmanControllerScript[i].noEnemyInSight = true;
             }
         }
     }
@@ -166,11 +174,25 @@ public class GunShoot : MonoBehaviour
     }
     private IEnumerator CoolDownTime()
     {
-        yield return new WaitForSeconds(coolDownTime);
+        yield return new WaitForSeconds(waitBeforeShoot_Aiming);
         for (int i = 0; i < totalGunmanCount; i++)
         {
-            gunmanControllerScript[i].shootOnce = false;
-            gunmanControllerScript[i].enableLineRenderer = true;
+            gunmanControllerScript[i].enableLineRenderer = true;//display projectile path again
+        }
+
+        yield return new WaitForSeconds(waitAfterShoot);
+        for (int i = 0; i < totalGunmanCount; i++)
+        {
+            gunmanControllerScript[i].shootOnce = false;//don't allow shoot to occur even if S is pressed
+            gunmanControllerScript[i].shootBullet = true;//display projectile path again
+        }
+    }
+    private IEnumerator WaitForFirstWeaponLoad()
+    {
+        yield return new WaitForSeconds(waitBeforeShoot_FirstEncounter);
+        for (int i = 0; i < totalGunmanCount; i++)
+        {
+            gunmanControllerScript[i].noEnemyInSight = false;
         }
     }
     private Vector3 Evaluate(float t, Transform A, Transform B)

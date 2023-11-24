@@ -13,9 +13,6 @@ public class MortarShoot : MonoBehaviour
     private GameObject[] mortarBarrel = new GameObject[SetParameters.mediumShipMenCount];
 
     private readonly MortarController[] mortarControllerScript = new MortarController[SetParameters.mediumShipMenCount];
-
-    public bool hasNotShotEvenOnce;//ensure that line renderer is visible at start if enemy ship is inside range, once visible it has no other significance
-
     private void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -45,11 +42,6 @@ public class MortarShoot : MonoBehaviour
             mortarObject[i] = shootUnitMortar[i].transform.GetChild(0).gameObject;
             mortarBarrel[i] = mortarObject[i].transform.GetChild(0).gameObject;
         }
-    }
-
-    private void Start()
-    {
-        hasNotShotEvenOnce = true;
     }
 
     private void Update()
