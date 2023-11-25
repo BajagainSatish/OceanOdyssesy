@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ShipCategorizer_Level;
 
 public class CannonController : MonoBehaviour
 {
@@ -55,9 +56,7 @@ public class CannonController : MonoBehaviour
         lineWidth = SetParameters.cannonLineWidth;
         cannonBallVelocity = SetParameters.cannonBallVelocity;
         cannonShootAngleRange = SetParameters.cannonShootAngleRange;
-        waitBeforeShoot_FirstEncounter = SetParameters.cannon_WaitBeforeShoot_FirstEncounter;
-        waitBeforeShoot_Aiming = SetParameters.cannon_WaitBeforeShoot_Aiming;
-        waitAfterShoot = SetParameters.cannon_WaitAfterShoot;      
+        waitBeforeShoot_FirstEncounter = SetParameters.cannon_WaitBeforeShoot_FirstEncounter; 
     }
 
     private void Start()
@@ -77,6 +76,23 @@ public class CannonController : MonoBehaviour
         shipCategorizer_PlayerScript = shipGameObject.GetComponent<ShipCategorizer_Player>();
 
         cannonMaxRange = shipCategorizer_LevelScript.weaponRange;
+
+        if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level1)
+        {
+            AssignValue(0);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level2)
+        {
+            AssignValue(1);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level3)
+        {
+            AssignValue(2);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level4)
+        {
+            AssignValue(3);
+        }
     }
 
     private void Update()
@@ -254,5 +270,10 @@ public class CannonController : MonoBehaviour
             withinRotateRange = false;
         }
         return withinRotateRange;
+    }
+    private void AssignValue(int index)
+    {
+        waitBeforeShoot_Aiming = SetParameters.cannon_WaitBeforeShoot_Aiming[index];
+        waitAfterShoot = SetParameters.cannon_WaitAfterShoot[index];
     }
 }

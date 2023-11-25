@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ShipCategorizer_Level;
 
 public class ArcherShoot : MonoBehaviour
 {
@@ -61,17 +62,13 @@ public class ArcherShoot : MonoBehaviour
             archerAnimatorScript[i] = archers[i].GetComponent<AnimationArcher>();
         }
 
-
-
         totalArcherCount = SetParameters.mediumShipMenCount;
         curvePointsTotalCount = SetParameters.curvePointsTotalCount;
         lineWidth = SetParameters.archerLineWidth;        
         arrowVelocity = SetParameters.archerArrowVelocity;
         leastDistanceForStraightHit = SetParameters.archersleastDistanceForStraightHit;
         adjustCurveAngle = SetParameters.archerAdjustCurveAngle;
-        waitBeforeShoot_FirstEncounter = SetParameters.archer_WaitBeforeShoot_FirstEncounter;
-        waitBeforeShoot_Aiming = SetParameters.archer_WaitBeforeShoot_Aiming;
-        waitAfterShoot = SetParameters.archer_WaitAfterShoot;
+        waitBeforeShoot_FirstEncounter = SetParameters.archer_WaitBeforeShoot_FirstEncounter;      
     }
 
     private void Start()
@@ -82,8 +79,24 @@ public class ArcherShoot : MonoBehaviour
             archerControllerScript[i].lineRenderer.positionCount = curvePointsTotalCount + 1;
             archerControllerScript[i].enableLineRenderer = true;
         }
-
         archerMaxRange = shipCategorizer_LevelScript.weaponRange;
+
+        if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level1)
+        {
+            AssignValue(0);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level2)
+        {
+            AssignValue(1);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level3)
+        {
+            AssignValue(2);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level4)
+        {
+            AssignValue(3);
+        }
     }
     private void Update()
     {
@@ -253,5 +266,10 @@ public class ArcherShoot : MonoBehaviour
         Vector3 cb = Vector3.Lerp(control.position, B.position, t);//Interpolate from ControlPoint to Point B
 
         return Vector3.Lerp(ac, cb, t);
+    }
+    private void AssignValue(int index)
+    {
+        waitBeforeShoot_Aiming = SetParameters.archer_WaitBeforeShoot_Aiming[index];
+        waitAfterShoot = SetParameters.archer_WaitAfterShoot[index];
     }
 }

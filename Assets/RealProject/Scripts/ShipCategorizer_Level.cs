@@ -16,7 +16,6 @@ public class ShipCategorizer_Level : MonoBehaviour
 
     public float weaponRange;
     public int weaponDamage;
-    public float weaponReloadSpeed;
     public int weaponMaxAmmo;
 
     private TargetingSystem_PhysicsOverlapSphere targetingSystem_PhysicsOverlapSphereScript;
@@ -75,7 +74,6 @@ public class ShipCategorizer_Level : MonoBehaviour
 
         shipSpeed = SetParameters.shipSpeed[index];
         shipCost = SetParameters.shipCost[index];
-        weaponReloadSpeed = SetParameters.weaponReloadSpeed[index];
         weaponMaxAmmo = SetParameters.weaponMaxAmmo[index];
     }
 }

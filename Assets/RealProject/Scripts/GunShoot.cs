@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ShipCategorizer_Level;
 
 public class GunShoot : MonoBehaviour
 {
@@ -63,9 +64,7 @@ public class GunShoot : MonoBehaviour
         totalGunmanCount = SetParameters.mediumShipMenCount;
         lineWidth = SetParameters.gunmanLineWidth;
         bulletVelocity = SetParameters.gunmanBulletVelocity;
-        waitBeforeShoot_FirstEncounter = SetParameters.gunman_WaitBeforeShoot_FirstEncounter;
-        waitBeforeShoot_Aiming = SetParameters.gunman_WaitBeforeShoot_Aiming;
-        waitAfterShoot = SetParameters.gunman_WaitAfterShoot;        
+        waitBeforeShoot_FirstEncounter = SetParameters.gunman_WaitBeforeShoot_FirstEncounter;               
     }
 
     private void Start()
@@ -77,6 +76,23 @@ public class GunShoot : MonoBehaviour
             gunmanControllerScript[i].enableLineRenderer = true;
         }
         gunmanMaxRange = shipCategorizer_LevelScript.weaponRange;
+
+        if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level1)
+        {
+            AssignValue(0);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level2)
+        {
+            AssignValue(1);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level3)
+        {
+            AssignValue(2);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level4)
+        {
+            AssignValue(3);
+        }
     }
 
     private void Update()
@@ -209,5 +225,10 @@ public class GunShoot : MonoBehaviour
     {
         Vector3 ab = Vector3.Lerp(A.position, B.position, t);//Interpolate from point A to B
         return ab;
+    }
+    private void AssignValue(int index)
+    {
+        waitBeforeShoot_Aiming = SetParameters.gunman_WaitBeforeShoot_Aiming[index];
+        waitAfterShoot = SetParameters.gunman_WaitAfterShoot[index];
     }
 }

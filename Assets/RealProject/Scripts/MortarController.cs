@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ShipCategorizer_Level;
 
 public class MortarController : MonoBehaviour
 {
@@ -42,8 +43,6 @@ public class MortarController : MonoBehaviour
         adjustCurveAngle = SetParameters.mortarAdjustCurveAngle;
         curvePointsTotalCount = SetParameters.curvePointsTotalCount;
         waitBeforeShoot_FirstEncounter = SetParameters.mortar_WaitBeforeShoot_FirstEncounter;
-        waitBeforeShoot_Aiming = SetParameters.mortar_WaitBeforeShoot_Aiming;
-        waitAfterShoot = SetParameters.mortar_WaitAfterShoot;
     }
 
     private void Start()
@@ -64,6 +63,23 @@ public class MortarController : MonoBehaviour
         shipCategorizer_PlayerScript = shipGameObject.GetComponent<ShipCategorizer_Player>();
 
         mortarMaxRange = shipCategorizer_LevelScript.weaponRange;
+
+        if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level1)
+        {
+            AssignValue(0);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level2)
+        {
+            AssignValue(1);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level3)
+        {
+            AssignValue(2);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level4)
+        {
+            AssignValue(3);
+        }
     }
 
     private void Update()
@@ -217,5 +233,10 @@ public class MortarController : MonoBehaviour
         {
             return FindHighestParent(childTransform.parent);
         }
+    }
+    private void AssignValue(int index)
+    {
+        waitBeforeShoot_Aiming = SetParameters.mortar_WaitBeforeShoot_Aiming[index];
+        waitAfterShoot = SetParameters.mortar_WaitAfterShoot[index];
     }
 }
