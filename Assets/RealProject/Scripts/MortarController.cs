@@ -33,6 +33,7 @@ public class MortarController : MonoBehaviour
     private bool noEnemyInSight;
 
     private ShipCategorizer_Level shipCategorizer_LevelScript;
+    private ShipCategorizer_Player shipCategorizer_PlayerScript;
 
     private void Awake()
     {
@@ -60,9 +61,9 @@ public class MortarController : MonoBehaviour
         noEnemyInSight = true;
 
         shipCategorizer_LevelScript = shipGameObject.GetComponent<ShipCategorizer_Level>();
+        shipCategorizer_PlayerScript = shipGameObject.GetComponent<ShipCategorizer_Player>();
 
         mortarMaxRange = shipCategorizer_LevelScript.weaponRange;
-        print(this.name + mortarMaxRange);
     }
 
     private void Update()
@@ -110,6 +111,10 @@ public class MortarController : MonoBehaviour
                         if (!shootOnce)
                         {
                             mortarBomb = objectPoolMortarScript.ReturnProjectile();
+
+                            ProjectileController projectileControllerScript = mortarBomb.GetComponent<ProjectileController>();
+                            projectileControllerScript.weaponDamage = shipCategorizer_LevelScript.weaponDamage;
+                            projectileControllerScript.isPlayer1Projectile = shipCategorizer_PlayerScript.isP1Ship;
 
                             if (mortarBomb != null)
                             {

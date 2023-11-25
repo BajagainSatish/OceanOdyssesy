@@ -25,10 +25,12 @@ public class GunShoot : MonoBehaviour
     private Vector3 endPosition;
 
     private ShipCategorizer_Level shipCategorizer_LevelScript;
+    private ShipCategorizer_Player shipCategorizer_PlayerScript;
 
     private void Awake()
     {
         shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
+        shipCategorizer_PlayerScript = GetComponent<ShipCategorizer_Player>();
 
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -75,7 +77,6 @@ public class GunShoot : MonoBehaviour
             gunmanControllerScript[i].enableLineRenderer = true;
         }
         gunmanMaxRange = shipCategorizer_LevelScript.weaponRange;
-        print(this.name + gunmanMaxRange);
     }
 
     private void Update()
@@ -128,6 +129,10 @@ public class GunShoot : MonoBehaviour
                             if (!shootOnce)
                             {
                                 bullet = objectPoolBulletScript.ReturnProjectile();
+
+                                ProjectileController projectileControllerScript = bullet.GetComponent<ProjectileController>();
+                                projectileControllerScript.weaponDamage = shipCategorizer_LevelScript.weaponDamage;
+                                projectileControllerScript.isPlayer1Projectile = shipCategorizer_PlayerScript.isP1Ship;
 
                                 //gunman shoot animation
                                 gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.shoot;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
 {
-    private ShipCategorizer_Player shipCategorizerPlayerScript;
+    private ShipCategorizer_Player thisShipCategorizerPlayerScript;
     private bool isPlayer1;
     private GameObject target;
     private Collider targetCollider;
@@ -32,12 +32,13 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
     };
     public ShipType thisShipType;
     private Vector3 myShipPosition;
+    private bool thisShipIsFunctional;
 
-    private ShipCategorizer_Level shipCategorizer_LevelScript;
+    private ShipCategorizer_Level thisShipCategorizer_LevelScript;
 
     private void Awake()
     {
-        shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
+        thisShipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
 
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -105,24 +106,31 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
         }
 
         shipCenter = transform.GetChild(0).transform;
-        shipMaxRange = shipCategorizer_LevelScript.weaponRange;
     }
     private void Start()
     {
-        shipCategorizerPlayerScript = GetComponent<ShipCategorizer_Player>();
-        isPlayer1 = shipCategorizerPlayerScript.isP1Ship;
+        thisShipCategorizerPlayerScript = GetComponent<ShipCategorizer_Player>();
+        isPlayer1 = thisShipCategorizerPlayerScript.isP1Ship;
+        shipMaxRange = thisShipCategorizer_LevelScript.weaponRange;
     }
 
     private void Update()
     {
         myShipPosition = shipCenter.position;
 
-        AddEnemyShipsInRangeToOurList();
-        RemoveShipsOutsideRangeFromOurList();
-
-        DetermineWhichShipToAttack();
+        thisShipIsFunctional = thisShipCategorizerPlayerScript.isFunctionalShip;
+        if (thisShipIsFunctional)
+        {
+            AddEnemyShipsInRangeToOurList();
+            RemoveShipsOutsideRangeFromOurList();
+            DetermineWhichShipToAttack();
+        }
+        else
+        {
+            enemyShipsInRange.Clear();
+            target = null;
+        }
         AssignTargetToEachAttackerShip();
-
         //TestShipCode();
     }
 
@@ -139,8 +147,9 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
             {
                 ShipCategorizer_Player shipCategorizer_PlayerScript = collider.GetComponent<ShipCategorizer_Player>();
                 bool shipInRangeIsPlayer1 = shipCategorizer_PlayerScript.isP1Ship;
+                bool shipInRangeIsFunctional = shipCategorizer_PlayerScript.isFunctionalShip;
 
-                if (shipInRangeIsPlayer1 != isPlayer1)
+                if (shipInRangeIsPlayer1 != isPlayer1 && shipInRangeIsFunctional)
                 {
                     Vector3 enemyShipPosition = collider.transform.GetChild(0).transform.position;
 
@@ -174,7 +183,10 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
             // Calculate the distance between this ship and the current enemy ship
             float distance = Vector3.Distance(myShipPosition, enemyShipPosition);
 
-            if (distance > shipMaxRange)
+            ShipCategorizer_Player shipCategorizer_PlayerScript = enemyShip.GetComponent<ShipCategorizer_Player>();
+            bool shipInRangeIsFunctional = shipCategorizer_PlayerScript.isFunctionalShip;
+
+            if (distance > shipMaxRange || !shipInRangeIsFunctional)
             {
                 /*if (testActiveShip)
                 {
@@ -341,11 +353,11 @@ public class TargetingSystem_PhysicsOverlapSphere : MonoBehaviour
         {
             foreach (Collider enemyShip in enemyShipsInRange)
             {
-                //print(enemyShip.name);
+                print(enemyShip.name);
             }
             if (target != null)
             {
-                //print("Target: " + target.GetComponentInParent<Collider>().name);
+                print("Target: " + target.GetComponentInParent<Collider>().name);
             }
         }
     }*/

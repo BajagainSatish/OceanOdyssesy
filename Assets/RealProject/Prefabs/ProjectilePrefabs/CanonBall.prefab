@@ -4853,6 +4853,7 @@ GameObject:
   - component: {fileID: -7807505210820949485}
   - component: {fileID: 6457640662431191305}
   - component: {fileID: -7652888110799876500}
+  - component: {fileID: -3803026266113649343}
   m_Layer: 0
   m_Name: CanonBall
   m_TagString: Untagged
@@ -5095,3 +5096,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileLifetime: 6
+--- !u!114 &-3803026266113649343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4576170522688358239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c348d55290bb33489563f6e4d946263, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponDamage: 0

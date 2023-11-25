@@ -26,11 +26,13 @@ public class ArcherShoot : MonoBehaviour
     private AnimationArcher[] archerAnimatorScript = new AnimationArcher[SetParameters.mediumShipMenCount];
 
     private ShipCategorizer_Level shipCategorizer_LevelScript;
+    private ShipCategorizer_Player shipCategorizer_PlayerScript;
 
     private float adjustDistanceFactor;
     private void Awake()
     {
         shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
+        shipCategorizer_PlayerScript = GetComponent<ShipCategorizer_Player>();
 
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -82,7 +84,6 @@ public class ArcherShoot : MonoBehaviour
         }
 
         archerMaxRange = shipCategorizer_LevelScript.weaponRange;
-        print(this.name + archerMaxRange);
     }
     private void Update()
     {
@@ -154,6 +155,10 @@ public class ArcherShoot : MonoBehaviour
                             if (!shootOnce)
                             {
                                 arrow = objectPoolArrowScript.ReturnProjectile();
+
+                                ProjectileController projectileControllerScript = arrow.GetComponent<ProjectileController>();
+                                projectileControllerScript.weaponDamage = shipCategorizer_LevelScript.weaponDamage;
+                                projectileControllerScript.isPlayer1Projectile = shipCategorizer_PlayerScript.isP1Ship;
 
                                 //archer shoot animation
                                 archerAnimatorScript[i].archerState = AnimationArcher.ArcherStates.shoot;

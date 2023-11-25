@@ -36,6 +36,7 @@ public class CannonController : MonoBehaviour
     private bool noEnemyInSight;
 
     private ShipCategorizer_Level shipCategorizer_LevelScript;
+    private ShipCategorizer_Player shipCategorizer_PlayerScript;
 
     private void Awake()
     {
@@ -73,9 +74,9 @@ public class CannonController : MonoBehaviour
         noEnemyInSight = true;
 
         shipCategorizer_LevelScript = shipGameObject.GetComponent<ShipCategorizer_Level>();
-        cannonMaxRange = shipCategorizer_LevelScript.weaponRange;
+        shipCategorizer_PlayerScript = shipGameObject.GetComponent<ShipCategorizer_Player>();
 
-        print(this.name + cannonMaxRange);
+        cannonMaxRange = shipCategorizer_LevelScript.weaponRange;
     }
 
     private void Update()
@@ -121,6 +122,10 @@ public class CannonController : MonoBehaviour
                             if (!shootOnce)
                             {
                                 cannonBall = objectPool_CanonBallScript.ReturnProjectile();
+
+                                ProjectileController projectileControllerScript = cannonBall.GetComponent<ProjectileController>();
+                                projectileControllerScript.weaponDamage = shipCategorizer_LevelScript.weaponDamage;
+                                projectileControllerScript.isPlayer1Projectile = shipCategorizer_PlayerScript.isP1Ship;
 
                                 if (cannonBall != null)
                                 {

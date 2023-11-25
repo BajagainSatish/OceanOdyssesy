@@ -10,25 +10,22 @@ public class ShipCategorizer_Level : MonoBehaviour
     };
     public ShipLevels shipLevel;
 
-    public float shipHealth;
+    public int shipHealth;
     private float shipSpeed;
     private int shipCost;
 
     public float weaponRange;
-    public float weaponDamage;
+    public int weaponDamage;
     public float weaponReloadSpeed;
     public int weaponMaxAmmo;
 
     private TargetingSystem_PhysicsOverlapSphere targetingSystem_PhysicsOverlapSphereScript;
 
+    //Move this code to update or another approach if level of ship upgrades within game
     private void Awake()
     {
         targetingSystem_PhysicsOverlapSphereScript = GetComponent<TargetingSystem_PhysicsOverlapSphere>();
-    }
 
-    //Move this code to update or another approach if level of ship upgrades within game
-    private void Start()
-    {
         if (shipLevel == ShipLevels.Level1)
         {
             AssignValue(0);
@@ -52,24 +49,32 @@ public class ShipCategorizer_Level : MonoBehaviour
         if (targetingSystem_PhysicsOverlapSphereScript.thisShipType == TargetingSystem_PhysicsOverlapSphere.ShipType.ArcherShip)
         {
             weaponRange = SetParameters.archerWeaponRange[index];
+            shipHealth = SetParameters.archerShipHealth[index];
+            weaponDamage = SetParameters.archerWeaponDamage[index];
         }
         else if (targetingSystem_PhysicsOverlapSphereScript.thisShipType == TargetingSystem_PhysicsOverlapSphere.ShipType.CannonShip)
         {
             weaponRange = SetParameters.cannonWeaponRange[index];
+            shipHealth = SetParameters.cannonShipHealth[index];
+            weaponDamage = SetParameters.cannonWeaponDamage[index];
+
         }
         else if (targetingSystem_PhysicsOverlapSphereScript.thisShipType == TargetingSystem_PhysicsOverlapSphere.ShipType.GunmanShip)
         {
             weaponRange = SetParameters.gunmanWeaponRange[index];
+            shipHealth = SetParameters.gunmanShipHealth[index];
+            weaponDamage = SetParameters.gunmanWeaponDamage[index];
+
         }
         else if (targetingSystem_PhysicsOverlapSphereScript.thisShipType == TargetingSystem_PhysicsOverlapSphere.ShipType.MortarShip)
         {
             weaponRange = SetParameters.mortarWeaponRange[index];
+            shipHealth = SetParameters.mortarShipHealth[index];
+            weaponDamage = SetParameters.mortarWeaponDamage[index];
         }
 
-        shipHealth = SetParameters.shipHealth[index];
         shipSpeed = SetParameters.shipSpeed[index];
         shipCost = SetParameters.shipCost[index];
-        weaponDamage = SetParameters.weaponDamage[index];
         weaponReloadSpeed = SetParameters.weaponReloadSpeed[index];
         weaponMaxAmmo = SetParameters.weaponMaxAmmo[index];
     }
