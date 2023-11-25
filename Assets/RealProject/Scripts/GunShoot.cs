@@ -31,6 +31,8 @@ public class GunShoot : MonoBehaviour
     [SerializeField] private int totalAmmoCount;
     private bool sufficientAmmoPresent;
 
+    public Transform targetEnemy;
+
     private void Awake()
     {
         shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
@@ -97,6 +99,7 @@ public class GunShoot : MonoBehaviour
         {
             AssignValue(3);
         }
+        targetEnemy = null;
     }
 
     private void Update()
@@ -125,6 +128,11 @@ public class GunShoot : MonoBehaviour
 
                 if (distance < gunmanMaxRange)
                 {
+                    if (targetEnemy == null)
+                    {
+                        targetEnemy = B;//Ensure rotation of ship towards enemy
+                    }
+
                     //gunman animation, aiming towards enemy
                     if (lineRenderer.enabled)
                     {
@@ -186,6 +194,11 @@ public class GunShoot : MonoBehaviour
                 gunmanAnimationScript[i].gunmanState = AnimationGunman.GunmanStates.idle;
 
                 gunmanControllerScript[i].noEnemyInSight = true;
+
+                if (targetEnemy != null)
+                {
+                    targetEnemy = null;
+                }
             }
         }
     }

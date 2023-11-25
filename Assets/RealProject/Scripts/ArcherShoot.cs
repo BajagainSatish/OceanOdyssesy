@@ -34,6 +34,8 @@ public class ArcherShoot : MonoBehaviour
     [SerializeField] private int totalAmmoCount;
     private bool sufficientAmmoPresent;
 
+    public Transform targetEnemy;
+
     private void Awake()
     {
         shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
@@ -102,6 +104,7 @@ public class ArcherShoot : MonoBehaviour
             AssignValue(3);
         }
         sufficientAmmoPresent = true;
+        targetEnemy = null;
     }
     private void Update()
     {
@@ -131,6 +134,11 @@ public class ArcherShoot : MonoBehaviour
 
                 if (distance < archerMaxRange)
                 {
+                    if (targetEnemy == null)
+                    {
+                        targetEnemy = B;//Ensure rotation of ship towards enemy
+                    }
+
                     //archer animation, aiming towards enemy
                     if (lineRenderer.enabled)
                     {
@@ -220,6 +228,11 @@ public class ArcherShoot : MonoBehaviour
                 //Such problem occured only during first encounter, where arrow was shot immediately but no animation played, and no delay was there
                 //To solve that problem, bool noEnemyInSight was introduced
                 archerControllerScript[i].noEnemyInSight = true;
+
+                if (targetEnemy != null)
+                {
+                    targetEnemy = null;
+                }
             }
         }
     }

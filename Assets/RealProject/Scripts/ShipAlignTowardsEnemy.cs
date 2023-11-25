@@ -9,11 +9,29 @@ public class ShipAlignTowardsEnemy : MonoBehaviour
     
     private ShipCategorizer_Level shipCategorizer_LevelScript;
     private CannonShoot cannonShootScript;
+    private ArcherShoot archerShootScript;
+    private GunShoot gunShootScript;
+
+    private string thisShipType;
 
     private void Awake()
     {
         shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
-        cannonShootScript = GetComponent<CannonShoot>();
+        if (TryGetComponent<CannonShoot>(out _))
+        {
+            cannonShootScript = GetComponent<CannonShoot>();
+            thisShipType = "CannonShip";
+        }
+        else if (TryGetComponent<ArcherShoot>(out _))
+        {
+            archerShootScript = GetComponent<ArcherShoot>();
+            thisShipType = "ArcherShip";
+        }
+        else if (TryGetComponent<GunShoot>(out _))
+        {
+            gunShootScript = GetComponent<GunShoot>();
+            thisShipType = "GunmanShip";
+        }
     }
     private void Start()
     {
@@ -36,9 +54,17 @@ public class ShipAlignTowardsEnemy : MonoBehaviour
     }
     private void Update()
     {
-        if (cannonShootScript.targetEnemy != null)
+        if (thisShipType == "CannonShip" && cannonShootScript.targetEnemy != null)
         {
             target = cannonShootScript.targetEnemy;
+        }
+        else if (thisShipType == "ArcherShip" && archerShootScript.targetEnemy != null)
+        {
+            target = archerShootScript.targetEnemy;
+        }
+        else if (thisShipType == "GunmanShip" && gunShootScript.targetEnemy != null)
+        {
+            target = gunShootScript.targetEnemy;
         }
         else
         {
@@ -60,7 +86,7 @@ public class ShipAlignTowardsEnemy : MonoBehaviour
             // Apply the rotation gradually
             transform.rotation = Quaternion.Lerp(transform.rotation, finalRotation, speed * Time.deltaTime);
 
-            // Optional: Adjust the local Euler angles if needed
+            // Adjust the local Euler angles to ensure ship doesnot rotate along x axis.
             transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, transform.localEulerAngles.z);
         }       
     }

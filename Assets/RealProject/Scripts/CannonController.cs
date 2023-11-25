@@ -109,7 +109,7 @@ public class CannonController : MonoBehaviour
             {
                 if (cannonShootScript.targetEnemy == null)//Check ensures single assigning by any one CannonController script only
                 {
-                    cannonShootScript.targetEnemy = B;
+                    cannonShootScript.targetEnemy = B;//Ensure rotation of ship towards enemy
                 }
 
                 lineRenderer.SetPosition(0, Evaluate(0));//set start point (vertex = 0, position = Evaluate(0))
