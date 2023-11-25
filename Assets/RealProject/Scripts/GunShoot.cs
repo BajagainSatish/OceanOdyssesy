@@ -28,6 +28,9 @@ public class GunShoot : MonoBehaviour
     private ShipCategorizer_Level shipCategorizer_LevelScript;
     private ShipCategorizer_Player shipCategorizer_PlayerScript;
 
+    [SerializeField] private int totalAmmoCount;
+    private bool sufficientAmmoPresent;
+
     private void Awake()
     {
         shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
@@ -64,7 +67,8 @@ public class GunShoot : MonoBehaviour
         totalGunmanCount = SetParameters.mediumShipMenCount;
         lineWidth = SetParameters.gunmanLineWidth;
         bulletVelocity = SetParameters.gunmanBulletVelocity;
-        waitBeforeShoot_FirstEncounter = SetParameters.gunman_WaitBeforeShoot_FirstEncounter;               
+        waitBeforeShoot_FirstEncounter = SetParameters.gunman_WaitBeforeShoot_FirstEncounter;
+        sufficientAmmoPresent = true;
     }
 
     private void Start()
@@ -98,12 +102,16 @@ public class GunShoot : MonoBehaviour
     private void Update()
     {
         myShipPosition = shipCenter.transform.position;
+        HandleAmmoCount();
 
         for (int i = 0; i < totalGunmanCount; i++)
         {
             Transform B = gunmanControllerScript[i].B;
-
-            if (B != null)
+            if (!sufficientAmmoPresent)
+            {
+                gunmanControllerScript[i].enableLineRenderer = false;//during experimentation, showed linerenderer at previous path points
+            }           
+            else if (B != null)
             {
                 Transform A = gunmanControllerScript[i].A;
                 LineRenderer lineRenderer = gunmanControllerScript[i].lineRenderer;
@@ -161,6 +169,7 @@ public class GunShoot : MonoBehaviour
 
                                     gunmanControllerScript[i].enableLineRenderer = false;
                                     StartCoroutine(MoveObject(A.position, endPosition, bullet));
+                                    totalAmmoCount--;
                                     StartCoroutine(CoolDownTime());
                                 }
                             }
@@ -230,5 +239,17 @@ public class GunShoot : MonoBehaviour
     {
         waitBeforeShoot_Aiming = SetParameters.gunman_WaitBeforeShoot_Aiming[index];
         waitAfterShoot = SetParameters.gunman_WaitAfterShoot[index];
+        totalAmmoCount = SetParameters.gunmanWeaponMaxAmmo[index];
+    }
+    private void HandleAmmoCount()
+    {
+        if (totalAmmoCount <= 0)
+        {
+            sufficientAmmoPresent = false;
+        }
+        else
+        {
+            sufficientAmmoPresent = true;
+        }
     }
 }

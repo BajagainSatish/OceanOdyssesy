@@ -4,6 +4,9 @@ using UnityEngine;
 
 public static class SetParameters
 {
+    //Values in array are in order of increasing levels
+    // {Level1, Level2, Level3, Level4}
+
     //Common to all 4 attacking ships
     public static int mediumShipMenCount = 4;
 
@@ -70,8 +73,14 @@ public static class SetParameters
     public static float[] mortar_WaitBeforeShoot_Aiming = new float[] { 4f, 3.5f, 3f, 2.5f };
     public static float[] mortar_WaitAfterShoot = new float[] { 4f, 3.5f, 3f, 2.5f };
 
-    public static float[] shipSpeed = new float[] {1.05f,1.10f,1.15f,1.20f};
-    public static int[] shipCost = new int[] {80,120,160,200};
+    //Weapon Ammunition
+    //Ammo is total no of players times no of projectiles
+    //For now, medium ship men count = 4 so all values are strictly maintained in multiples of 4
+    public static int[] archerWeaponMaxAmmo = new int[] { 20, 28, 40, 56 };
+    public static int[] gunmanWeaponMaxAmmo = new int[] { 20, 28, 40, 56 };
+    public static int[] cannonWeaponMaxAmmo = new int[] { 20, 28, 40, 56 };
+    public static int[] mortarWeaponMaxAmmo = new int[] { 20, 28, 40, 56 };
 
-    public static int[] weaponMaxAmmo = new int[] {30,50,60,70};
+    public static float[] shipSpeed = new float[] { 1.05f, 1.10f, 1.15f, 1.20f };
+    public static int[] shipCost = new int[] { 80, 120, 160, 200 };
 }

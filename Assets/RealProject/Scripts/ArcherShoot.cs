@@ -30,6 +30,10 @@ public class ArcherShoot : MonoBehaviour
     private ShipCategorizer_Player shipCategorizer_PlayerScript;
 
     private float adjustDistanceFactor;
+
+    [SerializeField] private int totalAmmoCount;
+    private bool sufficientAmmoPresent;
+
     private void Awake()
     {
         shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
@@ -97,14 +101,21 @@ public class ArcherShoot : MonoBehaviour
         {
             AssignValue(3);
         }
+        sufficientAmmoPresent = true;
     }
     private void Update()
     {
+        HandleAmmoCount();
         myShipPosition = myShipCenter.transform.position;
         for (int i = 0; i < totalArcherCount; i++)
         {
             Transform B = archerControllerScript[i].B;
-            if (B != null)
+
+            if (!sufficientAmmoPresent)
+            {
+                archerControllerScript[i].enableLineRenderer = false;//during experimentation, showed linerenderer at previous path points
+            }
+            else if (B != null)
             {
                 Transform A = archerControllerScript[i].A;
                 Transform control = archerControllerScript[i].control;
@@ -188,6 +199,7 @@ public class ArcherShoot : MonoBehaviour
 
                                     archerControllerScript[i].enableLineRenderer = false;//disable projectile path for cool down time
                                     StartCoroutine(MoveThroughRoute(arrow, routePoints));
+                                    totalAmmoCount--;
                                     StartCoroutine(CoolDownTime());
                                 }
                             }
@@ -271,5 +283,18 @@ public class ArcherShoot : MonoBehaviour
     {
         waitBeforeShoot_Aiming = SetParameters.archer_WaitBeforeShoot_Aiming[index];
         waitAfterShoot = SetParameters.archer_WaitAfterShoot[index];
+        totalAmmoCount = SetParameters.archerWeaponMaxAmmo[index];
+    }
+
+    private void HandleAmmoCount()
+    {
+        if (totalAmmoCount <= 0)
+        {
+            sufficientAmmoPresent = false;
+        }
+        else
+        {
+            sufficientAmmoPresent = true;
+        }
     }
 }

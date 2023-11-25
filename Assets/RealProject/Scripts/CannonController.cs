@@ -36,6 +36,7 @@ public class CannonController : MonoBehaviour
     private bool shootCannonBall;
     private bool noEnemyInSight;
 
+    private CannonShoot cannonShootScript;
     private ShipCategorizer_Level shipCategorizer_LevelScript;
     private ShipCategorizer_Player shipCategorizer_PlayerScript;
 
@@ -67,6 +68,7 @@ public class CannonController : MonoBehaviour
         shootOnce = false;
         shipGameObject = MortarController.FindHighestParent(transform);
         myShipCenter = shipGameObject.GetChild(0);
+        cannonShootScript = shipGameObject.GetComponent<CannonShoot>();
         enableLineRenderer = true;
 
         shootCannonBall = true;
@@ -150,6 +152,7 @@ public class CannonController : MonoBehaviour
                                     shootOnce = true;
                                     enableLineRenderer = false;
                                     StartCoroutine(MoveObject(A.position, endPosition, cannonBall));
+                                    cannonShootScript.totalAmmoCount--;
                                     StartCoroutine(CoolDownTime());
                                 }
                                 //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and bullet moves towards previous target

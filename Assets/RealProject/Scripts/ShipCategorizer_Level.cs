@@ -16,7 +16,7 @@ public class ShipCategorizer_Level : MonoBehaviour
 
     public float weaponRange;
     public int weaponDamage;
-    public int weaponMaxAmmo;
+    //weapon max ammo and weapon reload speed handled in other scripts
 
     private TargetingSystem_PhysicsOverlapSphere targetingSystem_PhysicsOverlapSphereScript;
 
@@ -56,14 +56,12 @@ public class ShipCategorizer_Level : MonoBehaviour
             weaponRange = SetParameters.cannonWeaponRange[index];
             shipHealth = SetParameters.cannonShipHealth[index];
             weaponDamage = SetParameters.cannonWeaponDamage[index];
-
         }
         else if (targetingSystem_PhysicsOverlapSphereScript.thisShipType == TargetingSystem_PhysicsOverlapSphere.ShipType.GunmanShip)
         {
             weaponRange = SetParameters.gunmanWeaponRange[index];
             shipHealth = SetParameters.gunmanShipHealth[index];
             weaponDamage = SetParameters.gunmanWeaponDamage[index];
-
         }
         else if (targetingSystem_PhysicsOverlapSphereScript.thisShipType == TargetingSystem_PhysicsOverlapSphere.ShipType.MortarShip)
         {
@@ -74,6 +72,5 @@ public class ShipCategorizer_Level : MonoBehaviour
 
         shipSpeed = SetParameters.shipSpeed[index];
         shipCost = SetParameters.shipCost[index];
-        weaponMaxAmmo = SetParameters.weaponMaxAmmo[index];
     }
 }

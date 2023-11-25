@@ -33,6 +33,7 @@ public class MortarController : MonoBehaviour
     private bool shootMortarBomb;
     private bool noEnemyInSight;
 
+    private MortarShoot mortarShootScript;
     private ShipCategorizer_Level shipCategorizer_LevelScript;
     private ShipCategorizer_Player shipCategorizer_PlayerScript;
 
@@ -59,6 +60,7 @@ public class MortarController : MonoBehaviour
         shootMortarBomb = true;
         noEnemyInSight = true;
 
+        mortarShootScript = shipGameObject.GetComponent<MortarShoot>();
         shipCategorizer_LevelScript = shipGameObject.GetComponent<ShipCategorizer_Level>();
         shipCategorizer_PlayerScript = shipGameObject.GetComponent<ShipCategorizer_Player>();
 
@@ -142,6 +144,7 @@ public class MortarController : MonoBehaviour
                                 shootOnce = true;
                                 enableLineRenderer = false;
                                 StartCoroutine(MoveThroughRoute());
+                                mortarShootScript.totalAmmoCount--;
                                 StartCoroutine(CoolDownTime());
                             }
                             //above code executes only once inside update so targetPosition won't be updated if trajectory changes, and ball moves towards previous target

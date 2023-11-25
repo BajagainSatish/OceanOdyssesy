@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ShipCategorizer_Level;
 
 public class CannonShoot : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class CannonShoot : MonoBehaviour
     private readonly GameObject[] shootUnitCannon = new GameObject[SetParameters.mediumShipMenCount];
 
     private readonly CannonController[] cannonControllerScript = new CannonController[SetParameters.mediumShipMenCount];
+
+    public int totalAmmoCount;
+    private bool sufficientAmmoPresent;
+
+    private ShipCategorizer_Level shipCategorizer_LevelScript;
 
     private void Awake()
     {
@@ -34,6 +40,56 @@ public class CannonShoot : MonoBehaviour
             shootUnitCannon[i] = cannonUnit.transform.GetChild(i).gameObject;
             cannonControllerScript[i] = shootUnitCannon[i].GetComponent<CannonController>();
         }
+    }
+    private void Start()
+    {
+        sufficientAmmoPresent = true;
+        shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
+
+        if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level1)
+        {
+            AssignValue(0);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level2)
+        {
+            AssignValue(1);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level3)
+        {
+            AssignValue(2);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level4)
+        {
+            AssignValue(3);
+        }
+    }
+    private void Update()
+    {
+        HandleAmmoCount();
+        //Cannon Controller
+        for (int i = 0; i < SetParameters.mediumShipMenCount; i++)
+        {
+            if (!sufficientAmmoPresent)
+            {
+                cannonControllerScript[i].enableLineRenderer = false;//during experimentation, showed linerenderer at previous path points
+            }
+
+        }
+    }
+    private void HandleAmmoCount()
+    {
+        if (totalAmmoCount <= 0)
+        {
+            sufficientAmmoPresent = false;
+        }
+        else
+        {
+            sufficientAmmoPresent = true;
+        }
+    }
+    private void AssignValue(int index)
+    {
+        totalAmmoCount = SetParameters.archerWeaponMaxAmmo[index];
     }
 }
 

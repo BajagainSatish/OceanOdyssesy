@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ShipCategorizer_Level;
 
 public class MortarShoot : MonoBehaviour
 {
@@ -13,6 +14,12 @@ public class MortarShoot : MonoBehaviour
     private GameObject[] mortarBarrel = new GameObject[SetParameters.mediumShipMenCount];
 
     private readonly MortarController[] mortarControllerScript = new MortarController[SetParameters.mediumShipMenCount];
+
+    public int totalAmmoCount;
+    private bool sufficientAmmoPresent;
+    
+    private ShipCategorizer_Level shipCategorizer_LevelScript;
+
     private void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -43,13 +50,39 @@ public class MortarShoot : MonoBehaviour
             mortarBarrel[i] = mortarObject[i].transform.GetChild(0).gameObject;
         }
     }
+    private void Start()
+    {
+        sufficientAmmoPresent = true;
+        shipCategorizer_LevelScript = GetComponent<ShipCategorizer_Level>();
 
+        if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level1)
+        {
+            AssignValue(0);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level2)
+        {
+            AssignValue(1);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level3)
+        {
+            AssignValue(2);
+        }
+        else if (shipCategorizer_LevelScript.shipLevel == ShipLevels.Level4)
+        {
+            AssignValue(3);
+        }
+    }
     private void Update()
     {
+        HandleAmmoCount();
         //Mortar Controller
         for (int i = 0; i < SetParameters.mediumShipMenCount; i++)
         {
             Transform B = mortarControllerScript[i].B;
+            if (!sufficientAmmoPresent)
+            {
+                mortarControllerScript[i].enableLineRenderer = false;//during experimentation, showed linerenderer at previous path points
+            }
             if (B != null)
             {
                 Vector3 targetDirection = (B.position - mortarBarrel[i].transform.position).normalized;
@@ -61,6 +94,21 @@ public class MortarShoot : MonoBehaviour
                 Debug.DrawLine(mortarBarrel[i].transform.position, B.position, Color.blue);
             }
         }
+    }
+    private void HandleAmmoCount()
+    {
+        if (totalAmmoCount <= 0)
+        {
+            sufficientAmmoPresent = false;
+        }
+        else
+        {
+            sufficientAmmoPresent = true;
+        }
+    }
+    private void AssignValue(int index)
+    {
+        totalAmmoCount = SetParameters.archerWeaponMaxAmmo[index];
     }
 }
 //Other functional portion in respective Mortar Controller script
