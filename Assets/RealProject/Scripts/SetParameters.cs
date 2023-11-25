@@ -25,7 +25,7 @@ public static class SetParameters
     //Cannon Values
     public static float cannonLineWidth = 0.02f;
     public static float cannonBallVelocity = 10f;
-    public static float cannonShootAngleRange = 55f;
+    public static float cannonShootAngleRange = 15f;
 
     //Mortar Values
     public static float mortarLineWidth = 0.07f;
@@ -80,6 +80,9 @@ public static class SetParameters
     public static int[] gunmanWeaponMaxAmmo = new int[] { 20, 28, 40, 56 };
     public static int[] cannonWeaponMaxAmmo = new int[] { 20, 28, 40, 56 };
     public static int[] mortarWeaponMaxAmmo = new int[] { 20, 28, 40, 56 };
+
+    //Ship Rotation Speed to align to enemy ship
+    public static float[] shipRotationSpeed = new float[] { 0.2f, 0.5f, 1f, 2f };
 
     public static float[] shipSpeed = new float[] { 1.05f, 1.10f, 1.15f, 1.20f };
     public static int[] shipCost = new int[] { 80, 120, 160, 200 };

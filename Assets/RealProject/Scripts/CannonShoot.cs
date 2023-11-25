@@ -17,6 +17,8 @@ public class CannonShoot : MonoBehaviour
 
     private ShipCategorizer_Level shipCategorizer_LevelScript;
 
+    public Transform targetEnemy;
+
     private void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -62,6 +64,7 @@ public class CannonShoot : MonoBehaviour
         {
             AssignValue(3);
         }
+        targetEnemy = null;
     }
     private void Update()
     {
