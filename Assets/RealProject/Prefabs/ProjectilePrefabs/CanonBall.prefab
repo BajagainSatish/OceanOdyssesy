@@ -4850,7 +4850,6 @@ GameObject:
   - component: {fileID: 7958653180557323121}
   - component: {fileID: 2437254316986671423}
   - component: {fileID: 4380666450852300077}
-  - component: {fileID: -7807505210820949485}
   - component: {fileID: 6457640662431191305}
   - component: {fileID: -7652888110799876500}
   - component: {fileID: -3803026266113649343}
@@ -4975,18 +4974,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-7807505210820949485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4576170522688358239}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8eff32c27cd64d4584dc762c183a4ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &6457640662431191305
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5109,3 +5096,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponDamage: 0
+  isPlayer1Projectile: 0
