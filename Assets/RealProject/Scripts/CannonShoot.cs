@@ -76,7 +76,6 @@ public class CannonShoot : MonoBehaviour
             {
                 cannonControllerScript[i].enableLineRenderer = false;//during experimentation, showed linerenderer at previous path points
             }
-
         }
     }
     private void HandleAmmoCount()

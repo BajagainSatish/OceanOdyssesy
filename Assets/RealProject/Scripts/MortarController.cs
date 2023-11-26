@@ -94,6 +94,11 @@ public class MortarController : MonoBehaviour
 
             if (distance < mortarMaxRange)
             {
+                if (mortarShootScript.targetEnemy == null)//Check ensures single assigning by any one MortarController script only
+                {
+                    mortarShootScript.targetEnemy = B;//Ensure rotation of ship towards enemy
+                }
+
                 adjustDistanceFactor = -(adjustCurveAngle * distance);//curve path
 
                 //Evaluate proper position for control point
@@ -162,6 +167,11 @@ public class MortarController : MonoBehaviour
         {
             lineRenderer.enabled = false;
             noEnemyInSight = true;
+
+            if (mortarShootScript.targetEnemy != null)//Check ensures single assigning by any one CannonController script only
+            {
+                mortarShootScript.targetEnemy = null;
+            }
         }
     }
 

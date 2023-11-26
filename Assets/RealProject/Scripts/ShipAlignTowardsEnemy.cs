@@ -11,6 +11,7 @@ public class ShipAlignTowardsEnemy : MonoBehaviour
     private CannonShoot cannonShootScript;
     private ArcherShoot archerShootScript;
     private GunShoot gunShootScript;
+    private MortarShoot mortarShootScript;
 
     private string thisShipType;
 
@@ -31,6 +32,11 @@ public class ShipAlignTowardsEnemy : MonoBehaviour
         {
             gunShootScript = GetComponent<GunShoot>();
             thisShipType = "GunmanShip";
+        }
+        else if (TryGetComponent<MortarShoot>(out _))
+        {
+            mortarShootScript = GetComponent<MortarShoot>();
+            thisShipType = "MortarShip";
         }
     }
     private void Start()
@@ -65,6 +71,10 @@ public class ShipAlignTowardsEnemy : MonoBehaviour
         else if (thisShipType == "GunmanShip" && gunShootScript.targetEnemy != null)
         {
             target = gunShootScript.targetEnemy;
+        }
+        else if (thisShipType == "MortarShip" && mortarShootScript.targetEnemy != null)
+        {
+            target = mortarShootScript.targetEnemy;
         }
         else
         {
